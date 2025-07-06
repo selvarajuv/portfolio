@@ -4,7 +4,7 @@ import { Plus, Minus, MapPin, Globe } from "lucide-react"
 import { useState, useEffect } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import WoodenBox from "./wooden-box"
+import WoodenBox from "../decorative/wooden-box"
 
 interface ExperienceCardProps {
   id: string

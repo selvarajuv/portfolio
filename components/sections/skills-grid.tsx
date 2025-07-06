@@ -1,6 +1,6 @@
 "use client"
 import { useState } from "react"
-import SkillIcon from "./skill-icon"
+import SkillIcon from "../common/skill-icon"
 import skills from "@/data/skills"
 
 // Helper function to group skills into rows
