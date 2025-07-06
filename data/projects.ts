@@ -12,6 +12,7 @@ export interface Project {
   duration: string
   client: string
   year: string
+  technologies?: string[]
   images: ProjectImage[]
   challenges: string[]
   outcomes: string[]
@@ -31,6 +32,7 @@ const projects: Record<string, Project> = {
     duration: "3 months",
     client: "TechStart Inc.",
     year: "2024",
+    technologies: ["React", "TypeScript", "React Native", "Figma"],
     topContent: "Mobile App Interface",
     bottomContent: "View Project",
     hoverContent: "UI/UX Design & Development →",
@@ -68,6 +70,7 @@ const projects: Record<string, Project> = {
     duration: "8 months",
     client: "MedCare Solutions",
     year: "2023",
+    technologies: ["Node.js", "React", "PostgreSQL", "AWS", "Docker"],
     topContent: "Healthcare Platform",
     bottomContent: "View Project",
     hoverContent: "Full-Stack Development →",
@@ -109,6 +112,7 @@ const projects: Record<string, Project> = {
     duration: "6 months",
     client: "RetailMax Corp",
     year: "2023",
+    technologies: ["Next.js", "TypeScript", "MongoDB", "Stripe", "Vercel"],
     topContent: "E-commerce Solution",
     bottomContent: "View Project",
     hoverContent: "React & Node.js →",
