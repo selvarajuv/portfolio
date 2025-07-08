@@ -1,15 +1,16 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
+import { useWoodGrain } from "@/hooks/use-wood-grain";
 
 interface WoodenBoxProps {
-  children: React.ReactNode
-  className?: string
-  width?: string | number
-  height?: string | number
-  isHovered?: boolean
-  onMouseEnter?: () => void
-  onMouseLeave?: () => void
+  children: React.ReactNode;
+  className?: string;
+  width?: string | number;
+  height?: string | number;
+  isHovered?: boolean;
+  onMouseEnter?: () => void;
+  onMouseLeave?: () => void;
 }
 
 const WoodenBox: React.FC<WoodenBoxProps> = ({
@@ -21,6 +22,8 @@ const WoodenBox: React.FC<WoodenBoxProps> = ({
   onMouseEnter,
   onMouseLeave,
 }) => {
+  const { overlayProps } = useWoodGrain();
+
   return (
     <div
       className={`overflow-hidden rounded-xl ${className}`}
@@ -46,21 +49,12 @@ const WoodenBox: React.FC<WoodenBoxProps> = ({
       onMouseLeave={onMouseLeave}
     >
       {/* Wood grain pattern overlay */}
-      <div
-        className="absolute inset-0 rounded-xl"
-        style={{
-          backgroundImage: "url('/wood-grain-pattern.png')",
-          backgroundSize: "600px",
-          backgroundRepeat: "repeat",
-          backgroundPosition: "center",
-          opacity: 0.07,
-        }}
-      />
+      <div {...overlayProps} />
 
       {/* Content */}
       <div className="relative z-10">{children}</div>
     </div>
-  )
-}
+  );
+};
 
-export default WoodenBox
+export default WoodenBox;

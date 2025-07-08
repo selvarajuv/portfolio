@@ -1,278 +1,37 @@
-"use client"
-import { useState } from "react"
-import SkillIcon from "../common/skill-icon"
-import skills from "@/data/skills"
+"use client";
+import { useState } from "react";
+import SkillIcon from "../common/skill-icon";
+import skills from "@/data/skills";
+import { useWoodGrain } from "@/hooks/use-wood-grain";
+import VineGenerator from "../decorative/vine-generator";
+import { skillsFrameVines } from "@/data/vine-configs";
 
 // Helper function to group skills into rows
 function groupSkillsIntoRows<T>(items: T[], itemsPerRow = 7): T[][] {
-  const rows: T[][] = []
+  const rows: T[][] = [];
   for (let i = 0; i < items.length; i += itemsPerRow) {
-    rows.push(items.slice(i, i + itemsPerRow))
+    rows.push(items.slice(i, i + itemsPerRow));
   }
-  return rows
+  return rows;
 }
 
 export default function SkillsGrid() {
-  const [hoveredSkill, setHoveredSkill] = useState<string | null>(null)
-  const [hoveredRow, setHoveredRow] = useState<number | null>(null)
-  const skillRows = groupSkillsIntoRows(skills, 7)
+  const [hoveredSkill, setHoveredSkill] = useState<string | null>(null);
+  const [hoveredRow, setHoveredRow] = useState<number | null>(null);
+  const skillRows = groupSkillsIntoRows(skills, 7);
+
+  // Wood grain overlays
+  const { overlayProps: mainOverlayProps } = useWoodGrain();
+  const { overlayProps: hoverOverlayProps } = useWoodGrain();
 
   return (
     <div className="w-full relative">
-      {/* Vine decorations around the skills box - refined like profile picture */}
+      {/* Vine decorations around the skills box */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{ left: "-30px", top: "-30px", right: "-30px", bottom: "-30px" }}
       >
-        {/* Top vines - closer to frame */}
-        <div
-          className="absolute"
-          style={{
-            top: "-20px",
-            left: "60px",
-            width: "80px",
-            height: "120px",
-            backgroundImage: "url('/vine-decoration.png')",
-            backgroundSize: "contain",
-            backgroundRepeat: "no-repeat",
-            backgroundPosition: "center",
-            opacity: 0.3,
-            transform: "rotate(-15deg) scale(0.6)",
-          }}
-        />
-        <div
-          className="absolute"
-          style={{
-            top: "-15px",
-            left: "200px",
-            width: "85px",
-            height: "130px",
-            backgroundImage: "url('/vine-decoration.png')",
-            backgroundSize: "contain",
-            backgroundRepeat: "no-repeat",
-            backgroundPosition: "center",
-            opacity: 0.32,
-            transform: "rotate(-20deg) scale(0.65)",
-          }}
-        />
-        <div
-          className="absolute"
-          style={{
-            top: "-10px",
-            right: "200px",
-            width: "90px",
-            height: "140px",
-            backgroundImage: "url('/vine-decoration.png')",
-            backgroundSize: "contain",
-            backgroundRepeat: "no-repeat",
-            backgroundPosition: "center",
-            opacity: 0.35,
-            transform: "rotate(25deg) scale(0.7) scaleX(-1)",
-          }}
-        />
-        <div
-          className="absolute"
-          style={{
-            top: "-15px",
-            right: "60px",
-            width: "85px",
-            height: "130px",
-            backgroundImage: "url('/vine-decoration.png')",
-            backgroundSize: "contain",
-            backgroundRepeat: "no-repeat",
-            backgroundPosition: "center",
-            opacity: 0.32,
-            transform: "rotate(-20deg) scale(0.65)",
-          }}
-        />
-
-        {/* Left side vines - tighter to frame */}
-        <div
-          className="absolute"
-          style={{
-            top: "80px",
-            left: "-25px",
-            width: "100px",
-            height: "150px",
-            backgroundImage: "url('/vine-decoration.png')",
-            backgroundSize: "contain",
-            backgroundRepeat: "no-repeat",
-            backgroundPosition: "center",
-            opacity: 0.33,
-            transform: "rotate(-45deg) scale(0.75)",
-          }}
-        />
-        <div
-          className="absolute"
-          style={{
-            top: "280px",
-            left: "-20px",
-            width: "95px",
-            height: "140px",
-            backgroundImage: "url('/vine-decoration.png')",
-            backgroundSize: "contain",
-            backgroundRepeat: "no-repeat",
-            backgroundPosition: "center",
-            opacity: 0.31,
-            transform: "rotate(-35deg) scale(0.7) scaleX(-1)",
-          }}
-        />
-
-        {/* Right side vines - tighter to frame */}
-        <div
-          className="absolute"
-          style={{
-            top: "80px",
-            right: "-25px",
-            width: "95px",
-            height: "145px",
-            backgroundImage: "url('/vine-decoration.png')",
-            backgroundSize: "contain",
-            backgroundRepeat: "no-repeat",
-            backgroundPosition: "center",
-            opacity: 0.34,
-            transform: "rotate(45deg) scale(0.72) scaleX(-1)",
-          }}
-        />
-        <div
-          className="absolute"
-          style={{
-            top: "280px",
-            right: "-20px",
-            width: "90px",
-            height: "135px",
-            backgroundImage: "url('/vine-decoration.png')",
-            backgroundSize: "contain",
-            backgroundRepeat: "no-repeat",
-            backgroundPosition: "center",
-            opacity: 0.32,
-            transform: "rotate(35deg) scale(0.69)",
-          }}
-        />
-
-        {/* Bottom vines - closer to frame */}
-        <div
-          className="absolute"
-          style={{
-            bottom: "-20px",
-            left: "80px",
-            width: "85px",
-            height: "125px",
-            backgroundImage: "url('/vine-decoration.png')",
-            backgroundSize: "contain",
-            backgroundRepeat: "no-repeat",
-            backgroundPosition: "center",
-            opacity: 0.31,
-            transform: "rotate(15deg) scale(0.67) scaleY(-1)",
-          }}
-        />
-        <div
-          className="absolute"
-          style={{
-            bottom: "-15px",
-            left: "220px",
-            width: "90px",
-            height: "135px",
-            backgroundImage: "url('/vine-decoration.png')",
-            backgroundSize: "contain",
-            backgroundRepeat: "no-repeat",
-            backgroundPosition: "center",
-            opacity: 0.33,
-            transform: "rotate(-25deg) scale(0.7) scaleY(-1) scaleX(-1)",
-          }}
-        />
-        <div
-          className="absolute"
-          style={{
-            bottom: "-10px",
-            right: "220px",
-            width: "80px",
-            height: "120px",
-            backgroundImage: "url('/vine-decoration.png')",
-            backgroundSize: "contain",
-            backgroundRepeat: "no-repeat",
-            backgroundPosition: "center",
-            opacity: 0.29,
-            transform: "rotate(20deg) scale(0.64) scaleY(-1)",
-          }}
-        />
-        <div
-          className="absolute"
-          style={{
-            bottom: "-25px",
-            right: "80px",
-            width: "75px",
-            height: "115px",
-            backgroundImage: "url('/vine-decoration.png')",
-            backgroundSize: "contain",
-            backgroundRepeat: "no-repeat",
-            backgroundPosition: "center",
-            opacity: 0.27,
-            transform: "rotate(-30deg) scale(0.61) scaleY(-1) scaleX(-1)",
-          }}
-        />
-
-        {/* Corner accent vines - smaller and tighter */}
-        <div
-          className="absolute"
-          style={{
-            top: "40px",
-            left: "40px",
-            width: "70px",
-            height: "105px",
-            backgroundImage: "url('/vine-decoration.png')",
-            backgroundSize: "contain",
-            backgroundRepeat: "no-repeat",
-            backgroundPosition: "center",
-            opacity: 0.25,
-            transform: "rotate(-60deg) scale(0.5)",
-          }}
-        />
-        <div
-          className="absolute"
-          style={{
-            top: "40px",
-            right: "40px",
-            width: "70px",
-            height: "105px",
-            backgroundImage: "url('/vine-decoration.png')",
-            backgroundSize: "contain",
-            backgroundRepeat: "no-repeat",
-            backgroundPosition: "center",
-            opacity: 0.25,
-            transform: "rotate(60deg) scale(0.5) scaleX(-1)",
-          }}
-        />
-        <div
-          className="absolute"
-          style={{
-            bottom: "40px",
-            left: "40px",
-            width: "70px",
-            height: "105px",
-            backgroundImage: "url('/vine-decoration.png')",
-            backgroundSize: "contain",
-            backgroundRepeat: "no-repeat",
-            backgroundPosition: "center",
-            opacity: 0.25,
-            transform: "rotate(60deg) scale(0.5) scaleY(-1)",
-          }}
-        />
-        <div
-          className="absolute"
-          style={{
-            bottom: "40px",
-            right: "40px",
-            width: "70px",
-            height: "105px",
-            backgroundImage: "url('/vine-decoration.png')",
-            backgroundSize: "contain",
-            backgroundRepeat: "no-repeat",
-            backgroundPosition: "center",
-            opacity: 0.25,
-            transform: "rotate(-60deg) scale(0.5) scaleY(-1) scaleX(-1)",
-          }}
-        />
+        <VineGenerator vines={skillsFrameVines} />
       </div>
 
       {/* Skills Grid Container with Recessed Box */}
@@ -288,16 +47,7 @@ export default function SkillsGrid() {
         }}
       >
         {/* Wood grain pattern overlay */}
-        <div
-          className="absolute inset-0 rounded-xl"
-          style={{
-            backgroundImage: "url('/wood-grain-pattern.png')",
-            backgroundSize: "600px",
-            backgroundRepeat: "repeat",
-            backgroundPosition: "center",
-            opacity: 0.07,
-          }}
-        />
+        <div {...mainOverlayProps} />
 
         {/* Skills Grid with Shelves */}
         <div className="relative z-10">
@@ -312,7 +62,8 @@ export default function SkillsGrid() {
               <div
                 className="absolute inset-0 -inset-x-8 rounded-xl transition-all duration-300"
                 style={{
-                  backgroundColor: hoveredRow === rowIndex ? "#5e301a" : "transparent",
+                  backgroundColor:
+                    hoveredRow === rowIndex ? "#5e301a" : "transparent",
                   boxShadow:
                     hoveredRow === rowIndex
                       ? `
@@ -321,27 +72,19 @@ export default function SkillsGrid() {
                       inset 0 0 120px rgba(0, 0, 0, 0.4)
                     `
                       : "none",
-                  top: rowIndex === 0 ? "-16px" : "-20px", // Extend to top of container or previous shelf
-                  bottom: "-16px", // Extend to include shelf and shadow
+                  top: rowIndex === 0 ? "-16px" : "-20px",
+                  bottom: "-16px",
                 }}
               >
                 {/* Wood grain pattern overlay for hovered row */}
-                {hoveredRow === rowIndex && (
-                  <div
-                    className="absolute inset-0 rounded-xl"
-                    style={{
-                      backgroundImage: "url('/wood-grain-pattern.png')",
-                      backgroundSize: "600px",
-                      backgroundRepeat: "repeat",
-                      backgroundPosition: "center",
-                      opacity: 0.07,
-                    }}
-                  />
-                )}
+                {hoveredRow === rowIndex && <div {...hoverOverlayProps} />}
               </div>
 
               {/* Row of Skills */}
-              <div className="flex flex-wrap justify-center gap-8 relative z-10" style={{ paddingBottom: "8px" }}>
+              <div
+                className="flex flex-wrap justify-center gap-8 relative z-10"
+                style={{ paddingBottom: "8px" }}
+              >
                 {row.map((skill) => (
                   <div
                     key={skill.name}
@@ -355,7 +98,11 @@ export default function SkillsGrid() {
                         className="text-sm font-medium transition-colors duration-300"
                         style={{
                           color:
-                            hoveredSkill === skill.name ? skill.color : hoveredRow === rowIndex ? "#f0f0f0" : "#ffffff",
+                            hoveredSkill === skill.name
+                              ? skill.color
+                              : hoveredRow === rowIndex
+                              ? "#f0f0f0"
+                              : "#ffffff",
                         }}
                       >
                         {skill.name}
@@ -370,14 +117,14 @@ export default function SkillsGrid() {
                           hoveredSkill === skill.name
                             ? "translateY(-6px) scale(1.1)"
                             : hoveredRow === rowIndex
-                              ? "translateY(-3px) scale(1.05)"
-                              : "translateY(0) scale(1)",
+                            ? "translateY(-3px) scale(1.05)"
+                            : "translateY(0) scale(1)",
                         filter:
                           hoveredSkill === skill.name
                             ? `drop-shadow(0 12px 24px ${skill.color}40)`
                             : hoveredRow === rowIndex
-                              ? `drop-shadow(0 8px 16px rgba(0, 0, 0, 0.3))`
-                              : "drop-shadow(0 6px 12px rgba(0, 0, 0, 0.2))",
+                            ? `drop-shadow(0 8px 16px rgba(0, 0, 0, 0.3))`
+                            : "drop-shadow(0 6px 12px rgba(0, 0, 0, 0.2))",
                       }}
                     >
                       <SkillIcon
@@ -429,5 +176,5 @@ export default function SkillsGrid() {
         </div>
       </div>
     </div>
-  )
+  );
 }

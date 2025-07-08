@@ -1,23 +1,23 @@
-"use client"
+"use client";
 
-import { Plus, Minus, MapPin, Globe } from "lucide-react"
-import { useState, useEffect } from "react"
-import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import WoodenBox from "../decorative/wooden-box"
+import { Plus, Minus, MapPin, Globe } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import WoodenBox from "../decorative/wooden-box";
 
 interface ExperienceCardProps {
-  id: string
-  title: string
-  company: string
-  period: string
-  location?: string
-  website?: string
-  description?: string
-  technologies?: string[]
-  logo?: string
-  isExpanded: boolean
-  onToggle: (id: string) => void
+  id: string;
+  title: string;
+  company: string;
+  period: string;
+  location?: string;
+  website?: string;
+  description?: string;
+  technologies?: string[];
+  logo?: string;
+  isExpanded: boolean;
+  onToggle: (id: string) => void;
 }
 
 export default function ExperienceCard({
@@ -33,16 +33,16 @@ export default function ExperienceCard({
   isExpanded,
   onToggle,
 }: ExperienceCardProps) {
-  const [isAnimating, setIsAnimating] = useState(false)
-  const [isHovered, setIsHovered] = useState(false)
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
 
   useEffect(() => {
     if (isExpanded) {
-      setIsAnimating(true)
+      setIsAnimating(true);
     } else {
-      setIsAnimating(false)
+      setIsAnimating(false);
     }
-  }, [isExpanded])
+  }, [isExpanded]);
 
   return (
     <WoodenBox
@@ -64,19 +64,27 @@ export default function ExperienceCard({
         </div>
         <div className="flex items-center gap-4">
           <span className="text-lg font-medium">{period}</span>
-          {isExpanded ? <Minus className="w-6 h-6" /> : <Plus className="w-6 h-6" />}
+          {isExpanded ? (
+            <Minus className="w-6 h-6" />
+          ) : (
+            <Plus className="w-6 h-6" />
+          )}
         </div>
       </div>
 
       {/* Expanded content with animation */}
       <div
         className={`overflow-hidden transition-all duration-500 linear ${
-          isExpanded ? "max-h-[400px] opacity-100 mt-6 mb-6" : "max-h-0 opacity-0 mt-0"
+          isExpanded
+            ? "max-h-[400px] opacity-100 mt-6 mb-6"
+            : "max-h-0 opacity-0 mt-0"
         }`}
       >
         <Card
           className={`bg-gray-800 border-gray-700 transform transition-all duration-500 linear min-h-[200px] ${
-            isAnimating && isExpanded ? "translate-y-0 scale-100" : "translate-y-[-10px] scale-95"
+            isAnimating && isExpanded
+              ? "translate-y-0 scale-100"
+              : "translate-y-[-10px] scale-95"
           }`}
         >
           <CardContent className="p-6">
@@ -102,9 +110,13 @@ export default function ExperienceCard({
                 {/* Description */}
                 <div className="flex-1 mb-6">
                   {description ? (
-                    <p className="text-gray-300 leading-relaxed">{description}</p>
+                    <p className="text-gray-300 leading-relaxed">
+                      {description}
+                    </p>
                   ) : (
-                    <p className="text-gray-500 leading-relaxed italic">Experience details coming soon...</p>
+                    <p className="text-gray-500 leading-relaxed italic">
+                      Experience details coming soon...
+                    </p>
                   )}
                 </div>
 
@@ -112,12 +124,19 @@ export default function ExperienceCard({
                 <div className="flex flex-wrap gap-2">
                   {technologies.length > 0 ? (
                     technologies.map((tech, index) => (
-                      <Badge key={index} variant="default" className="bg-blue-600 hover:bg-blue-700 text-white">
+                      <Badge
+                        key={index}
+                        variant="default"
+                        className="bg-blue-600 hover:bg-blue-700 text-white"
+                      >
                         {tech}
                       </Badge>
                     ))
                   ) : (
-                    <Badge variant="secondary" className="bg-gray-600 text-gray-300">
+                    <Badge
+                      variant="secondary"
+                      className="bg-gray-600 text-gray-300"
+                    >
                       Technologies TBD
                     </Badge>
                   )}
@@ -149,5 +168,5 @@ export default function ExperienceCard({
         </Card>
       </div>
     </WoodenBox>
-  )
+  );
 }

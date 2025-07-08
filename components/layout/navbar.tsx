@@ -1,150 +1,158 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState, useEffect, useRef } from "react"
-import Link from "next/link"
+import { useState, useEffect, useRef } from "react";
+import Link from "next/link";
 
 // Define the navigation sections
-const navSections = ["home", "work", "experience", "skill"]
+const navSections = ["home", "work", "experience", "skill"];
 
 interface NavbarProps {
-  activeSection?: string
+  activeSection?: string;
 }
 
-export default function Navbar({ activeSection: initialActiveSection = "home" }: NavbarProps) {
-  const [scrolled, setScrolled] = useState(false)
-  const [activeSection, setActiveSection] = useState(initialActiveSection)
-  const observerRefs = useRef<IntersectionObserver[]>([])
+export default function Navbar({
+  activeSection: initialActiveSection = "home",
+}: NavbarProps) {
+  const [scrolled, setScrolled] = useState(false);
+  const [activeSection, setActiveSection] = useState(initialActiveSection);
+  const observerRefs = useRef<IntersectionObserver[]>([]);
 
   useEffect(() => {
     const handleScroll = () => {
-      const isScrolled = window.scrollY > 100
+      const isScrolled = window.scrollY > 100;
       if (isScrolled !== scrolled) {
-        setScrolled(isScrolled)
+        setScrolled(isScrolled);
       }
-    }
+    };
 
-    window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [scrolled])
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [scrolled]);
 
   // Set up intersection observers for each section when on the home page
   useEffect(() => {
     // Only set up observers if we're on the home page (where all sections exist)
-    if (window.location.pathname !== "/") return
+    if (window.location.pathname !== "/") return;
 
     // Handle initial hash in URL
     const handleInitialHash = () => {
-      const hash = window.location.hash.replace("#", "")
+      const hash = window.location.hash.replace("#", "");
       if (hash && navSections.includes(hash)) {
-        setActiveSection(hash)
+        setActiveSection(hash);
         // Scroll to the section immediately without delay for direct navigation
-        const element = document.getElementById(hash)
+        const element = document.getElementById(hash);
         if (element) {
           // Use immediate scroll for direct hash navigation
-          element.scrollIntoView({ behavior: "auto", block: "start" })
+          element.scrollIntoView({ behavior: "auto", block: "start" });
           // Then update to smooth scrolling after initial positioning
           setTimeout(() => {
-            element.scrollIntoView({ behavior: "smooth", block: "start" })
-          }, 50)
+            element.scrollIntoView({ behavior: "smooth", block: "start" });
+          }, 50);
         }
       }
-    }
+    };
 
     // Handle hash on initial load
-    handleInitialHash()
+    handleInitialHash();
 
     // Clean up previous observers
-    observerRefs.current.forEach((observer) => observer.disconnect())
-    observerRefs.current = []
+    observerRefs.current.forEach((observer) => observer.disconnect());
+    observerRefs.current = [];
 
     // Create new observers for each section
     navSections.forEach((section) => {
-      const element = document.getElementById(section)
-      if (!element) return
+      const element = document.getElementById(section);
+      if (!element) return;
 
       const observer = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
-            // When section is 50% visible, set it as active
-            if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
-              setActiveSection(section)
+            // When section is at least 20% visible, set it as active
+            if (entry.isIntersecting && entry.intersectionRatio >= 0.2) {
+              setActiveSection(section);
               // Update URL hash without triggering scroll
               if (window.location.hash !== `#${section}`) {
-                window.history.replaceState(null, "", `#${section}`)
+                window.history.replaceState(null, "", `#${section}`);
               }
             }
-          })
+          });
         },
-        { threshold: 0.5 }, // Trigger when 50% of the element is visible
-      )
+        { threshold: 0.2 } // Trigger when 20% of the element is visible
+      );
 
-      observer.observe(element)
-      observerRefs.current.push(observer)
-    })
+      observer.observe(element);
+      observerRefs.current.push(observer);
+    });
 
     // Listen for hash changes (back/forward navigation)
     const handleHashChange = () => {
-      const hash = window.location.hash.replace("#", "")
+      const hash = window.location.hash.replace("#", "");
       if (hash && navSections.includes(hash)) {
-        setActiveSection(hash)
-        const element = document.getElementById(hash)
+        setActiveSection(hash);
+        const element = document.getElementById(hash);
         if (element) {
-          element.scrollIntoView({ behavior: "smooth", block: "start" })
+          element.scrollIntoView({ behavior: "smooth", block: "start" });
         }
       }
-    }
+    };
 
-    window.addEventListener("hashchange", handleHashChange)
+    window.addEventListener("hashchange", handleHashChange);
 
     return () => {
-      observerRefs.current.forEach((observer) => observer.disconnect())
-      window.removeEventListener("hashchange", handleHashChange)
-    }
-  }, [])
+      observerRefs.current.forEach((observer) => observer.disconnect());
+      window.removeEventListener("hashchange", handleHashChange);
+    };
+  }, []);
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 flex justify-center pt-4 pointer-events-none">
       {/* Fixed-width inner container that never changes size or position */}
       <div className="w-fit mx-auto relative">
         {/* Background element with increased transparency - lower z-index */}
-        {scrolled && <div className="absolute inset-0 bg-black/50 backdrop-blur-md shadow-md rounded-full z-0" />}
+        {scrolled && (
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-md shadow-md rounded-full z-0" />
+        )}
 
         {/* Navigation content with fixed positioning - increased spacing between items */}
         <nav className="flex items-center space-x-7 justify-center py-2 px-6 relative pointer-events-auto">
           {navSections.map((section) => (
-            <NavItem key={section} href={`/#${section}`} isActive={activeSection === section}>
+            <NavItem
+              key={section}
+              href={`/#${section}`}
+              isActive={activeSection === section}
+            >
               {section.charAt(0).toUpperCase() + section.slice(1)}
             </NavItem>
           ))}
         </nav>
       </div>
     </header>
-  )
+  );
 }
 
 interface NavItemProps {
-  href: string
-  children: React.ReactNode
-  isActive: boolean
+  href: string;
+  children: React.ReactNode;
+  isActive: boolean;
 }
 
 // Update the NavItem component to use the primary green color on hover
 function NavItem({ href, children, isActive }: NavItemProps) {
   const handleClick = (e: React.MouseEvent) => {
-    e.preventDefault()
-    const hash = href.replace("/#", "")
+    e.preventDefault();
+    const hash = href.replace("/#", "");
 
     // Update URL
-    window.history.pushState(null, "", href)
+    window.history.pushState(null, "", href);
 
     // Scroll to element
-    const element = document.getElementById(hash)
+    const element = document.getElementById(hash);
     if (element) {
-      element.scrollIntoView({ behavior: "smooth", block: "start" })
+      element.scrollIntoView({ behavior: "smooth", block: "start" });
     }
-  }
+  };
 
   return (
     <Link
@@ -163,5 +171,5 @@ function NavItem({ href, children, isActive }: NavItemProps) {
       {/* Text needs to be above both backgrounds */}
       <span className="relative z-20">{children}</span>
     </Link>
-  )
+  );
 }

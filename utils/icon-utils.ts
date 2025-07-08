@@ -1,3 +1,8 @@
+/**
+ * Utility functions for managing skill icons
+ */
+
+// List of available icon files
 export const availableIcons = [
   "typescript",
   "react",

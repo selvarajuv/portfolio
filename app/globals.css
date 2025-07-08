@@ -31,6 +31,9 @@ html[data-scroll-locked] {
   .content-section {
     @apply relative z-10 backdrop-blur-sm bg-black/20 rounded-lg p-8 shadow-xl;
   }
+  .section-spacing {
+    @apply py-24;
+  }
 }
 
 @layer base {
@@ -112,4 +115,19 @@ html[data-scroll-locked] {
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* Custom utility classes */
+.text-balance {
+  text-wrap: balance;
+}
+
+.content-section {
+  position: relative;
+  z-index: 10;
+  backdrop-filter: blur(4px);
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 0.5rem;
+  padding: 2rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
 }

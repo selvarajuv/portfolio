@@ -1,15 +1,22 @@
-import type React from "react"
+import type React from "react";
 
 interface SvgIconProps {
-  src: string
-  alt: string
-  size?: number
-  className?: string
-  style?: React.CSSProperties
-  onError?: () => void
+  src: string;
+  alt: string;
+  size?: number;
+  className?: string;
+  style?: React.CSSProperties;
+  onError?: () => void;
 }
 
-const SvgIcon: React.FC<SvgIconProps> = ({ src, alt, size = 96, className = "", style = {}, onError }) => {
+const SvgIcon: React.FC<SvgIconProps> = ({
+  src,
+  alt,
+  size = 96,
+  className = "",
+  style = {},
+  onError,
+}) => {
   return (
     <img
       src={src || "/placeholder.svg"}
@@ -27,7 +34,7 @@ const SvgIcon: React.FC<SvgIconProps> = ({ src, alt, size = 96, className = "", 
       onError={onError}
       loading="lazy"
     />
-  )
-}
+  );
+};
 
-export default SvgIcon
+export default SvgIcon;

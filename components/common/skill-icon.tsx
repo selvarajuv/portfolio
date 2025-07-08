@@ -1,17 +1,18 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState } from "react"
-import SvgIcon from "./svg-icon"
+import { useState } from "react";
+import SvgIcon from "./svg-icon";
+import { useWoodGrain } from "@/hooks/use-wood-grain";
 
 interface SkillIconProps {
-  name: string
-  iconPath: string
-  color: string
-  size?: number
-  isHovered?: boolean
-  isRowHovered?: boolean
+  name: string;
+  iconPath: string;
+  color: string;
+  size?: number;
+  isHovered?: boolean;
+  isRowHovered?: boolean;
 }
 
 const SkillIcon: React.FC<SkillIconProps> = ({
@@ -22,12 +23,16 @@ const SkillIcon: React.FC<SkillIconProps> = ({
   isHovered = false,
   isRowHovered = false,
 }) => {
-  const [imageError, setImageError] = useState(false)
+  const [imageError, setImageError] = useState(false);
+  const { overlayProps } = useWoodGrain({
+    opacity: 0.05,
+    backgroundSize: "300px",
+  });
 
   // Fallback to text if image fails to load
   const handleImageError = () => {
-    setImageError(true)
-  }
+    setImageError(true);
+  };
 
   return (
     <div
@@ -51,16 +56,7 @@ const SkillIcon: React.FC<SkillIconProps> = ({
       }}
     >
       {/* Wood grain pattern overlay */}
-      <div
-        className="absolute inset-0 rounded-xl"
-        style={{
-          backgroundImage: "url('/wood-grain-pattern.png')",
-          backgroundSize: "300px",
-          backgroundRepeat: "repeat",
-          backgroundPosition: "center",
-          opacity: 0.05,
-        }}
-      />
+      <div {...overlayProps} />
 
       {/* Icon container */}
       <div
@@ -99,7 +95,7 @@ const SkillIcon: React.FC<SkillIconProps> = ({
         )}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default SkillIcon
+export default SkillIcon;

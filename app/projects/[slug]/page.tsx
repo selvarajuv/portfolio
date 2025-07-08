@@ -1,60 +1,63 @@
-"use client";
-import Link from "next/link";
-import Image from "next/image";
-import { ArrowLeft, ExternalLink } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-import PageLayout from "@/components/layout/page-layout";
-import ProjectNavigation from "@/components/project/project-navigation";
-import projects from "@/data/projects";
-import skills from "@/data/skills";
-import SvgIcon from "@/components/common/svg-icon";
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+"use client"
+import Link from "next/link"
+import Image from "next/image"
+import { ArrowLeft, ExternalLink } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { Separator } from "@/components/ui/separator"
+import PageLayout from "@/components/layout/page-layout"
+import ProjectNavigation from "@/components/project/project-navigation"
+import projects from "@/data/projects"
+import skills from "@/data/skills"
+import SvgIcon from "@/components/common/svg-icon"
+import { useEffect } from "react"
+import { useRouter } from "next/navigation"
 
 export default function ProjectPage({ params }: { params: { slug: string } }) {
-  const { slug } = params;
-  const project = projects[slug];
-  const router = useRouter();
+  const { slug } = params
+  const project = projects[slug]
+  const router = useRouter()
 
-  // Prevent any scroll restoration and force top position
+  // Remove the existing two separate useEffect hooks and replace with this single one
   useEffect(() => {
     // Prevent scroll restoration
     if ("scrollRestoration" in history) {
-      history.scrollRestoration = "manual";
+      history.scrollRestoration = "manual"
     }
 
-    // Immediate scroll to top - no animation
-    window.scrollTo(0, 0);
-    document.documentElement.scrollTop = 0;
-    document.body.scrollTop = 0;
-  }, []);
+    // Immediate scroll to top - no animation (handles both initial load and slug changes)
+    const scrollToTop = () => {
+      window.scrollTo(0, 0)
+      document.documentElement.scrollTop = 0
+      document.body.scrollTop = 0
+    }
 
-  // Also reset on slug change
-  useEffect(() => {
-    window.scrollTo(0, 0);
-    document.documentElement.scrollTop = 0;
-    document.body.scrollTop = 0;
-  }, [slug]);
+    // Execute immediately
+    scrollToTop()
+
+    // Also execute on any potential async updates
+    const timeoutId = setTimeout(scrollToTop, 0)
+
+    return () => {
+      clearTimeout(timeoutId)
+    }
+  }, [slug]) // Only depend on slug changes
 
   const handleBackClick = () => {
     // Store a flag to indicate we want to go directly to work section
-    sessionStorage.setItem("scrollToWork", "true");
-    router.push("/");
-  };
+    sessionStorage.setItem("scrollToWork", "true")
+    router.push("/")
+  }
 
   if (!project) {
-    return <div>Project not found</div>;
+    return <div>Project not found</div>
   }
 
   // Helper function to get skill icon path by name
   const getSkillIcon = (techName: string) => {
-    const skill = skills.find(
-      (s) => s.name.toLowerCase() === techName.toLowerCase()
-    );
-    return skill ? skill.iconPath : null;
-  };
+    const skill = skills.find((s) => s.name.toLowerCase() === techName.toLowerCase())
+    return skill ? skill.iconPath : null
+  }
 
   return (
     <PageLayout activeSection="work">
@@ -84,25 +87,15 @@ export default function ProjectPage({ params }: { params: { slug: string } }) {
       {/* Content container - centered with equal spacing */}
       <div className="relative z-10 px-8 pt-48 max-w-7xl mx-auto">
         {/* Project title - bigger size */}
-        <h1 className="text-6xl md:text-7xl font-bold mb-16 tracking-tight leading-none max-w-4xl">
-          {project.title}
-        </h1>
+        <h1 className="text-6xl md:text-7xl font-bold mb-16 tracking-tight leading-none max-w-4xl">{project.title}</h1>
 
         {/* Breadcrumb - moved down with more spacing */}
         <nav className="flex items-center text-sm text-gray-400 mb-16">
-          <Button
-            variant="link"
-            className="p-0 h-auto text-gray-400 hover:text-[#016428]"
-            asChild
-          >
+          <Button variant="link" className="p-0 h-auto text-gray-400 hover:text-[#016428]" asChild>
             <Link href="/">Home</Link>
           </Button>
           <span className="mx-3">›</span>
-          <Button
-            variant="link"
-            className="p-0 h-auto text-gray-400 hover:text-[#016428]"
-            asChild
-          >
+          <Button variant="link" className="p-0 h-auto text-gray-400 hover:text-[#016428]" asChild>
             <Link href="/#work">Projects</Link>
           </Button>
           <span className="mx-3">›</span>
@@ -118,27 +111,16 @@ export default function ProjectPage({ params }: { params: { slug: string } }) {
               <p className="text-gray-300">{project.client}</p>
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-white mb-2">
-                Technologies
-              </h3>
+              <h3 className="text-lg font-semibold text-white mb-2">Technologies</h3>
               <div className="flex flex-wrap gap-2">
                 {project.technologies && project.technologies.length > 0 ? (
                   project.technologies.map((tech, index) => {
-                    const iconPath = getSkillIcon(tech);
+                    const iconPath = getSkillIcon(tech)
                     return iconPath ? (
-                      <div
-                        key={index}
-                        className="flex items-center"
-                        title={tech}
-                      >
-                        <SvgIcon
-                          src={iconPath}
-                          alt={`${tech} icon`}
-                          size={24}
-                          className="flex-shrink-0"
-                        />
+                      <div key={index} className="flex items-center" title={tech}>
+                        <SvgIcon src={iconPath} alt={`${tech} icon`} size={24} className="flex-shrink-0" />
                       </div>
-                    ) : null;
+                    ) : null
                   })
                 ) : (
                   <p className="text-gray-300">Coming Soon</p>
@@ -149,9 +131,7 @@ export default function ProjectPage({ params }: { params: { slug: string } }) {
 
           {/* Main description - moved below metadata */}
           <div className="mb-8">
-            <p className="text-xl text-gray-300 leading-relaxed mb-8">
-              {project.description}
-            </p>
+            <p className="text-xl text-gray-300 leading-relaxed mb-8">{project.description}</p>
 
             {/* Open Project Link */}
             <a
@@ -171,19 +151,11 @@ export default function ProjectPage({ params }: { params: { slug: string } }) {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-20">
             {/* Challenges */}
             <div>
-              <h3 className="text-lg font-semibold text-white mb-4">
-                Key Challenges
-              </h3>
+              <h3 className="text-lg font-semibold text-white mb-4">Key Challenges</h3>
               <ul className="space-y-3">
                 {project.challenges.map((challenge, index) => (
-                  <li
-                    key={index}
-                    className="flex items-start gap-3 text-gray-300"
-                  >
-                    <Badge
-                      variant="destructive"
-                      className="mt-1 w-2 h-2 p-0 rounded-full bg-[#016428]"
-                    >
+                  <li key={index} className="flex items-start gap-3 text-gray-300">
+                    <Badge variant="destructive" className="mt-1 w-2 h-2 p-0 rounded-full bg-[#016428]">
                       <span className="sr-only">Challenge</span>
                     </Badge>
                     <span>{challenge}</span>
@@ -194,19 +166,11 @@ export default function ProjectPage({ params }: { params: { slug: string } }) {
 
             {/* Outcomes */}
             <div>
-              <h3 className="text-lg font-semibold text-white mb-4">
-                Key Outcomes
-              </h3>
+              <h3 className="text-lg font-semibold text-white mb-4">Key Outcomes</h3>
               <ul className="space-y-3">
                 {project.outcomes.map((outcome, index) => (
-                  <li
-                    key={index}
-                    className="flex items-start gap-3 text-gray-300"
-                  >
-                    <Badge
-                      variant="default"
-                      className="mt-1 w-2 h-2 p-0 rounded-full bg-[#016428]"
-                    >
+                  <li key={index} className="flex items-start gap-3 text-gray-300">
+                    <Badge variant="default" className="mt-1 w-2 h-2 p-0 rounded-full bg-[#016428]">
                       <span className="sr-only">Success</span>
                     </Badge>
                     <span>{outcome}</span>
@@ -239,5 +203,5 @@ export default function ProjectPage({ params }: { params: { slug: string } }) {
         </div>
       </div>
     </PageLayout>
-  );
+  )
 }

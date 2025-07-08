@@ -1,31 +1,36 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { ChevronLeft, ChevronRight } from "lucide-react"
-import Image from "next/image"
-import Link from "next/link"
-import projects from "@/data/projects"
+import { useState } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import projects from "@/data/projects";
+import { useWoodGrain } from "@/hooks/use-wood-grain";
 
 interface ProjectNavigationProps {
-  currentProjectId: string
+  currentProjectId: string;
 }
 
-export default function ProjectNavigation({ currentProjectId }: ProjectNavigationProps) {
-  const [isHovered, setIsHovered] = useState(false)
+export default function ProjectNavigation({
+  currentProjectId,
+}: ProjectNavigationProps) {
+  const [isHovered, setIsHovered] = useState(false);
+  const { overlayProps } = useWoodGrain();
 
   // Get all project IDs
-  const projectIds = Object.keys(projects)
-  const currentIndex = projectIds.indexOf(currentProjectId)
+  const projectIds = Object.keys(projects);
+  const currentIndex = projectIds.indexOf(currentProjectId);
 
   // Get next project (loop back to first if at end)
-  const nextIndex = (currentIndex + 1) % projectIds.length
-  const nextProjectId = projectIds[nextIndex]
-  const nextProject = projects[nextProjectId]
+  const nextIndex = (currentIndex + 1) % projectIds.length;
+  const nextProjectId = projectIds[nextIndex];
+  const nextProject = projects[nextProjectId];
 
   // Get previous project (loop to last if at beginning)
-  const prevIndex = currentIndex === 0 ? projectIds.length - 1 : currentIndex - 1
-  const prevProjectId = projectIds[prevIndex]
-  const prevProject = projects[prevProjectId]
+  const prevIndex =
+    currentIndex === 0 ? projectIds.length - 1 : currentIndex - 1;
+  const prevProjectId = projectIds[prevIndex];
+  const prevProject = projects[prevProjectId];
 
   return (
     <div className="fixed bottom-8 right-8 z-20">
@@ -34,9 +39,11 @@ export default function ProjectNavigation({ currentProjectId }: ProjectNavigatio
         <div
           className="absolute bottom-full right-0 mb-4 transition-all duration-300 ease-out"
           style={{
-            transform: isHovered ? "translateY(0) scale(1)" : "translateY(10px) scale(0.95)",
+            transform: isHovered
+              ? "translateY(0) scale(1)"
+              : "translateY(10px) scale(0.95)",
             opacity: isHovered ? 1 : 0,
-            width: "280px", // Same as min-width of the box
+            width: "280px",
           }}
         >
           <div className="relative w-full h-40 rounded-lg overflow-hidden shadow-2xl">
@@ -73,16 +80,7 @@ export default function ProjectNavigation({ currentProjectId }: ProjectNavigatio
         onMouseLeave={() => setIsHovered(false)}
       >
         {/* Wood grain pattern overlay */}
-        <div
-          className="absolute inset-0 rounded-xl"
-          style={{
-            backgroundImage: "url('/wood-grain-pattern.png')",
-            backgroundSize: "600px",
-            backgroundRepeat: "repeat",
-            backgroundPosition: "center",
-            opacity: 0.07,
-          }}
-        />
+        <div {...overlayProps} />
 
         {/* Content */}
         <div className="relative z-10">
@@ -108,5 +106,5 @@ export default function ProjectNavigation({ currentProjectId }: ProjectNavigatio
         </div>
       </div>
     </div>
-  )
+  );
 }

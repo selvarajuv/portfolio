@@ -1,3 +1,10 @@
+/**
+ * Utility functions for scrolling behavior
+ */
+
+/**
+ * Scroll to the top of the page smoothly
+ */
 export function scrollToTop() {
   window.scrollTo({
     top: 0,
