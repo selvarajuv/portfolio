@@ -1,18 +1,15 @@
+// components/layout/page-layout.tsx
+
 "use client";
 
 import type React from "react";
-
 import { useEffect, useRef } from "react";
-import Navbar from "./navbar";
-import Footer from "./footer";
-import WoodGrainBackground from "../decorative/wood-grain-background";
-import { VineDecorations } from "../decorative/vines";
-import { setupParallaxEffect } from "@/utils/parallax";
-
-interface PageLayoutProps {
-  children: React.ReactNode;
-  activeSection?: string;
-}
+import { PageLayoutProps } from "@/types/layout";
+import Navbar from "@/components/layout/navbar";
+import Footer from "@/components/layout/footer";
+import WoodGrainBackground from "@/components/decorative/wood-grain-background";
+import { VineDecorations } from "@/components/decorative/vines";
+import { setupParallaxEffect } from "@/lib/parallax";
 
 export default function PageLayout({
   children,

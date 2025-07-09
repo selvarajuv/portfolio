@@ -1,14 +1,6 @@
-export interface ExperienceItem {
-  id: string;
-  title: string;
-  company: string;
-  period: string;
-  location?: string;
-  website?: string;
-  description?: string;
-  technologies?: string[];
-  logo?: string;
-}
+//lib/experience.ts
+
+import { ExperienceItem } from "@/types/experience";
 
 export async function getExperienceFromNotion(): Promise<ExperienceItem[]> {
   const response = await fetch("/api/experience");

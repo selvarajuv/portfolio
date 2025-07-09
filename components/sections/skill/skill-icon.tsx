@@ -1,19 +1,12 @@
+// components/sections/skills/skill-icon.tsx
+
 "use client";
 
 import type React from "react";
-
 import { useState } from "react";
+import { SkillIconProps } from "@/types/skill";
 import SvgIcon from "./svg-icon";
 import { useWoodGrain } from "@/hooks/use-wood-grain";
-
-interface SkillIconProps {
-  name: string;
-  iconPath: string;
-  color: string;
-  size?: number;
-  isHovered?: boolean;
-  isRowHovered?: boolean;
-}
 
 const SkillIcon: React.FC<SkillIconProps> = ({
   name,

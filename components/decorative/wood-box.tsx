@@ -1,17 +1,10 @@
+// components/decorative/wood-box.tsx
+
 "use client";
 
 import type React from "react";
+import { WoodenBoxProps } from "@/types/decorative";
 import { useWoodGrain } from "@/hooks/use-wood-grain";
-
-interface WoodenBoxProps {
-  children: React.ReactNode;
-  className?: string;
-  width?: string | number;
-  height?: string | number;
-  isHovered?: boolean;
-  onMouseEnter?: () => void;
-  onMouseLeave?: () => void;
-}
 
 const WoodenBox: React.FC<WoodenBoxProps> = ({
   children,

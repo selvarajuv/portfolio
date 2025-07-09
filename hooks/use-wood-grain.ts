@@ -1,17 +1,6 @@
-import type { CSSProperties } from "react";
+// hooks/use-wood-grain.ts
 
-interface WoodGrainOptions {
-  opacity?: number;
-  backgroundSize?: string;
-  className?: string;
-}
-
-interface WoodGrainOverlay {
-  overlayProps: {
-    className: string;
-    style: CSSProperties;
-  };
-}
+import { WoodGrainOptions, WoodGrainOverlay } from "@/types/decorative";
 
 export function useWoodGrain({
   opacity = 0.07,

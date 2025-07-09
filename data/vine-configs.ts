@@ -1,21 +1,17 @@
-export interface VineConfig {
-  top?: string
-  left?: string
-  right?: string
-  bottom?: string
-  width: string
-  height: string
-  opacity: number
-  rotate: string
-  scale: string
-  scaleX?: boolean
-  scaleY?: boolean
-}
+import { VineConfig } from "@/types/decorative";
 
 // Profile picture frame vines
 export const profileFrameVines: VineConfig[] = [
   // Top vines
-  { top: "-20px", left: "20px", width: "80px", height: "120px", opacity: 0.3, rotate: "-15deg", scale: "0.6" },
+  {
+    top: "-20px",
+    left: "20px",
+    width: "80px",
+    height: "120px",
+    opacity: 0.3,
+    rotate: "-15deg",
+    scale: "0.6",
+  },
   {
     top: "-10px",
     left: "80px",
@@ -26,7 +22,15 @@ export const profileFrameVines: VineConfig[] = [
     scale: "0.7",
     scaleX: true,
   },
-  { top: "-15px", right: "80px", width: "85px", height: "130px", opacity: 0.32, rotate: "-20deg", scale: "0.65" },
+  {
+    top: "-15px",
+    right: "80px",
+    width: "85px",
+    height: "130px",
+    opacity: 0.32,
+    rotate: "-20deg",
+    scale: "0.65",
+  },
   {
     top: "-5px",
     right: "20px",
@@ -39,7 +43,15 @@ export const profileFrameVines: VineConfig[] = [
   },
 
   // Left side vines
-  { top: "60px", left: "-25px", width: "100px", height: "150px", opacity: 0.33, rotate: "-45deg", scale: "0.75" },
+  {
+    top: "60px",
+    left: "-25px",
+    width: "100px",
+    height: "150px",
+    opacity: 0.33,
+    rotate: "-45deg",
+    scale: "0.75",
+  },
   {
     top: "180px",
     left: "-20px",
@@ -50,7 +62,15 @@ export const profileFrameVines: VineConfig[] = [
     scale: "0.7",
     scaleX: true,
   },
-  { top: "300px", left: "-15px", width: "90px", height: "135px", opacity: 0.29, rotate: "-40deg", scale: "0.68" },
+  {
+    top: "300px",
+    left: "-15px",
+    width: "90px",
+    height: "135px",
+    opacity: 0.29,
+    rotate: "-40deg",
+    scale: "0.68",
+  },
   {
     top: "420px",
     left: "-10px",
@@ -73,7 +93,15 @@ export const profileFrameVines: VineConfig[] = [
     scale: "0.72",
     scaleX: true,
   },
-  { top: "200px", right: "-20px", width: "90px", height: "135px", opacity: 0.32, rotate: "35deg", scale: "0.69" },
+  {
+    top: "200px",
+    right: "-20px",
+    width: "90px",
+    height: "135px",
+    opacity: 0.32,
+    rotate: "35deg",
+    scale: "0.69",
+  },
   {
     top: "320px",
     right: "-15px",
@@ -84,7 +112,15 @@ export const profileFrameVines: VineConfig[] = [
     scale: "0.66",
     scaleX: true,
   },
-  { top: "440px", right: "-10px", width: "80px", height: "120px", opacity: 0.28, rotate: "50deg", scale: "0.63" },
+  {
+    top: "440px",
+    right: "-10px",
+    width: "80px",
+    height: "120px",
+    opacity: 0.28,
+    rotate: "50deg",
+    scale: "0.63",
+  },
 
   // Bottom vines
   {
@@ -131,7 +167,15 @@ export const profileFrameVines: VineConfig[] = [
   },
 
   // Corner accent vines
-  { top: "40px", left: "40px", width: "70px", height: "105px", opacity: 0.25, rotate: "-60deg", scale: "0.5" },
+  {
+    top: "40px",
+    left: "40px",
+    width: "70px",
+    height: "105px",
+    opacity: 0.25,
+    rotate: "-60deg",
+    scale: "0.5",
+  },
   {
     top: "40px",
     right: "40px",
@@ -163,13 +207,29 @@ export const profileFrameVines: VineConfig[] = [
     scaleY: true,
     scaleX: true,
   },
-]
+];
 
 // Skills grid frame vines
 export const skillsFrameVines: VineConfig[] = [
   // Top vines
-  { top: "-20px", left: "60px", width: "80px", height: "120px", opacity: 0.3, rotate: "-15deg", scale: "0.6" },
-  { top: "-15px", left: "200px", width: "85px", height: "130px", opacity: 0.32, rotate: "-20deg", scale: "0.65" },
+  {
+    top: "-20px",
+    left: "60px",
+    width: "80px",
+    height: "120px",
+    opacity: 0.3,
+    rotate: "-15deg",
+    scale: "0.6",
+  },
+  {
+    top: "-15px",
+    left: "200px",
+    width: "85px",
+    height: "130px",
+    opacity: 0.32,
+    rotate: "-20deg",
+    scale: "0.65",
+  },
   {
     top: "-10px",
     right: "200px",
@@ -180,10 +240,26 @@ export const skillsFrameVines: VineConfig[] = [
     scale: "0.7",
     scaleX: true,
   },
-  { top: "-15px", right: "60px", width: "85px", height: "130px", opacity: 0.32, rotate: "-20deg", scale: "0.65" },
+  {
+    top: "-15px",
+    right: "60px",
+    width: "85px",
+    height: "130px",
+    opacity: 0.32,
+    rotate: "-20deg",
+    scale: "0.65",
+  },
 
   // Left side vines
-  { top: "80px", left: "-25px", width: "100px", height: "150px", opacity: 0.33, rotate: "-45deg", scale: "0.75" },
+  {
+    top: "80px",
+    left: "-25px",
+    width: "100px",
+    height: "150px",
+    opacity: 0.33,
+    rotate: "-45deg",
+    scale: "0.75",
+  },
   {
     top: "280px",
     left: "-20px",
@@ -206,7 +282,15 @@ export const skillsFrameVines: VineConfig[] = [
     scale: "0.72",
     scaleX: true,
   },
-  { top: "280px", right: "-20px", width: "90px", height: "135px", opacity: 0.32, rotate: "35deg", scale: "0.69" },
+  {
+    top: "280px",
+    right: "-20px",
+    width: "90px",
+    height: "135px",
+    opacity: 0.32,
+    rotate: "35deg",
+    scale: "0.69",
+  },
 
   // Bottom vines
   {
@@ -253,7 +337,15 @@ export const skillsFrameVines: VineConfig[] = [
   },
 
   // Corner accent vines
-  { top: "40px", left: "40px", width: "70px", height: "105px", opacity: 0.25, rotate: "-60deg", scale: "0.5" },
+  {
+    top: "40px",
+    left: "40px",
+    width: "70px",
+    height: "105px",
+    opacity: 0.25,
+    rotate: "-60deg",
+    scale: "0.5",
+  },
   {
     top: "40px",
     right: "40px",
@@ -285,7 +377,7 @@ export const skillsFrameVines: VineConfig[] = [
     scaleY: true,
     scaleX: true,
   },
-]
+];
 
 // Footer accent vines
 export const footerVines: VineConfig[] = [
@@ -310,15 +402,15 @@ export const footerVines: VineConfig[] = [
     scaleY: true,
     scaleX: true,
   },
-]
+];
 
 // Generate side vines programmatically to reduce repetition
 export const generateSideVines = (side: "left" | "right"): VineConfig[] => {
-  const vines: VineConfig[] = []
-  const isLeft = side === "left"
+  const vines: VineConfig[] = [];
+  const isLeft = side === "left";
 
   // Layer 1 - Background vines
-  const layer1Positions = ["-10%", "15%", "40%", "65%", "85%"]
+  const layer1Positions = ["-10%", "15%", "40%", "65%", "85%"];
   layer1Positions.forEach((top, index) => {
     vines.push({
       top,
@@ -329,11 +421,11 @@ export const generateSideVines = (side: "left" | "right"): VineConfig[] => {
       rotate: `${isLeft ? "-" : ""}${5 + (index % 3) * 3}deg`,
       scale: `${0.85 + (index % 4) * 0.1}`,
       scaleX: index % 2 === 1,
-    })
-  })
+    });
+  });
 
   // Layer 2 - Mid-ground vines
-  const layer2Positions = ["5%", "30%", "55%", "80%"]
+  const layer2Positions = ["5%", "30%", "55%", "80%"];
   layer2Positions.forEach((top, index) => {
     vines.push({
       top,
@@ -344,11 +436,11 @@ export const generateSideVines = (side: "left" | "right"): VineConfig[] => {
       rotate: `${isLeft ? "" : "-"}${4 + (index % 3) * 3}deg`,
       scale: `${0.88 + (index % 4) * 0.1}`,
       scaleX: index % 2 === 1,
-    })
-  })
+    });
+  });
 
   // Layer 3 - Foreground vines
-  const layer3Positions = ["0%", "25%", "50%", "75%"]
+  const layer3Positions = ["0%", "25%", "50%", "75%"];
   layer3Positions.forEach((top, index) => {
     vines.push({
       top,
@@ -359,8 +451,8 @@ export const generateSideVines = (side: "left" | "right"): VineConfig[] => {
       rotate: `${isLeft ? "-" : ""}${3 + (index % 3) * 2}deg`,
       scale: `${0.92 + (index % 4) * 0.08}`,
       scaleX: index % 2 === 1,
-    })
-  })
+    });
+  });
 
   // Extended bottom coverage
   for (let i = 100; i <= 270; i += 10) {
@@ -373,8 +465,8 @@ export const generateSideVines = (side: "left" | "right"): VineConfig[] => {
       rotate: `${isLeft ? "-" : ""}${4 + (i % 4) * 2}deg`,
       scale: `${0.89 + (i % 5) * 0.04}`,
       scaleX: i % 3 === 1,
-    })
+    });
   }
 
-  return vines
-}
+  return vines;
+};

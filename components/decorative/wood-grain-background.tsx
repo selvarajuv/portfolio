@@ -1,11 +1,7 @@
-import React from "react";
+// components/decorative/wood-grain-background.tsx
 
-interface WoodGrainBackgroundProps {
-  opacity?: number;
-  className?: string;
-  style?: React.CSSProperties;
-  ref?: React.RefObject<HTMLDivElement>;
-}
+import React from "react";
+import { WoodGrainBackgroundProps } from "@/types/decorative";
 
 const WoodGrainBackground = React.forwardRef<
   HTMLDivElement,

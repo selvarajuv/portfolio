@@ -1,3 +1,5 @@
+// components/sections/hero/typewriter-title.tsx
+
 "use client";
 
 import { useState, useEffect } from "react";

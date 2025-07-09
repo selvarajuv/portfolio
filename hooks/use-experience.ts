@@ -1,5 +1,8 @@
+// hooks/use-experience.ts
+
 import { useState, useEffect } from "react";
-import { getExperienceFromNotion, type ExperienceItem } from "@/lib/experience";
+import { ExperienceItem } from "@/types/experience";
+import { getExperienceFromNotion } from "@/lib/experience";
 
 export function useExperience() {
   const [experience, setExperience] = useState<ExperienceItem[]>([]);

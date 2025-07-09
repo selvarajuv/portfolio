@@ -1,6 +1,8 @@
+// types/project.ts
+
 export type WorkBoxSize = "default" | "large";
 
-export interface WorkBoxDimensions {
+export type WorkBoxDimensions = {
   container: { width: string; height: string };
   inner: { width: string; height: string };
   image: { height: string };
@@ -9,9 +11,9 @@ export interface WorkBoxDimensions {
     title: string;
     description: string;
   };
-}
+};
 
-export interface WorkBoxProps {
+export type WorkBoxProps = {
   className?: string;
   imageUrl?: string;
   imageAlt?: string;
@@ -21,4 +23,8 @@ export interface WorkBoxProps {
   slug?: string;
   size?: WorkBoxSize;
   clickable?: boolean;
-}
+};
+
+export type ProjectNavigationProps = {
+  currentProjectId: string;
+};

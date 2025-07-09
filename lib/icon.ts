@@ -1,6 +1,4 @@
-/**
- * Utility functions for managing skill icons
- */
+//lib/icon.ts
 
 // List of available icon files
 export const availableIcons = [
@@ -25,29 +23,29 @@ export const availableIcons = [
   "git",
   "jenkins",
   "kubernetes",
-] as const
+] as const;
 
-export type IconName = (typeof availableIcons)[number]
+export type IconName = (typeof availableIcons)[number];
 
 /**
  * Get the path to an icon file
  */
 export function getIconPath(iconName: IconName): string {
-  return `/icons/${iconName}.svg`
+  return `/icons/${iconName}.svg`;
 }
 
 /**
  * Check if an icon exists
  */
 export function iconExists(iconName: string): iconName is IconName {
-  return availableIcons.includes(iconName as IconName)
+  return availableIcons.includes(iconName as IconName);
 }
 
 /**
  * Get fallback icon path
  */
 export function getFallbackIcon(): string {
-  return "/icons/default.svg"
+  return "/icons/default.svg";
 }
 
 /**
@@ -55,7 +53,7 @@ export function getFallbackIcon(): string {
  */
 export function getValidIconPath(iconName: string): string {
   if (iconExists(iconName)) {
-    return getIconPath(iconName)
+    return getIconPath(iconName);
   }
-  return getFallbackIcon()
+  return getFallbackIcon();
 }

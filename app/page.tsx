@@ -1,12 +1,14 @@
+// app/page.tsx
+
 "use client";
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import WorkBox from "@/components/sections/project/project-box";
 import TypewriterTitle from "@/components/sections/hero/typewriter-title";
-import SkillsGrid from "@/components/sections/skills/skills-grid";
+import SkillsGrid from "@/components/sections/skill/skill-grid";
 import PageLayout from "@/components/layout/page-layout";
-import WoodenBox from "@/components/decorative/wooden-box";
+import WoodenBox from "@/components/decorative/wood-box";
 import ProfileVineFrame from "@/components/sections/hero/profile-vine-frame";
 import projects from "@/data/projects";
 import Image from "next/image";

@@ -1,16 +1,14 @@
+// components/layout/navbar.tsx
+
 "use client";
 
 import type React from "react";
-
 import { useState, useEffect, useRef } from "react";
+import { NavbarProps, NavItemProps } from "@/types/layout";
 import Link from "next/link";
 
 // Define the navigation sections
 const navSections = ["home", "work", "experience", "skill"];
-
-interface NavbarProps {
-  activeSection?: string;
-}
 
 export default function Navbar({
   activeSection: initialActiveSection = "home",
@@ -130,12 +128,6 @@ export default function Navbar({
       </div>
     </header>
   );
-}
-
-interface NavItemProps {
-  href: string;
-  children: React.ReactNode;
-  isActive: boolean;
 }
 
 // Update the NavItem component to use the primary green color on hover

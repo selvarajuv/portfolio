@@ -1,4 +1,7 @@
+// components/sections/skills/skill-grid.tsx
+
 "use client";
+
 import { useState } from "react";
 import SkillIcon from "./skill-icon";
 import skills from "@/data/skills";

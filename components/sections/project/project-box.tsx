@@ -1,14 +1,16 @@
+// components/sections/project/project-box.tsx
+
 "use client";
 
 import Image from "next/image";
 import { useState } from "react";
 import Link from "next/link";
-import WoodenBox from "../../decorative/wooden-box";
+import WoodenBox from "../../decorative/wood-box";
 import type {
   WorkBoxSize,
   WorkBoxDimensions,
   WorkBoxProps,
-} from "@/types/work-box";
+} from "@/types/project";
 
 const sizeVariants: Record<WorkBoxSize, WorkBoxDimensions> = {
   default: {

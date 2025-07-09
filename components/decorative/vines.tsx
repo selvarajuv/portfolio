@@ -1,28 +1,8 @@
+// components/decorative/vines.tsx
+
 import React from "react";
 import { generateSideVines } from "@/data/vine-configs";
-
-interface VineConfig {
-  top?: string;
-  left?: string;
-  right?: string;
-  bottom?: string;
-  width: string;
-  height: string;
-  opacity: number;
-  rotate: string;
-  scale: string;
-  scaleX?: boolean;
-  scaleY?: boolean;
-}
-
-interface VineGeneratorProps {
-  vines: VineConfig[];
-  className?: string;
-}
-
-type VineDecorationsProps = {
-  side: "left" | "right";
-};
+import { VineGeneratorProps, VineDecorationsProps } from "@/types/decorative";
 
 export const VineGenerator: React.FC<VineGeneratorProps> = ({
   vines,

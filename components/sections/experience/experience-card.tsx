@@ -1,24 +1,13 @@
+// components/sections/experience/experience-card.tsx
+
 "use client";
 
 import { Plus, Minus, MapPin, Globe } from "lucide-react";
 import { useState, useEffect } from "react";
+import { ExperienceCardProps } from "@/types/experience";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import WoodenBox from "../../decorative/wooden-box";
-
-interface ExperienceCardProps {
-  id: string;
-  title: string;
-  company: string;
-  period: string;
-  location?: string;
-  website?: string;
-  description?: string;
-  technologies?: string[];
-  logo?: string;
-  isExpanded: boolean;
-  onToggle: (id: string) => void;
-}
+import WoodenBox from "@/components/decorative/wood-box";
 
 export default function ExperienceCard({
   id,

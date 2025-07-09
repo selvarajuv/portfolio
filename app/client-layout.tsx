@@ -1,13 +1,20 @@
-// components/layout/client-layout.tsx
+// app/client-layout.tsx
 
 "use client";
 
 import type React from "react";
+import { Inter } from "next/font/google";
 import { useEffect } from "react";
-import { ClientLayoutProps } from "@/types/layout";
 import { usePathname } from "next/navigation";
+import "./globals.css";
 
-export default function ClientLayout({ children }: ClientLayoutProps) {
+const inter = Inter({ subsets: ["latin"] });
+
+export default function ClientLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   const pathname = usePathname();
 
   useEffect(() => {
@@ -24,5 +31,9 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
     }
   }, [pathname]);
 
-  return <>{children}</>;
+  return (
+    <html lang="en">
+      <body className={`${inter.className}`}>{children}</body>
+    </html>
+  );
 }

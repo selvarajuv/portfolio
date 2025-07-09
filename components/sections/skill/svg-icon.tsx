@@ -1,13 +1,7 @@
-import type React from "react";
+// components/sections/skills/svg-icon.tsx
 
-interface SvgIconProps {
-  src: string;
-  alt: string;
-  size?: number;
-  className?: string;
-  style?: React.CSSProperties;
-  onError?: () => void;
-}
+import type React from "react";
+import { SvgIconProps } from "@/types/skill";
 
 const SvgIcon: React.FC<SvgIconProps> = ({
   src,

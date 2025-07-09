@@ -1,10 +1,9 @@
-import type React from "react";
-import { VineGenerator } from "../../decorative/vines";
-import { profileFrameVines } from "@/data/vine-configs";
+// componenets/sections/hero/profile-vine-frame.tsx
 
-interface ProfileVineFrameProps {
-  className?: string;
-}
+import type React from "react";
+import { ProfileVineFrameProps } from "@/types/hero";
+import { VineGenerator } from "@/components/decorative/vines";
+import { profileFrameVines } from "@/data/vine-configs";
 
 const ProfileVineFrame: React.FC<ProfileVineFrameProps> = ({
   className = "",

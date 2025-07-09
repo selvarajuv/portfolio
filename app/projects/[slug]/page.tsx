@@ -1,4 +1,7 @@
+// app/projects/[slug]/page.tsx
+
 "use client";
+
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowLeft, ExternalLink } from "lucide-react";
@@ -9,7 +12,7 @@ import PageLayout from "@/components/layout/page-layout";
 import ProjectNavigation from "@/components/sections/project/project-navigation";
 import projects from "@/data/projects";
 import skills from "@/data/skills";
-import SvgIcon from "@/components/sections/skills/svg-icon";
+import SvgIcon from "@/components/sections/skill/svg-icon";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
