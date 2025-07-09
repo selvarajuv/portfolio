@@ -7,21 +7,21 @@ export function useExperience() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchExperience = async () => {
+    const loadExperience = async () => {
       try {
         setLoading(true);
         setError(null);
         const data = await getExperienceFromNotion();
         setExperience(data);
       } catch (err) {
-        console.error("Failed to fetch experience:", err);
+        console.error("Failed to load experience:", err);
         setError("Failed to load experience data");
       } finally {
         setLoading(false);
       }
     };
 
-    fetchExperience();
+    loadExperience();
   }, []);
 
   return { experience, loading, error };

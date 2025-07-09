@@ -2,48 +2,17 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import WorkBox from "@/components/project/work-box";
-import ExperienceCard from "@/components/sections/experience-card";
-import TypewriterTitle from "@/components/sections/typewriter-title";
-import SkillsGrid from "@/components/sections/skills-grid";
+import WorkBox from "@/components/sections/project/project-box";
+import TypewriterTitle from "@/components/sections/hero/typewriter-title";
+import SkillsGrid from "@/components/sections/skills/skills-grid";
 import PageLayout from "@/components/layout/page-layout";
 import WoodenBox from "@/components/decorative/wooden-box";
-import ProfileVineFrame from "@/components/sections/profile-vine-frame";
+import ProfileVineFrame from "@/components/sections/hero/profile-vine-frame";
 import projects from "@/data/projects";
-import { getExperienceFromNotion, type ExperienceItem } from "@/lib/experience";
 import Image from "next/image";
+import ExperienceSection from "@/components/sections/experience/experience-section";
 
 export default function Home() {
-  // Experience data state
-  const [experience, setExperience] = useState<ExperienceItem[]>([]);
-  const [experienceLoading, setExperienceLoading] = useState(true);
-  const [experienceError, setExperienceError] = useState<string | null>(null);
-
-  // Experience card expansion state
-  const [expandedCard, setExpandedCard] = useState<string>("");
-
-  // Load experience data
-  useEffect(() => {
-    const loadExperience = async () => {
-      try {
-        const data = await getExperienceFromNotion();
-        setExperience(data);
-      } catch (error) {
-        console.error("Failed to load experience:", error);
-        setExperienceError("Failed to load experience data");
-      } finally {
-        setExperienceLoading(false);
-      }
-    };
-
-    loadExperience();
-  }, []);
-
-  // Handle experience card toggle
-  const handleCardToggle = (cardId: string) => {
-    setExpandedCard(expandedCard === cardId ? "" : cardId);
-  };
-
   // Handle direct navigation to work section from project pages
   useEffect(() => {
     const shouldScrollToWork = sessionStorage.getItem("scrollToWork");
@@ -163,7 +132,7 @@ export default function Home() {
       </section>
 
       {/* Experience Section */}
-      <section id="experience" className="py-24 px-4 md:px-8">
+      {/* <section id="experience" className="py-24 px-4 md:px-8">
         <div className="max-w-4xl mx-auto">
           <h1 className="text-7xl font-bold mb-16 tracking-tight leading-none text-center">
             Experience
@@ -196,7 +165,8 @@ export default function Home() {
             </div>
           )}
         </div>
-      </section>
+      </section> */}
+      <ExperienceSection />
 
       {/* Skills Section */}
       <section id="skill" className="py-24 px-4 md:px-8 pb-32">

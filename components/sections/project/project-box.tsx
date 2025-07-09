@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useState } from "react";
 import Link from "next/link";
-import WoodenBox from "../decorative/wooden-box";
+import WoodenBox from "../../decorative/wooden-box";
 import type {
   WorkBoxSize,
   WorkBoxDimensions,

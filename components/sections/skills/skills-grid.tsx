@@ -1,9 +1,9 @@
 "use client";
 import { useState } from "react";
-import SkillIcon from "../common/skill-icon";
+import SkillIcon from "./skill-icon";
 import skills from "@/data/skills";
 import { useWoodGrain } from "@/hooks/use-wood-grain";
-import VineGenerator from "../decorative/vine-generator";
+import VineGenerator from "../../decorative/vine-generator";
 import { skillsFrameVines } from "@/data/vine-configs";
 
 // Helper function to group skills into rows
