@@ -148,7 +148,7 @@ export default function ExperienceCard({
                 <div className="w-24 h-24 bg-white rounded-lg p-2 flex items-center justify-center">
                   {logo ? (
                     <img
-                      src={logo || "/placeholder.svg"}
+                      src={logo}
                       alt={`${company} logo`}
                       className="max-w-full max-h-full object-contain"
                     />
