@@ -1,4 +1,5 @@
-import type React from "react";
+import React from "react";
+import { generateSideVines } from "@/data/vine-configs";
 
 interface VineConfig {
   top?: string;
@@ -19,7 +20,11 @@ interface VineGeneratorProps {
   className?: string;
 }
 
-const VineGenerator: React.FC<VineGeneratorProps> = ({
+type VineDecorationsProps = {
+  side: "left" | "right";
+};
+
+export const VineGenerator: React.FC<VineGeneratorProps> = ({
   vines,
   className = "",
 }) => {
@@ -54,4 +59,22 @@ const VineGenerator: React.FC<VineGeneratorProps> = ({
   );
 };
 
-export default VineGenerator;
+export const VineDecorations = React.forwardRef<
+  HTMLDivElement,
+  VineDecorationsProps
+>(({ side }, ref) => {
+  const sideVines = generateSideVines(side);
+
+  return (
+    <div
+      ref={ref}
+      className={`fixed ${side}-0 top-0 h-full z-5 pointer-events-none`}
+      style={{
+        width: "300px",
+        willChange: "transform",
+      }}
+    >
+      <VineGenerator vines={sideVines} />
+    </div>
+  );
+});

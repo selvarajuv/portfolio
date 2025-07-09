@@ -3,7 +3,7 @@ import { useState } from "react";
 import SkillIcon from "./skill-icon";
 import skills from "@/data/skills";
 import { useWoodGrain } from "@/hooks/use-wood-grain";
-import VineGenerator from "../../decorative/vine-generator";
+import { VineGenerator } from "../../decorative/vines";
 import { skillsFrameVines } from "@/data/vine-configs";
 
 // Helper function to group skills into rows

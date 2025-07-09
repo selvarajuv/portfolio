@@ -6,7 +6,7 @@ import { useEffect, useRef } from "react";
 import Navbar from "./navbar";
 import Footer from "./footer";
 import WoodGrainBackground from "../decorative/wood-grain-background";
-import VineDecorations from "../decorative/vine-decorations";
+import { VineDecorations } from "../decorative/vines";
 import { setupParallaxEffect } from "@/utils/parallax";
 
 interface PageLayoutProps {

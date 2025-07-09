@@ -2,7 +2,7 @@
 
 import { Github, Linkedin, FileText, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import VineGenerator from "../decorative/vine-generator";
+import { VineGenerator } from "../decorative/vines";
 import { footerVines } from "@/data/vine-configs";
 
 export default function Footer() {

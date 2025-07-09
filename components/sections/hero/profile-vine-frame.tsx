@@ -1,5 +1,5 @@
 import type React from "react";
-import VineGenerator from "../../decorative/vine-generator";
+import { VineGenerator } from "../../decorative/vines";
 import { profileFrameVines } from "@/data/vine-configs";
 
 interface ProfileVineFrameProps {
