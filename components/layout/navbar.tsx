@@ -5,6 +5,7 @@
 import type React from "react";
 import { useState, useEffect, useRef } from "react";
 import { NavbarProps, NavItemProps } from "@/types/layout";
+import { usePathname } from "next/navigation";
 import Link from "next/link";
 
 // Define the navigation sections
@@ -16,7 +17,9 @@ export default function Navbar({
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState(initialActiveSection);
   const observerRefs = useRef<IntersectionObserver[]>([]);
+  const pathname = usePathname();
 
+  // ALL HOOKS MUST BE CALLED BEFORE ANY EARLY RETURNS
   useEffect(() => {
     const handleScroll = () => {
       const isScrolled = window.scrollY > 100;
@@ -32,7 +35,7 @@ export default function Navbar({
   // Set up intersection observers for each section when on the home page
   useEffect(() => {
     // Only set up observers if we're on the home page (where all sections exist)
-    if (window.location.pathname !== "/") return;
+    if (pathname !== "/") return;
 
     // Listen for manual navbar updates from clicks
     const handleForceUpdate = (event: CustomEvent) => {
@@ -115,7 +118,14 @@ export default function Navbar({
         handleForceUpdate as EventListener
       );
     };
-  }, []);
+  }, [pathname]);
+
+  // NOW check if we should hide the navbar (after all hooks are called)
+  const isOnProjectPage = pathname !== "/";
+
+  if (isOnProjectPage) {
+    return null; // Don't render navbar at all on project pages
+  }
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 flex justify-center pt-4 pointer-events-none">
@@ -149,6 +159,7 @@ function NavItem({ href, children, isActive }: NavItemProps) {
     e.preventDefault();
     const hash = href.replace("/#", "");
 
+    // We're on homepage - use the existing logic
     // Temporarily disable all observers
     (window as any).observersDisabled = true;
 
@@ -182,7 +193,7 @@ function NavItem({ href, children, isActive }: NavItemProps) {
         ${isActive ? "text-white" : "text-white hover:text-[#016428]"}
       `}
     >
-      {/* Active indicator bubble using the secondary color with same transparency as navbar */}
+      {/* Active indicator bubble */}
       {isActive && (
         <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[calc(100%+16px)] h-full bg-[#014421]/50 backdrop-blur-md rounded-full z-10 shadow-sm"></span>
       )}
