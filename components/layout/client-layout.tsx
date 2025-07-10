@@ -6,6 +6,7 @@ import type React from "react";
 import { useEffect } from "react";
 import { ClientLayoutProps } from "@/types/layout";
 import { usePathname } from "next/navigation";
+import { scrollToTop } from "@/lib/scroll";
 
 export default function ClientLayout({ children }: ClientLayoutProps) {
   const pathname = usePathname();
@@ -18,7 +19,7 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
 
     // For project pages, immediately scroll to top
     if (pathname.startsWith("/projects/")) {
-      window.scrollTo(0, 0);
+      scrollToTop();
       document.documentElement.scrollTop = 0;
       document.body.scrollTop = 0;
     }

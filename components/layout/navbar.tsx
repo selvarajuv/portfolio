@@ -7,6 +7,7 @@ import { useState, useEffect, useRef } from "react";
 import { NavbarProps, NavItemProps } from "@/types/layout";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import { scrollToElement } from "@/lib/scroll";
 
 // Define the navigation sections
 const navSections = ["home", "work", "experience", "skill"];
@@ -101,7 +102,7 @@ export default function Navbar({
         setActiveSection(hash);
         const element = document.getElementById(hash);
         if (element) {
-          element.scrollIntoView({ behavior: "smooth", block: "start" });
+          scrollToElement(hash, 80);
         }
       }
     };
