@@ -1,7 +1,8 @@
 // app/projects/[slug]/page.tsx
-
 "use client";
 
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowLeft, ExternalLink } from "lucide-react";
@@ -10,32 +11,25 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import PageLayout from "@/components/layout/page-layout";
 import ProjectNavigation from "@/components/sections/project/project-navigation";
+import SvgIcon from "@/components/sections/skill/svg-icon";
+import { cn } from "@/lib/utils";
+import { scrollToTop } from "@/lib/scroll";
 import projects from "@/data/projects";
 import skills from "@/data/skills";
-import SvgIcon from "@/components/sections/skill/svg-icon";
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
 
 export default function ProjectPage({ params }: { params: { slug: string } }) {
   const { slug } = params;
   const project = projects[slug];
   const router = useRouter();
 
-  // Remove the existing two separate useEffect hooks and replace with this single one
+  // Handle scroll restoration and reset
   useEffect(() => {
     // Prevent scroll restoration
     if ("scrollRestoration" in history) {
       history.scrollRestoration = "manual";
     }
 
-    // Immediate scroll to top - no animation (handles both initial load and slug changes)
-    const scrollToTop = () => {
-      window.scrollTo(0, 0);
-      document.documentElement.scrollTop = 0;
-      document.body.scrollTop = 0;
-    };
-
-    // Execute immediately
+    // Use utility function for scroll reset
     scrollToTop();
 
     // Also execute on any potential async updates
@@ -44,17 +38,13 @@ export default function ProjectPage({ params }: { params: { slug: string } }) {
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [slug]); // Only depend on slug changes
+  }, [slug]);
 
   const handleBackClick = () => {
     // Store a flag to indicate we want to go directly to work section
     sessionStorage.setItem("scrollToWork", "true");
     router.push("/");
   };
-
-  if (!project) {
-    return <div>Project not found</div>;
-  }
 
   // Helper function to get skill icon path by name
   const getSkillIcon = (techName: string) => {
@@ -64,6 +54,21 @@ export default function ProjectPage({ params }: { params: { slug: string } }) {
     return skill ? skill.iconPath : null;
   };
 
+  if (!project) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-white mb-4">
+            Project not found
+          </h1>
+          <Button asChild>
+            <Link href="/">Return Home</Link>
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <PageLayout activeSection="work">
       {/* Back button positioned on the left */}
@@ -71,14 +76,13 @@ export default function ProjectPage({ params }: { params: { slug: string } }) {
         <Button
           variant="ghost"
           size="icon"
-          className="w-12 h-12 rounded-full text-gray-300 hover:text-[#016428] hover:bg-transparent transition-all duration-200"
+          className={cn(
+            "w-12 h-12 rounded-full text-gray-300 transition-all duration-200",
+            "hover:text-[var(--navbar-hover-color)] hover:bg-transparent"
+          )}
           style={{
-            backgroundColor: "#3d1f0f",
-            boxShadow: `
-              inset 0 0 30px rgba(0, 0, 0, 0.8),
-              inset 0 0 60px rgba(0, 0, 0, 0.6),
-              inset 0 0 100px rgba(0, 0, 0, 0.3)
-            `,
+            backgroundColor: "var(--forest-dark)",
+            boxShadow: "var(--wood-box-shadow-default)",
           }}
           onClick={handleBackClick}
         >
@@ -91,16 +95,24 @@ export default function ProjectPage({ params }: { params: { slug: string } }) {
 
       {/* Content container - centered with equal spacing */}
       <div className="relative z-10 px-8 pt-48 max-w-7xl mx-auto">
-        {/* Project title - bigger size */}
-        <h1 className="text-6xl md:text-7xl font-bold mb-16 tracking-tight leading-none max-w-4xl">
+        {/* Project title */}
+        <h1
+          className={cn(
+            "text-6xl md:text-7xl font-bold mb-16 tracking-tight leading-none",
+            "max-w-4xl"
+          )}
+        >
           {project.title}
         </h1>
 
-        {/* Breadcrumb - moved down with more spacing */}
+        {/* Breadcrumb */}
         <nav className="flex items-center text-sm text-gray-400 mb-16">
           <Button
             variant="link"
-            className="p-0 h-auto text-gray-400 hover:text-[#016428]"
+            className={cn(
+              "p-0 h-auto text-gray-400",
+              "hover:text-[var(--navbar-hover-color)]"
+            )}
             asChild
           >
             <Link href="/">Home</Link>
@@ -108,7 +120,10 @@ export default function ProjectPage({ params }: { params: { slug: string } }) {
           <span className="mx-3">›</span>
           <Button
             variant="link"
-            className="p-0 h-auto text-gray-400 hover:text-[#016428]"
+            className={cn(
+              "p-0 h-auto text-gray-400",
+              "hover:text-[var(--navbar-hover-color)]"
+            )}
             asChild
           >
             <Link href="/#work">Projects</Link>
@@ -119,43 +134,21 @@ export default function ProjectPage({ params }: { params: { slug: string } }) {
 
         {/* Project details section */}
         <div className="max-w-4xl mb-16">
-          {/* Project metadata grid - now with plain text */}
+          {/* Project metadata grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-12">
-            <div>
-              <h3 className="text-lg font-semibold text-white mb-2">Client</h3>
-              <p className="text-gray-300">{project.client}</p>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold text-white mb-2">
-                Technologies
-              </h3>
-              <div className="flex flex-wrap gap-2">
-                {project.technologies && project.technologies.length > 0 ? (
-                  project.technologies.map((tech, index) => {
-                    const iconPath = getSkillIcon(tech);
-                    return iconPath ? (
-                      <div
-                        key={index}
-                        className="flex items-center"
-                        title={tech}
-                      >
-                        <SvgIcon
-                          src={iconPath}
-                          alt={`${tech} icon`}
-                          size={24}
-                          className="flex-shrink-0"
-                        />
-                      </div>
-                    ) : null;
-                  })
-                ) : (
-                  <p className="text-gray-300">Coming Soon</p>
-                )}
-              </div>
-            </div>
+            <ProjectMetadata title="Client" content={project.client} />
+            <ProjectMetadata
+              title="Technologies"
+              content={
+                <TechnologyList
+                  technologies={project.technologies}
+                  getSkillIcon={getSkillIcon}
+                />
+              }
+            />
           </div>
 
-          {/* Main description - moved below metadata */}
+          {/* Main description */}
           <div className="mb-8">
             <p className="text-xl text-gray-300 leading-relaxed mb-8">
               {project.description}
@@ -166,7 +159,10 @@ export default function ProjectPage({ params }: { params: { slug: string } }) {
               href="#"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-3 text-xl text-white hover:text-gray-300 transition-colors duration-200"
+              className={cn(
+                "inline-flex items-center gap-3 text-xl text-white",
+                "hover:text-gray-300 transition-colors duration-200"
+              )}
             >
               <span>Open Project</span>
               <ExternalLink className="w-6 h-6" />
@@ -177,75 +173,134 @@ export default function ProjectPage({ params }: { params: { slug: string } }) {
 
           {/* Challenges and Outcomes */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-20">
-            {/* Challenges */}
-            <div>
-              <h3 className="text-lg font-semibold text-white mb-4">
-                Key Challenges
-              </h3>
-              <ul className="space-y-3">
-                {project.challenges.map((challenge, index) => (
-                  <li
-                    key={index}
-                    className="flex items-start gap-3 text-gray-300"
-                  >
-                    <Badge
-                      variant="destructive"
-                      className="mt-1 w-2 h-2 p-0 rounded-full bg-[#016428]"
-                    >
-                      <span className="sr-only">Challenge</span>
-                    </Badge>
-                    <span>{challenge}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Outcomes */}
-            <div>
-              <h3 className="text-lg font-semibold text-white mb-4">
-                Key Outcomes
-              </h3>
-              <ul className="space-y-3">
-                {project.outcomes.map((outcome, index) => (
-                  <li
-                    key={index}
-                    className="flex items-start gap-3 text-gray-300"
-                  >
-                    <Badge
-                      variant="default"
-                      className="mt-1 w-2 h-2 p-0 rounded-full bg-[#016428]"
-                    >
-                      <span className="sr-only">Success</span>
-                    </Badge>
-                    <span>{outcome}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
+            <ProjectSection
+              title="Key Challenges"
+              items={project.challenges}
+              type="challenge"
+            />
+            <ProjectSection
+              title="Key Outcomes"
+              items={project.outcomes}
+              type="outcome"
+            />
           </div>
         </div>
 
-        {/* Project Images - Vertical stacked layout */}
-        <div className="w-full mb-32">
-          {/* Images now span the full container width */}
-          <div className="w-full space-y-8">
-            {/* Stack all images vertically */}
-            {project.images.map((image, index) => (
-              <div key={index} className="flex flex-col items-center">
-                <div className="relative overflow-hidden rounded-lg bg-gray-800 aspect-video w-full">
-                  <Image
-                    src={image.src || "/placeholder.svg"}
-                    alt={image.alt}
-                    fill
-                    className="object-cover"
-                    priority={index === 0}
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+        {/* Project Images */}
+        <ProjectImages images={project.images} />
       </div>
     </PageLayout>
+  );
+}
+
+// Extracted Components for better organization
+
+interface ProjectMetadataProps {
+  title: string;
+  content: React.ReactNode;
+}
+
+function ProjectMetadata({ title, content }: ProjectMetadataProps) {
+  return (
+    <div>
+      <h3 className="text-lg font-semibold text-white mb-2">{title}</h3>
+      {typeof content === "string" ? (
+        <p className="text-gray-300">{content}</p>
+      ) : (
+        content
+      )}
+    </div>
+  );
+}
+
+interface TechnologyListProps {
+  technologies?: string[];
+  getSkillIcon: (techName: string) => string | null;
+}
+
+function TechnologyList({ technologies, getSkillIcon }: TechnologyListProps) {
+  if (!technologies || technologies.length === 0) {
+    return <p className="text-gray-300">Coming Soon</p>;
+  }
+
+  return (
+    <div className="flex flex-wrap gap-2">
+      {technologies.map((tech, index) => {
+        const iconPath = getSkillIcon(tech);
+        return iconPath ? (
+          <div key={index} className="flex items-center" title={tech}>
+            <SvgIcon
+              src={iconPath}
+              alt={`${tech} icon`}
+              size={24}
+              className="flex-shrink-0"
+            />
+          </div>
+        ) : null;
+      })}
+    </div>
+  );
+}
+
+interface ProjectSectionProps {
+  title: string;
+  items: string[];
+  type: "challenge" | "outcome";
+}
+
+function ProjectSection({ title, items, type }: ProjectSectionProps) {
+  return (
+    <div>
+      <h3 className="text-lg font-semibold text-white mb-4">{title}</h3>
+      <ul className="space-y-3">
+        {items.map((item, index) => (
+          <li key={index} className="flex items-start gap-3 text-gray-300">
+            <Badge
+              variant={type === "challenge" ? "destructive" : "default"}
+              className={cn(
+                "mt-1 w-2 h-2 p-0 rounded-full",
+                "bg-[var(--navbar-hover-color)]"
+              )}
+            >
+              <span className="sr-only">
+                {type === "challenge" ? "Challenge" : "Success"}
+              </span>
+            </Badge>
+            <span>{item}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+interface ProjectImagesProps {
+  images: Array<{ src: string; alt: string }>;
+}
+
+function ProjectImages({ images }: ProjectImagesProps) {
+  return (
+    <div className="w-full mb-32">
+      <div className="w-full space-y-8">
+        {images.map((image, index) => (
+          <div key={index} className="flex flex-col items-center">
+            <div
+              className={cn(
+                "relative overflow-hidden rounded-lg bg-gray-800",
+                "aspect-video w-full"
+              )}
+            >
+              <Image
+                src={image.src || "/placeholder.svg"}
+                alt={image.alt}
+                fill
+                className="object-cover"
+                priority={index === 0}
+              />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }
