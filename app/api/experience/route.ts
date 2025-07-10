@@ -1,16 +1,12 @@
 // app/api/experience/route.ts
 
-import { Client } from "@notionhq/client";
 import { NextResponse } from "next/server";
-
-const notion = new Client({
-  auth: process.env.NOTION_TOKEN,
-});
+import { notion, DATABASES } from "@/lib/notion";
 
 export async function GET() {
   try {
     const response = await notion.databases.query({
-      database_id: process.env.NOTION_EXPERIENCE_DATABASE_ID!,
+      database_id: DATABASES.EXPERIENCE,
     });
 
     const experience = response.results.map((page: any) => {
