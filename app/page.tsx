@@ -134,40 +134,6 @@ export default function Home() {
       </section>
 
       {/* Experience Section */}
-      {/* <section id="experience" className="py-24 px-4 md:px-8">
-        <div className="max-w-4xl mx-auto">
-          <h1 className="text-7xl font-bold mb-16 tracking-tight leading-none text-center">
-            Experience
-          </h1>
-
-          {experienceLoading && (
-            <div className="text-center py-12">
-              <div className="text-gray-400 text-lg">Loading experience...</div>
-            </div>
-          )}
-
-          {experienceError && (
-            <div className="text-center py-12">
-              <div className="text-red-400 bg-red-900/20 p-4 rounded-lg">
-                {experienceError}
-              </div>
-            </div>
-          )}
-
-          {!experienceLoading && !experienceError && (
-            <div className="space-y-6">
-              {experience.map((item) => (
-                <ExperienceCard
-                  key={item.id}
-                  {...item}
-                  isExpanded={expandedCard === item.id}
-                  onToggle={handleCardToggle}
-                />
-              ))}
-            </div>
-          )}
-        </div>
-      </section> */}
       <ExperienceSection />
 
       {/* Skills Section */}

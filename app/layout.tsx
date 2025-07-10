@@ -9,9 +9,8 @@ import ClientLayout from "@/components/layout/client-layout";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Forest Portfolio",
-  description: "My personal portfolio website with a forest theme",
-  generator: "v0.dev",
+  title: "Vichu's Portfolio",
+  description: "My personal portfolio",
 };
 
 export default function RootLayout({

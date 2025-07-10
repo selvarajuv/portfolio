@@ -34,20 +34,25 @@ export default function Navbar({
     // Only set up observers if we're on the home page (where all sections exist)
     if (window.location.pathname !== "/") return;
 
+    // Listen for manual navbar updates from clicks
+    const handleForceUpdate = (event: CustomEvent) => {
+      const { section } = event.detail;
+      setActiveSection(section);
+    };
+
+    window.addEventListener(
+      "forceNavbarUpdate",
+      handleForceUpdate as EventListener
+    );
+
     // Handle initial hash in URL
     const handleInitialHash = () => {
       const hash = window.location.hash.replace("#", "");
       if (hash && navSections.includes(hash)) {
         setActiveSection(hash);
-        // Scroll to the section immediately without delay for direct navigation
         const element = document.getElementById(hash);
         if (element) {
-          // Use immediate scroll for direct hash navigation
-          element.scrollIntoView({ behavior: "auto", block: "start" });
-          // Then update to smooth scrolling after initial positioning
-          setTimeout(() => {
-            element.scrollIntoView({ behavior: "smooth", block: "start" });
-          }, 50);
+          element.scrollIntoView({ behavior: "smooth", block: "start" });
         }
       }
     };
@@ -67,8 +72,12 @@ export default function Navbar({
       const observer = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
-            // When section is at least 20% visible, set it as active
-            if (entry.isIntersecting && entry.intersectionRatio >= 0.2) {
+            // Only process if observers are not disabled and section is sufficiently visible
+            if (
+              entry.isIntersecting &&
+              entry.intersectionRatio >= 0.2 &&
+              !(window as any).observersDisabled
+            ) {
               setActiveSection(section);
               // Update URL hash without triggering scroll
               if (window.location.hash !== `#${section}`) {
@@ -101,6 +110,10 @@ export default function Navbar({
     return () => {
       observerRefs.current.forEach((observer) => observer.disconnect());
       window.removeEventListener("hashchange", handleHashChange);
+      window.removeEventListener(
+        "forceNavbarUpdate",
+        handleForceUpdate as EventListener
+      );
     };
   }, []);
 
@@ -136,13 +149,27 @@ function NavItem({ href, children, isActive }: NavItemProps) {
     e.preventDefault();
     const hash = href.replace("/#", "");
 
-    // Update URL
+    // Temporarily disable all observers
+    (window as any).observersDisabled = true;
+
+    // Manually trigger the state update in the parent component
+    const updateEvent = new CustomEvent("forceNavbarUpdate", {
+      detail: { section: hash },
+    });
+    window.dispatchEvent(updateEvent);
+
+    // Update URL immediately
     window.history.pushState(null, "", href);
 
     // Scroll to element
     const element = document.getElementById(hash);
     if (element) {
       element.scrollIntoView({ behavior: "smooth", block: "start" });
+
+      // Re-enable observers after scroll
+      setTimeout(() => {
+        (window as any).observersDisabled = false;
+      }, 1500);
     }
   };
 
