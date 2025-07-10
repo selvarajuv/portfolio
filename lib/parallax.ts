@@ -1,5 +1,4 @@
-// lib/parallax.ts
-
+// lib/parallax.ts - Optimized Version
 import type React from "react";
 
 export function setupParallaxEffect(
@@ -7,37 +6,36 @@ export function setupParallaxEffect(
   leftVinesRef: React.RefObject<HTMLDivElement>,
   rightVinesRef: React.RefObject<HTMLDivElement>
 ): () => void {
-  // Function to update the background position directly in the animation frame
+  let ticking = false;
+
   const updateParallaxPositions = () => {
     if (
       backgroundRef.current &&
       leftVinesRef.current &&
       rightVinesRef.current
     ) {
-      // Get current scroll position
       const scrollY = window.scrollY;
-
-      // Apply the parallax effect directly to the DOM elements
-      // Using a factor of -0.5 for dramatic movement
       const parallaxY = scrollY * -0.5;
 
-      // Apply to background
-      backgroundRef.current.style.backgroundPosition = `center ${parallaxY}px`;
-
-      // Apply same parallax to vines
+      // Use transform for all elements (better performance than backgroundPosition)
+      backgroundRef.current.style.transform = `translateY(${parallaxY}px)`;
       leftVinesRef.current.style.transform = `translateY(${parallaxY}px)`;
       rightVinesRef.current.style.transform = `translateY(${parallaxY}px)`;
+    }
+    ticking = false;
+  };
 
-      // Request the next frame
+  const handleScroll = () => {
+    if (!ticking) {
       requestAnimationFrame(updateParallaxPositions);
+      ticking = true;
     }
   };
 
-  // Start the animation loop
-  const animationId = requestAnimationFrame(updateParallaxPositions);
+  // Only run on scroll events, not continuously
+  window.addEventListener("scroll", handleScroll, { passive: true });
 
-  // Return cleanup function
   return () => {
-    cancelAnimationFrame(animationId);
+    window.removeEventListener("scroll", handleScroll);
   };
 }
