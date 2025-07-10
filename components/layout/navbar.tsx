@@ -23,14 +23,12 @@ export default function Navbar({
   useEffect(() => {
     const handleScroll = () => {
       const isScrolled = window.scrollY > 100;
-      if (isScrolled !== scrolled) {
-        setScrolled(isScrolled);
-      }
+      setScrolled(isScrolled); // Always update with current value
     };
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [scrolled]);
+  }, []); // ← Empty dependency array - only run once
 
   // Set up intersection observers for each section when on the home page
   useEffect(() => {
