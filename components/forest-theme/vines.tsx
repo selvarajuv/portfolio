@@ -1,5 +1,4 @@
 // components/decorative/vines.tsx
-
 import React from "react";
 import { generateSideVines } from "@/data/vine-configs";
 import { VineGeneratorProps, VineDecorationsProps } from "@/types/decorative";
@@ -19,7 +18,7 @@ export const VineGenerator: React.FC<VineGeneratorProps> = ({
           position: "absolute",
           width: vine.width,
           height: vine.height,
-          backgroundImage: "url('/vine-decoration.png')",
+          backgroundImage: "var(--vine-decoration)",
           backgroundSize: "contain",
           backgroundRepeat: "no-repeat",
           backgroundPosition: "center",
@@ -58,3 +57,5 @@ export const VineDecorations = React.forwardRef<
     </div>
   );
 });
+
+VineDecorations.displayName = "VineDecorations";

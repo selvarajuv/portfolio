@@ -7,8 +7,8 @@ import { useEffect, useRef } from "react";
 import { PageLayoutProps } from "@/types/layout";
 import Navbar from "@/components/layout/navbar";
 import Footer from "@/components/layout/footer";
-import WoodGrainBackground from "@/components/decorative/wood-grain-background";
-import { VineDecorations } from "@/components/decorative/vines";
+import WoodGrainBackground from "@/components/forest-theme/wood-grain-background";
+import { VineDecorations } from "@/components/forest-theme/vines";
 import { setupParallaxEffect } from "@/lib/parallax";
 
 export default function PageLayout({

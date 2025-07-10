@@ -7,7 +7,7 @@ import { useState, useEffect } from "react";
 import { ExperienceCardProps } from "@/types/experience";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import WoodenBox from "@/components/decorative/wood-box";
+import WoodenBox from "@/components/forest-theme/wood-box";
 
 export default function ExperienceCard({
   id,

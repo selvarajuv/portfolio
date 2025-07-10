@@ -7,6 +7,50 @@
   --foreground: #ffffff;
   --secondary: #0a2a0a;
   --overlay: rgba(0, 0, 0, 0.7);
+
+  /* Forest Theme Design Tokens */
+  --forest-dark: #3d1f0f;
+  --forest-medium: #8b4513;
+  --forest-light: #d2691e;
+
+  /* Wood Grain Configuration */
+  --wood-grain-size: 600px;
+  --wood-grain-size-small: 300px;
+  --wood-grain-opacity: 0.07;
+  --wood-grain-opacity-subtle: 0.05;
+  --wood-grain-pattern: url("/wood-grain-pattern.png");
+
+  /* Forest Assets */
+  --vine-decoration: url("/vine-decoration.png");
+  --vine-opacity: 0.8;
+
+  /* Box Shadows - Default */
+  --wood-box-shadow-default: inset 0 0 30px rgba(0, 0, 0, 0.8),
+    inset 0 0 60px rgba(0, 0, 0, 0.6), inset 0 0 100px rgba(0, 0, 0, 0.3);
+
+  /* Box Shadows - Hover */
+  --wood-box-shadow-hover: inset 0 0 40px rgba(0, 0, 0, 0.9),
+    inset 0 0 80px rgba(0, 0, 0, 0.7), inset 0 0 120px rgba(0, 0, 0, 0.4);
+
+  /* Box Shadows - Small (for skill icons) */
+  --wood-box-shadow-small: inset 0 0 15px rgba(0, 0, 0, 0.8),
+    inset 0 0 30px rgba(0, 0, 0, 0.6), inset 0 0 50px rgba(0, 0, 0, 0.3);
+
+  --wood-box-shadow-small-hover: inset 0 0 20px rgba(0, 0, 0, 0.9),
+    inset 0 0 40px rgba(0, 0, 0, 0.7), inset 0 0 60px rgba(0, 0, 0, 0.4);
+
+  /* Navbar Colors */
+  --navbar-bg: rgba(0, 0, 0, 0.5);
+  --navbar-active-bg: rgba(1, 68, 33, 0.5); /* #014421 with 50% opacity */
+  --navbar-hover-color: #016428;
+
+  /* Spacing */
+  --forest-padding: 25px;
+  --forest-padding-small: 8px;
+
+  /* Transitions */
+  --forest-transition: all 0.3s ease;
+  --forest-transition-fast: filter 0.3s ease;
 }
 
 body {
@@ -33,6 +77,45 @@ html[data-scroll-locked] {
   }
   .section-spacing {
     @apply py-24;
+  }
+
+  /* Forest Theme Utility Classes */
+  .forest-box {
+    background-color: var(--forest-dark);
+    box-shadow: var(--wood-box-shadow-default);
+    transition: var(--forest-transition);
+  }
+
+  .forest-box:hover {
+    background-color: var(--forest-medium);
+    box-shadow: var(--wood-box-shadow-hover);
+  }
+
+  .forest-box-small {
+    background-color: var(--forest-dark);
+    box-shadow: var(--wood-box-shadow-small);
+    transition: var(--forest-transition);
+  }
+
+  .forest-box-small:hover {
+    background-color: var(--forest-medium);
+    box-shadow: var(--wood-box-shadow-small-hover);
+  }
+
+  .wood-grain-bg {
+    background-image: var(--wood-grain-pattern);
+    background-size: var(--wood-grain-size);
+    background-position: center 0;
+    background-repeat: repeat;
+    opacity: var(--wood-grain-opacity);
+  }
+
+  .wood-grain-bg-small {
+    background-image: var(--wood-grain-pattern);
+    background-size: var(--wood-grain-size-small);
+    background-position: center 0;
+    background-repeat: repeat;
+    opacity: var(--wood-grain-opacity-subtle);
   }
 }
 
@@ -72,6 +155,7 @@ html[data-scroll-locked] {
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
+
   .dark {
     --background: 0 0% 3.9%;
     --foreground: 0 0% 98%;

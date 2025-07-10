@@ -1,11 +1,10 @@
-// components/sections/skills/skill-icon.tsx
-
+// components/sections/skill/skill-icon.tsx
 "use client";
 
 import type React from "react";
 import { useState } from "react";
 import { SkillIconProps } from "@/types/skill";
-import SvgIcon from "./svg-icon";
+import SvgIcon from "@/components/sections/skill/svg-icon";
 import { useWoodGrain } from "@/hooks/use-wood-grain";
 
 const SkillIcon: React.FC<SkillIconProps> = ({
@@ -29,28 +28,22 @@ const SkillIcon: React.FC<SkillIconProps> = ({
 
   return (
     <div
-      className="relative flex items-center justify-center rounded-xl overflow-hidden transition-all duration-300"
+      className="relative flex items-center justify-center rounded-xl overflow-hidden"
       style={{
         width: size,
         height: size,
-        backgroundColor: isHovered ? "#8B4513" : "#3d1f0f",
-        padding: "8px",
+        backgroundColor: isHovered
+          ? "var(--forest-medium)"
+          : "var(--forest-dark)",
+        padding: "var(--forest-padding-small)",
         boxShadow: isHovered
-          ? `
-            inset 0 0 20px rgba(0, 0, 0, 0.9),
-            inset 0 0 40px rgba(0, 0, 0, 0.7),
-            inset 0 0 60px rgba(0, 0, 0, 0.4)
-          `
-          : `
-            inset 0 0 15px rgba(0, 0, 0, 0.8),
-            inset 0 0 30px rgba(0, 0, 0, 0.6),
-            inset 0 0 50px rgba(0, 0, 0, 0.3)
-          `,
+          ? "var(--wood-box-shadow-small-hover)"
+          : "var(--wood-box-shadow-small)",
+        transition: "var(--forest-transition)",
       }}
     >
       {/* Wood grain pattern overlay */}
       <div {...overlayProps} />
-
       {/* Icon container */}
       <div
         className="relative z-10 flex items-center justify-center rounded-lg overflow-hidden"
@@ -58,7 +51,7 @@ const SkillIcon: React.FC<SkillIconProps> = ({
           width: size - 16,
           height: size - 16,
           backgroundColor: "#f8f9fa",
-          padding: "8px",
+          padding: "var(--forest-padding-small)",
         }}
       >
         {!imageError ? (
@@ -68,7 +61,7 @@ const SkillIcon: React.FC<SkillIconProps> = ({
             size={size - 32}
             style={{
               filter: isHovered ? `drop-shadow(0 2px 8px ${color}40)` : "none",
-              transition: "filter 0.3s ease",
+              transition: "var(--forest-transition-fast)",
             }}
             onError={handleImageError}
           />

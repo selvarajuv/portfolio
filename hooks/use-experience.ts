@@ -12,8 +12,6 @@ export function useExperience() {
   useEffect(() => {
     const loadExperience = async () => {
       try {
-        setLoading(true);
-        setError(null);
         const data = await getExperienceFromNotion();
         setExperience(data);
       } catch (err) {

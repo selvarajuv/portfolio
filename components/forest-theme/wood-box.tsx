@@ -1,5 +1,4 @@
 // components/decorative/wood-box.tsx
-
 "use client";
 
 import type React from "react";
@@ -23,27 +22,21 @@ const WoodenBox: React.FC<WoodenBoxProps> = ({
       style={{
         width,
         height,
-        backgroundColor: isHovered ? "#8B4513" : "#3d1f0f",
-        padding: "25px",
+        backgroundColor: isHovered
+          ? "var(--forest-medium)"
+          : "var(--forest-dark)",
+        padding: "var(--forest-padding)",
         position: "relative",
         boxShadow: isHovered
-          ? `
-            inset 0 0 40px rgba(0, 0, 0, 0.9),
-            inset 0 0 80px rgba(0, 0, 0, 0.7),
-            inset 0 0 120px rgba(0, 0, 0, 0.4)
-          `
-          : `
-            inset 0 0 30px rgba(0, 0, 0, 0.8),
-            inset 0 0 60px rgba(0, 0, 0, 0.6),
-            inset 0 0 100px rgba(0, 0, 0, 0.3)
-          `,
+          ? "var(--wood-box-shadow-hover)"
+          : "var(--wood-box-shadow-default)",
+        transition: "var(--forest-transition)",
       }}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
       {/* Wood grain pattern overlay */}
       <div {...overlayProps} />
-
       {/* Content */}
       <div className="relative z-10">{children}</div>
     </div>

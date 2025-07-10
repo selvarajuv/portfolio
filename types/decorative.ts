@@ -30,6 +30,7 @@ export type WoodGrainBackgroundProps = {
   className?: string;
   style?: React.CSSProperties;
   ref?: React.RefObject<HTMLDivElement>;
+  backgroundSize?: string;
 };
 
 export type WoodenBoxProps = {

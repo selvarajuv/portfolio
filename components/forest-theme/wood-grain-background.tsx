@@ -1,22 +1,24 @@
 // components/decorative/wood-grain-background.tsx
-
 import React from "react";
 import { WoodGrainBackgroundProps } from "@/types/decorative";
+import { useWoodGrain } from "@/hooks/use-wood-grain";
 
 const WoodGrainBackground = React.forwardRef<
   HTMLDivElement,
   WoodGrainBackgroundProps
->(({ opacity = 0.07, className = "", style = {} }, ref) => {
+>(({ opacity, backgroundSize, className = "", style = {} }, ref) => {
+  const { overlayProps } = useWoodGrain({
+    opacity,
+    backgroundSize,
+    className: `fixed inset-0 z-0 ${className}`,
+  });
+
   return (
     <div
       ref={ref}
-      className={`fixed inset-0 z-0 ${className}`}
+      {...overlayProps}
       style={{
-        backgroundImage: "url('/wood-grain-pattern.png')",
-        backgroundSize: "600px",
-        backgroundPosition: "center 0",
-        backgroundRepeat: "repeat",
-        opacity,
+        ...overlayProps.style,
         willChange: "background-position",
         ...style,
       }}
@@ -25,5 +27,4 @@ const WoodGrainBackground = React.forwardRef<
 });
 
 WoodGrainBackground.displayName = "WoodGrainBackground";
-
 export default WoodGrainBackground;
