@@ -2,13 +2,14 @@
 import React from "react";
 import { generateSideVines } from "@/data/vine-configs";
 import { VineGeneratorProps, VineDecorationsProps } from "@/types/decorative";
+import { cn } from "@/lib/utils";
 
 export const VineGenerator: React.FC<VineGeneratorProps> = ({
   vines,
   className = "",
 }) => {
   return (
-    <div className={`absolute inset-0 pointer-events-none ${className}`}>
+    <div className={cn("absolute inset-0 pointer-events-none", className)}>
       {vines.map((vine, index) => {
         let transform = `rotate(${vine.rotate}) scale(${vine.scale})`;
         if (vine.scaleX) transform += " scaleX(-1)";

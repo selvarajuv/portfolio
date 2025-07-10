@@ -4,6 +4,7 @@
 import type React from "react";
 import { WoodenBoxProps } from "@/types/decorative";
 import { useWoodGrain } from "@/hooks/use-wood-grain";
+import { cn } from "@/lib/utils";
 
 const WoodenBox: React.FC<WoodenBoxProps> = ({
   children,
@@ -18,7 +19,7 @@ const WoodenBox: React.FC<WoodenBoxProps> = ({
 
   return (
     <div
-      className={`overflow-hidden rounded-xl ${className}`}
+      className={cn("overflow-hidden rounded-xl", className)}
       style={{
         width,
         height,

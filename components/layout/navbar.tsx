@@ -1,13 +1,12 @@
 // components/layout/navbar.tsx
-
 "use client";
 
 import type React from "react";
 import { useState, useEffect, useRef } from "react";
 import { NavbarProps, NavItemProps } from "@/types/layout";
 import { usePathname } from "next/navigation";
+import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { scrollToElement } from "@/lib/scroll";
 
 // Define the navigation sections
 const navSections = ["home", "work", "experience", "skill"];
@@ -24,12 +23,12 @@ export default function Navbar({
   useEffect(() => {
     const handleScroll = () => {
       const isScrolled = window.scrollY > 100;
-      setScrolled(isScrolled); // Always update with current value
+      setScrolled(isScrolled);
     };
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []); // ← Empty dependency array - only run once
+  }, []);
 
   // Set up intersection observers for each section when on the home page
   useEffect(() => {
@@ -102,7 +101,7 @@ export default function Navbar({
         setActiveSection(hash);
         const element = document.getElementById(hash);
         if (element) {
-          scrollToElement(hash, 80);
+          element.scrollIntoView({ behavior: "smooth", block: "start" });
         }
       }
     };
@@ -130,9 +129,16 @@ export default function Navbar({
     <header className="fixed top-0 left-0 right-0 z-50 flex justify-center pt-4 pointer-events-none">
       {/* Fixed-width inner container that never changes size or position */}
       <div className="w-fit mx-auto relative">
-        {/* Background element with increased transparency - lower z-index */}
+        {/* Background element with design tokens */}
         {scrolled && (
-          <div className="absolute inset-0 bg-black/50 backdrop-blur-md shadow-md rounded-full z-0" />
+          <div
+            className={cn(
+              "absolute inset-0 backdrop-blur-md shadow-md rounded-full z-0"
+            )}
+            style={{
+              backgroundColor: "var(--navbar-bg)",
+            }}
+          />
         )}
 
         {/* Navigation content with fixed positioning - increased spacing between items */}
@@ -152,7 +158,6 @@ export default function Navbar({
   );
 }
 
-// Update the NavItem component to use the primary green color on hover
 function NavItem({ href, children, isActive }: NavItemProps) {
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -187,14 +192,23 @@ function NavItem({ href, children, isActive }: NavItemProps) {
     <Link
       href={href}
       onClick={handleClick}
-      className={`
-        relative px-4 py-2 font-medium text-base group transition-colors duration-200
-        ${isActive ? "text-white" : "text-white hover:text-[#016428]"}
-      `}
+      className={cn(
+        "relative px-4 py-2 font-medium text-base group text-white",
+        !isActive && "hover:text-[var(--navbar-hover-color)]",
+        "transition-colors duration-200"
+      )}
     >
-      {/* Active indicator bubble */}
+      {/* Active indicator bubble using design tokens */}
       {isActive && (
-        <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[calc(100%+16px)] h-full bg-[#014421]/50 backdrop-blur-md rounded-full z-10 shadow-sm"></span>
+        <span
+          className={cn(
+            "absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2",
+            "w-[calc(100%+16px)] h-full backdrop-blur-md rounded-full z-10 shadow-sm"
+          )}
+          style={{
+            backgroundColor: "var(--navbar-active-bg)",
+          }}
+        />
       )}
 
       {/* Text needs to be above both backgrounds */}
