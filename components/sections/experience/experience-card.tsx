@@ -15,6 +15,138 @@ type ExperienceCardProps = ExperienceItem & {
   onToggle: (id: string) => void;
 };
 
+type ExperienceCardHeaderProps = {
+  title: string;
+  company: string;
+  period: string;
+  isExpanded: boolean;
+  onToggle: () => void;
+};
+
+type ExperienceCardContentProps = {
+  location?: string;
+  website?: string;
+  description?: string;
+  technologies?: string[];
+};
+
+type ExperienceCardLogoProps = {
+  logo?: string;
+  company: string;
+};
+
+function ExperienceCardHeader({
+  title,
+  company,
+  period,
+  isExpanded,
+  onToggle,
+}: ExperienceCardHeaderProps) {
+  return (
+    <div
+      className={`w-full text-white p-6 rounded-lg flex items-center justify-between cursor-pointer transition-colors ${
+        isExpanded ? "bg-[#016428]" : "bg-[#014421]"
+      } hover:bg-[#016428]`}
+      onClick={onToggle}
+    >
+      <div className="flex-1 text-left">
+        <h3 className="text-xl font-semibold">
+          {title} @ {company}
+        </h3>
+      </div>
+      <div className="flex items-center gap-4">
+        <span className="text-lg font-medium">{period}</span>
+        {isExpanded ? (
+          <Minus className="w-6 h-6" />
+        ) : (
+          <Plus className="w-6 h-6" />
+        )}
+      </div>
+    </div>
+  );
+}
+
+function ExperienceCardContent({
+  location,
+  website,
+  description,
+  technologies = [],
+}: ExperienceCardContentProps) {
+  return (
+    <div className="flex-1 flex flex-col">
+      {/* Location and website */}
+      <div className="flex flex-wrap items-center gap-4 mb-4 text-gray-300">
+        {location && (
+          <div className="flex items-center gap-2">
+            <MapPin className="w-4 h-4" />
+            <span>{location}</span>
+          </div>
+        )}
+        {website && (
+          <div className="flex items-center gap-2">
+            <Globe className="w-4 h-4" />
+            <span>{website}</span>
+          </div>
+        )}
+      </div>
+
+      {/* Description */}
+      <div className="flex-1 mb-6">
+        {description ? (
+          <p className="text-gray-300 leading-relaxed">{description}</p>
+        ) : (
+          <p className="text-gray-500 leading-relaxed italic">
+            Experience details coming soon...
+          </p>
+        )}
+      </div>
+
+      {/* Technologies */}
+      <div className="flex flex-wrap gap-2">
+        {technologies.length > 0 ? (
+          technologies.map((tech, index) => (
+            <Badge
+              key={index}
+              variant="default"
+              className="bg-blue-600 hover:bg-blue-700 text-white"
+            >
+              {tech}
+            </Badge>
+          ))
+        ) : (
+          <Badge variant="secondary" className="bg-gray-600 text-gray-300">
+            Technologies TBD
+          </Badge>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function ExperienceCardLogo({ logo, company }: ExperienceCardLogoProps) {
+  return (
+    <div className="flex-shrink-0">
+      <div className="w-24 h-24 bg-white rounded-lg p-2 flex items-center justify-center">
+        {logo ? (
+          <img
+            src={logo}
+            alt={`${company} logo`}
+            className="max-w-full max-h-full object-contain"
+          />
+        ) : (
+          <div className="text-gray-400 text-xs text-center">
+            Logo
+            <br />
+            Coming
+            <br />
+            Soon
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function ExperienceCard({
   id,
   title,
@@ -37,27 +169,13 @@ export default function ExperienceCard({
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Header - always visible */}
-      <div
-        className={`w-full text-white p-6 rounded-lg flex items-center justify-between cursor-pointer transition-colors ${
-          isExpanded ? "bg-[#016428]" : "bg-[#014421]"
-        } hover:bg-[#016428]`}
-        onClick={() => onToggle(id)}
-      >
-        <div className="flex-1 text-left">
-          <h3 className="text-xl font-semibold">
-            {title} @ {company}
-          </h3>
-        </div>
-        <div className="flex items-center gap-4">
-          <span className="text-lg font-medium">{period}</span>
-          {isExpanded ? (
-            <Minus className="w-6 h-6" />
-          ) : (
-            <Plus className="w-6 h-6" />
-          )}
-        </div>
-      </div>
+      <ExperienceCardHeader
+        title={title}
+        company={company}
+        period={period}
+        isExpanded={isExpanded}
+        onToggle={() => onToggle(id)}
+      />
 
       {/* Expanded content with animation */}
       <div
@@ -76,80 +194,13 @@ export default function ExperienceCard({
         >
           <CardContent className="p-6">
             <div className="flex flex-col lg:flex-row gap-6 h-full">
-              {/* Left content */}
-              <div className="flex-1 flex flex-col">
-                {/* Location and website */}
-                <div className="flex flex-wrap items-center gap-4 mb-4 text-gray-300">
-                  {location && (
-                    <div className="flex items-center gap-2">
-                      <MapPin className="w-4 h-4" />
-                      <span>{location}</span>
-                    </div>
-                  )}
-                  {website && (
-                    <div className="flex items-center gap-2">
-                      <Globe className="w-4 h-4" />
-                      <span>{website}</span>
-                    </div>
-                  )}
-                </div>
-
-                {/* Description */}
-                <div className="flex-1 mb-6">
-                  {description ? (
-                    <p className="text-gray-300 leading-relaxed">
-                      {description}
-                    </p>
-                  ) : (
-                    <p className="text-gray-500 leading-relaxed italic">
-                      Experience details coming soon...
-                    </p>
-                  )}
-                </div>
-
-                {/* Technologies */}
-                <div className="flex flex-wrap gap-2">
-                  {technologies.length > 0 ? (
-                    technologies.map((tech, index) => (
-                      <Badge
-                        key={index}
-                        variant="default"
-                        className="bg-blue-600 hover:bg-blue-700 text-white"
-                      >
-                        {tech}
-                      </Badge>
-                    ))
-                  ) : (
-                    <Badge
-                      variant="secondary"
-                      className="bg-gray-600 text-gray-300"
-                    >
-                      Technologies TBD
-                    </Badge>
-                  )}
-                </div>
-              </div>
-
-              {/* Logo */}
-              <div className="flex-shrink-0">
-                <div className="w-24 h-24 bg-white rounded-lg p-2 flex items-center justify-center">
-                  {logo ? (
-                    <img
-                      src={logo}
-                      alt={`${company} logo`}
-                      className="max-w-full max-h-full object-contain"
-                    />
-                  ) : (
-                    <div className="text-gray-400 text-xs text-center">
-                      Logo
-                      <br />
-                      Coming
-                      <br />
-                      Soon
-                    </div>
-                  )}
-                </div>
-              </div>
+              <ExperienceCardContent
+                location={location}
+                website={website}
+                description={description}
+                technologies={technologies}
+              />
+              <ExperienceCardLogo logo={logo} company={company} />
             </div>
           </CardContent>
         </Card>
