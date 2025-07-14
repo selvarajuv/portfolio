@@ -1,4 +1,4 @@
-// lib/parallax.ts - Optimized Version
+// lib/parallax.ts - Fixed Version with Background Position
 import type React from "react";
 
 export function setupParallaxEffect(
@@ -17,8 +17,10 @@ export function setupParallaxEffect(
       const scrollY = window.scrollY;
       const parallaxY = scrollY * -0.5;
 
-      // Use transform for all elements (better performance than backgroundPosition)
-      backgroundRef.current.style.transform = `translateY(${parallaxY}px)`;
+      // Use background-position for seamless repeating parallax on wood grain
+      backgroundRef.current.style.backgroundPosition = `center ${parallaxY}px`;
+
+      // Use transform for vines (better performance for decorative elements)
       leftVinesRef.current.style.transform = `translateY(${parallaxY}px)`;
       rightVinesRef.current.style.transform = `translateY(${parallaxY}px)`;
     }
