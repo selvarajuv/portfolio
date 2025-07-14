@@ -92,14 +92,7 @@ function FeaturedProject({ project, loading, error }: FeaturedProjectProps) {
   }
 
   if (!project) {
-    return (
-      <div className="flex flex-col">
-        <p className="text-gray-400 mb-4">Featured Project</p>
-        <div className="text-center py-12">
-          <div className="text-gray-400">No featured project set</div>
-        </div>
-      </div>
-    );
+    return <div></div>;
   }
 
   return (
