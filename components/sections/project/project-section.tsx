@@ -107,7 +107,7 @@ function FeaturedProject({ project, loading, error }: FeaturedProjectProps) {
       <p className="text-gray-400 mb-4">Featured Project</p>
       <div className="relative mb-6 overflow-hidden rounded-lg">
         <Image
-          src={project.imageUrl || "/placeholder-project.png"}
+          src={project.cardImage || "/placeholder-project.png"}
           alt={project.title}
           width={500}
           height={300}
@@ -162,7 +162,7 @@ function ProjectGrid({ projects, loading, error }: ProjectGridProps) {
           topContent={project.topContent}
           bottomContent={project.bottomContent}
           hoverContent={project.hoverContent}
-          imageUrl={project.imageUrl}
+          imageUrl={project.cardImage}
           slug={project.id}
         />
       ))}
