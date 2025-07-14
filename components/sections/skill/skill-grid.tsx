@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { SkillItem } from "@/types/skill";
 import SkillIcon from "./skill-icon";
-import { useSkills } from "@/hooks/use-skill";
+import { useSkills } from "@/hooks/skill/use-skill";
+import { useSkillsHover } from "@/hooks/skill/use-skill-hover";
 import { useWoodGrain } from "@/hooks/use-wood-grain";
 import { VineGenerator } from "../../forest-theme/vines";
 import { skillsFrameVines } from "@/data/vine-configs";
@@ -16,47 +17,199 @@ function groupSkillsIntoRows<T>(items: T[], itemsPerRow = 7): T[][] {
   return rows;
 }
 
-export default function SkillsGrid() {
-  const { skills, loading, error } = useSkills();
-  const [hoveredSkill, setHoveredSkill] = useState<string | null>(null);
-  const [hoveredRow, setHoveredRow] = useState<number | null>(null);
+type SkillsRowProps = {
+  skills: SkillItem[];
+  rowIndex: number;
+  isRowHovered: boolean;
+  hoveredSkill: string | null;
+  onRowHover: (rowIndex: number | null) => void;
+  onSkillHover: (skillId: string | null) => void;
+};
 
-  // Wood grain overlays
-  const { overlayProps: mainOverlayProps } = useWoodGrain();
-  const { overlayProps: hoverOverlayProps } = useWoodGrain();
+function SkillsLoadingState() {
+  return (
+    <div className="w-full relative">
+      <div
+        className="rounded-xl p-8 relative z-10"
+        style={{ backgroundColor: "#2d1810" }}
+      >
+        <div className="text-center py-12">
+          <div className="text-gray-400 text-lg">Loading skills...</div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
-  // Loading state
-  if (loading) {
-    return (
-      <div className="w-full relative">
-        <div
-          className="rounded-xl p-8 relative z-10"
-          style={{ backgroundColor: "#2d1810" }}
-        >
-          <div className="text-center py-12">
-            <div className="text-gray-400 text-lg">Loading skills...</div>
+function SkillsErrorState({ error }: { error: string }) {
+  return (
+    <div className="w-full relative">
+      <div
+        className="rounded-xl p-8 relative z-10"
+        style={{ backgroundColor: "#2d1810" }}
+      >
+        <div className="text-center py-12">
+          <div className="text-red-400 bg-red-900/20 p-4 rounded-lg">
+            {error}
           </div>
         </div>
       </div>
-    );
+    </div>
+  );
+}
+
+function SkillsRow({
+  skills,
+  rowIndex,
+  isRowHovered,
+  hoveredSkill,
+  onRowHover,
+  onSkillHover,
+}: SkillsRowProps) {
+  const { overlayProps: hoverOverlayProps } = useWoodGrain();
+
+  return (
+    <div
+      className="relative mb-8 last:mb-0"
+      onMouseEnter={() => onRowHover(rowIndex)}
+      onMouseLeave={() => onRowHover(null)}
+    >
+      {/* Full-width highlight background */}
+      <div
+        className="absolute inset-0 -inset-x-8 rounded-xl transition-all duration-300"
+        style={{
+          backgroundColor: isRowHovered ? "#5e301a" : "transparent",
+          boxShadow: isRowHovered
+            ? `
+            inset 0 0 40px rgba(0, 0, 0, 0.9),
+            inset 0 0 80px rgba(0, 0, 0, 0.7),
+            inset 0 0 120px rgba(0, 0, 0, 0.4)
+          `
+            : "none",
+          top: rowIndex === 0 ? "-16px" : "-20px",
+          bottom: "-16px",
+        }}
+      >
+        {/* Wood grain pattern overlay for hovered row */}
+        {isRowHovered && <div {...hoverOverlayProps} />}
+      </div>
+
+      {/* Row of Skills */}
+      <div
+        className="flex flex-wrap justify-center gap-8 relative z-10"
+        style={{ paddingBottom: "8px" }}
+      >
+        {skills.map((skill) => (
+          <div
+            key={skill.id}
+            className="relative group cursor-pointer transition-all duration-300 flex flex-col items-center"
+            onMouseEnter={() => onSkillHover(skill.id)}
+            onMouseLeave={() => onSkillHover(null)}
+          >
+            {/* Skill Name Label - Above the icon with increased margin */}
+            <div className="text-center mb-4">
+              <p
+                className="text-sm font-medium transition-colors duration-300"
+                style={{
+                  color:
+                    hoveredSkill === skill.id
+                      ? skill.color
+                      : isRowHovered
+                      ? "#f0f0f0"
+                      : "#ffffff",
+                }}
+              >
+                {skill.name}
+              </p>
+            </div>
+
+            {/* Skill Icon - Sits on top of the shelf */}
+            <div
+              className="transition-all duration-300"
+              style={{
+                transform:
+                  hoveredSkill === skill.id
+                    ? "translateY(-6px) scale(1.1)"
+                    : isRowHovered
+                    ? "translateY(-3px) scale(1.05)"
+                    : "translateY(0) scale(1)",
+                filter:
+                  hoveredSkill === skill.id
+                    ? `drop-shadow(0 12px 24px ${skill.color}40)`
+                    : isRowHovered
+                    ? `drop-shadow(0 8px 16px rgba(0, 0, 0, 0.3))`
+                    : "drop-shadow(0 6px 12px rgba(0, 0, 0, 0.2))",
+              }}
+            >
+              <SkillIcon
+                name={skill.name}
+                iconPath={skill.iconPath}
+                color={skill.color}
+                size={96}
+                isHovered={hoveredSkill === skill.id}
+                isRowHovered={isRowHovered}
+              />
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Shelf Line */}
+      <div
+        className="w-full h-2 rounded-sm relative z-10"
+        style={{
+          background: `linear-gradient(to bottom, 
+            #8B4513 0%, 
+            #A0522D 20%, 
+            #8B4513 40%, 
+            #654321 60%, 
+            #4A2C17 80%, 
+            #2F1B0C 100%
+          )`,
+          boxShadow: `
+            0 2px 4px rgba(0, 0, 0, 0.3),
+            inset 0 1px 0 rgba(139, 69, 19, 0.8),
+            inset 0 -1px 0 rgba(47, 27, 12, 0.8)
+          `,
+        }}
+      />
+
+      {/* Shelf Support Shadow */}
+      <div
+        className="w-full h-1 mt-1 relative z-10"
+        style={{
+          background: `linear-gradient(to bottom, 
+            rgba(0, 0, 0, 0.4) 0%, 
+            rgba(0, 0, 0, 0.2) 50%, 
+            transparent 100%
+          )`,
+        }}
+      />
+    </div>
+  );
+}
+
+export default function SkillsGrid() {
+  const { skills, loading, error } = useSkills();
+  const {
+    hoveredSkill,
+    hoveredRow,
+    handleSkillHover,
+    handleRowHover,
+    isRowHovered,
+  } = useSkillsHover();
+
+  // Wood grain overlays
+  const { overlayProps: mainOverlayProps } = useWoodGrain();
+
+  // Loading state
+  if (loading) {
+    return <SkillsLoadingState />;
   }
 
   // Error state
   if (error) {
-    return (
-      <div className="w-full relative">
-        <div
-          className="rounded-xl p-8 relative z-10"
-          style={{ backgroundColor: "#2d1810" }}
-        >
-          <div className="text-center py-12">
-            <div className="text-red-400 bg-red-900/20 p-4 rounded-lg">
-              {error}
-            </div>
-          </div>
-        </div>
-      </div>
-    );
+    return <SkillsErrorState error={error} />;
   }
 
   // Group skills into rows
@@ -90,126 +243,15 @@ export default function SkillsGrid() {
         {/* Skills Grid with Shelves */}
         <div className="relative z-10">
           {skillRows.map((row, rowIndex) => (
-            <div
+            <SkillsRow
               key={rowIndex}
-              className="relative mb-8 last:mb-0"
-              onMouseEnter={() => setHoveredRow(rowIndex)}
-              onMouseLeave={() => setHoveredRow(null)}
-            >
-              {/* Full-width highlight background */}
-              <div
-                className="absolute inset-0 -inset-x-8 rounded-xl transition-all duration-300"
-                style={{
-                  backgroundColor:
-                    hoveredRow === rowIndex ? "#5e301a" : "transparent",
-                  boxShadow:
-                    hoveredRow === rowIndex
-                      ? `
-                      inset 0 0 40px rgba(0, 0, 0, 0.9),
-                      inset 0 0 80px rgba(0, 0, 0, 0.7),
-                      inset 0 0 120px rgba(0, 0, 0, 0.4)
-                    `
-                      : "none",
-                  top: rowIndex === 0 ? "-16px" : "-20px",
-                  bottom: "-16px",
-                }}
-              >
-                {/* Wood grain pattern overlay for hovered row */}
-                {hoveredRow === rowIndex && <div {...hoverOverlayProps} />}
-              </div>
-
-              {/* Row of Skills */}
-              <div
-                className="flex flex-wrap justify-center gap-8 relative z-10"
-                style={{ paddingBottom: "8px" }}
-              >
-                {row.map((skill) => (
-                  <div
-                    key={skill.id} // Use skill.id instead of skill.name
-                    className="relative group cursor-pointer transition-all duration-300 flex flex-col items-center"
-                    onMouseEnter={() => setHoveredSkill(skill.id)} // Use skill.id
-                    onMouseLeave={() => setHoveredSkill(null)}
-                  >
-                    {/* Skill Name Label - Above the icon with increased margin */}
-                    <div className="text-center mb-4">
-                      <p
-                        className="text-sm font-medium transition-colors duration-300"
-                        style={{
-                          color:
-                            hoveredSkill === skill.id // Use skill.id
-                              ? skill.color
-                              : hoveredRow === rowIndex
-                              ? "#f0f0f0"
-                              : "#ffffff",
-                        }}
-                      >
-                        {skill.name}
-                      </p>
-                    </div>
-
-                    {/* Skill Icon - Sits on top of the shelf */}
-                    <div
-                      className="transition-all duration-300"
-                      style={{
-                        transform:
-                          hoveredSkill === skill.id // Use skill.id
-                            ? "translateY(-6px) scale(1.1)"
-                            : hoveredRow === rowIndex
-                            ? "translateY(-3px) scale(1.05)"
-                            : "translateY(0) scale(1)",
-                        filter:
-                          hoveredSkill === skill.id // Use skill.id
-                            ? `drop-shadow(0 12px 24px ${skill.color}40)`
-                            : hoveredRow === rowIndex
-                            ? `drop-shadow(0 8px 16px rgba(0, 0, 0, 0.3))`
-                            : "drop-shadow(0 6px 12px rgba(0, 0, 0, 0.2))",
-                      }}
-                    >
-                      <SkillIcon
-                        name={skill.name}
-                        iconPath={skill.iconPath}
-                        color={skill.color}
-                        size={96}
-                        isHovered={hoveredSkill === skill.id} // Use skill.id
-                        isRowHovered={hoveredRow === rowIndex}
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Shelf Line */}
-              <div
-                className="w-full h-2 rounded-sm relative z-10"
-                style={{
-                  background: `linear-gradient(to bottom, 
-                    #8B4513 0%, 
-                    #A0522D 20%, 
-                    #8B4513 40%, 
-                    #654321 60%, 
-                    #4A2C17 80%, 
-                    #2F1B0C 100%
-                  )`,
-                  boxShadow: `
-                    0 2px 4px rgba(0, 0, 0, 0.3),
-                    inset 0 1px 0 rgba(139, 69, 19, 0.8),
-                    inset 0 -1px 0 rgba(47, 27, 12, 0.8)
-                  `,
-                }}
-              />
-
-              {/* Shelf Support Shadow */}
-              <div
-                className="w-full h-1 mt-1 relative z-10"
-                style={{
-                  background: `linear-gradient(to bottom, 
-                    rgba(0, 0, 0, 0.4) 0%, 
-                    rgba(0, 0, 0, 0.2) 50%, 
-                    transparent 100%
-                  )`,
-                }}
-              />
-            </div>
+              skills={row}
+              rowIndex={rowIndex}
+              isRowHovered={isRowHovered(rowIndex)}
+              hoveredSkill={hoveredSkill}
+              onRowHover={handleRowHover}
+              onSkillHover={handleSkillHover}
+            />
           ))}
         </div>
       </div>

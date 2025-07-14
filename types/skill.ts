@@ -1,5 +1,12 @@
 // types/skill.ts
 
+export type SkillItem = {
+  id: string;
+  name: string;
+  iconPath: string;
+  color: string;
+};
+
 export type SkillIconProps = {
   name: string;
   iconPath: string;
@@ -16,11 +23,4 @@ export type SvgIconProps = {
   className?: string;
   style?: React.CSSProperties;
   onError?: () => void;
-};
-
-export type SkillItem = {
-  id: string;
-  name: string;
-  iconPath: string;
-  color: string;
 };
