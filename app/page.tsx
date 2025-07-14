@@ -1,19 +1,15 @@
-// app/page.tsx
 "use client";
 
 import { useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import WorkBox from "@/components/sections/project/project-box";
 import TypewriterTitle from "@/components/sections/hero/typewriter-title";
 import SkillsGrid from "@/components/sections/skill/skill-grid";
 import PageLayout from "@/components/layout/page-layout";
 import WoodenBox from "@/components/forest-theme/wood-box";
 import ProfileVineFrame from "@/components/sections/hero/profile-vine-frame";
 import ExperienceSection from "@/components/sections/experience/experience-section";
+import ProjectSection from "@/components/sections/project/project-section"; // ← New import
 import { cn } from "@/lib/utils";
 import { scrollToElement } from "@/lib/scroll";
-import projects from "@/data/projects";
-import Image from "next/image";
 
 export default function Home() {
   // Handle direct navigation to work section from project pages
@@ -30,13 +26,10 @@ export default function Home() {
     <PageLayout activeSection="home">
       {/* Hero Section */}
       <HeroSection />
-
       {/* Work Section */}
-      <WorkSection />
-
+      <ProjectSection /> {/* ← Simplified! */}
       {/* Experience Section */}
       <ExperienceSection />
-
       {/* Skills Section */}
       <SkillsSection />
     </PageLayout>
@@ -105,89 +98,6 @@ function ProfilePlaceholder() {
           (490×580)
         </p>
       </div>
-    </div>
-  );
-}
-
-function WorkSection() {
-  return (
-    <section id="work" className="section-spacing px-4 md:px-8">
-      <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
-          <WorkDescription />
-          <FeaturedProject />
-        </div>
-        <ProjectGrid />
-      </div>
-    </section>
-  );
-}
-
-function WorkDescription() {
-  return (
-    <div>
-      <h1
-        className={cn("text-8xl font-bold mb-10 tracking-tight leading-none")}
-      >
-        My
-        <br />
-        Work
-      </h1>
-      <p className="mb-8 text-lg text-gray-300 leading-relaxed">
-        Deployed scalable travel, event and telemedicine web and hybrid mobile
-        apps using React SPA and PWA. Collaborated in 140+ projects with 50+
-        clients all around the world. I am also interested in data analytics and
-        visualization.
-      </p>
-    </div>
-  );
-}
-
-function FeaturedProject() {
-  return (
-    <div className="flex flex-col">
-      <p className="text-gray-400 mb-4">Featured Project</p>
-      <div className="relative mb-6 overflow-hidden rounded-lg">
-        <Image
-          src="/cairn-featured.png"
-          alt="Cairn Travel Planner - Barcelona Trip Planning Interface"
-          width={500}
-          height={300}
-          className="w-full h-auto object-cover"
-          priority
-        />
-      </div>
-      <div>
-        <h2 className="text-2xl font-bold mb-4 text-white">
-          Cairn Travel Planner
-        </h2>
-        <Button
-          className={cn(
-            "w-fit text-white",
-            "bg-[var(--forest-dark)] hover:bg-[var(--navbar-hover-color)]"
-          )}
-        >
-          View Project
-        </Button>
-      </div>
-    </div>
-  );
-}
-
-function ProjectGrid() {
-  return (
-    <div className="flex flex-wrap justify-between gap-16 mt-16">
-      {Object.values(projects).map((project) => (
-        <WorkBox
-          key={project.id}
-          size="default"
-          topContent={project.topContent}
-          bottomContent={project.bottomContent}
-          hoverContent={project.hoverContent}
-          imageUrl={project.imageUrl}
-          slug={project.id}
-        />
-      ))}
     </div>
   );
 }

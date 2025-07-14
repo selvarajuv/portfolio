@@ -28,3 +28,23 @@ export type WorkBoxProps = {
 export type ProjectNavigationProps = {
   currentProjectId: string;
 };
+
+export type ProjectItem = {
+  id: string;
+  title: string;
+  category: string;
+  description: string;
+  duration: string;
+  client: string;
+  year: string;
+  technologies?: string[];
+  images: string[];
+  challenges: string[];
+  outcomes: string[];
+  topContent?: string;
+  bottomContent?: string;
+  hoverContent?: string;
+  imageUrl?: string;
+  featured: boolean;
+  large: boolean;
+};
