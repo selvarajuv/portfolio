@@ -4,11 +4,14 @@
 
 import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { ProjectNavigationProps } from "@/types/project";
 import Image from "next/image";
 import Link from "next/link";
 import projects from "@/data/projects";
 import { useWoodGrain } from "@/hooks/use-wood-grain";
+
+type ProjectNavigationProps = {
+  currentProjectId: string;
+};
 
 export default function ProjectNavigation({
   currentProjectId,

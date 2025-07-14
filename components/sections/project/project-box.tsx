@@ -6,11 +6,19 @@ import Image from "next/image";
 import { useState } from "react";
 import Link from "next/link";
 import WoodenBox from "../../forest-theme/wood-box";
-import type {
-  WorkBoxSize,
-  WorkBoxDimensions,
-  WorkBoxProps,
-} from "@/types/project";
+import { WorkBoxSize, WorkBoxDimensions } from "@/types/project";
+
+type WorkBoxProps = {
+  className?: string;
+  imageUrl?: string;
+  imageAlt?: string;
+  topContent?: string;
+  bottomContent?: string;
+  hoverContent?: string;
+  slug?: string;
+  size?: WorkBoxSize;
+  clickable?: boolean;
+};
 
 const sizeVariants: Record<WorkBoxSize, WorkBoxDimensions> = {
   default: {
