@@ -17,3 +17,10 @@ export type SvgIconProps = {
   style?: React.CSSProperties;
   onError?: () => void;
 };
+
+export type SkillItem = {
+  id: string;
+  name: string;
+  iconPath: string;
+  color: string;
+};

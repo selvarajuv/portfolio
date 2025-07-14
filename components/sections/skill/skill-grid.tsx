@@ -1,10 +1,8 @@
-// components/sections/skills/skill-grid.tsx
-
 "use client";
 
 import { useState } from "react";
 import SkillIcon from "./skill-icon";
-import skills from "@/data/skills";
+import { useSkills } from "@/hooks/use-skill";
 import { useWoodGrain } from "@/hooks/use-wood-grain";
 import { VineGenerator } from "../../forest-theme/vines";
 import { skillsFrameVines } from "@/data/vine-configs";
@@ -19,13 +17,50 @@ function groupSkillsIntoRows<T>(items: T[], itemsPerRow = 7): T[][] {
 }
 
 export default function SkillsGrid() {
+  const { skills, loading, error } = useSkills();
   const [hoveredSkill, setHoveredSkill] = useState<string | null>(null);
   const [hoveredRow, setHoveredRow] = useState<number | null>(null);
-  const skillRows = groupSkillsIntoRows(skills, 7);
 
   // Wood grain overlays
   const { overlayProps: mainOverlayProps } = useWoodGrain();
   const { overlayProps: hoverOverlayProps } = useWoodGrain();
+
+  // Loading state
+  if (loading) {
+    return (
+      <div className="w-full relative">
+        <div
+          className="rounded-xl p-8 relative z-10"
+          style={{ backgroundColor: "#2d1810" }}
+        >
+          <div className="text-center py-12">
+            <div className="text-gray-400 text-lg">Loading skills...</div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="w-full relative">
+        <div
+          className="rounded-xl p-8 relative z-10"
+          style={{ backgroundColor: "#2d1810" }}
+        >
+          <div className="text-center py-12">
+            <div className="text-red-400 bg-red-900/20 p-4 rounded-lg">
+              {error}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Group skills into rows
+  const skillRows = groupSkillsIntoRows(skills, 7);
 
   return (
     <div className="w-full relative">
@@ -90,9 +125,9 @@ export default function SkillsGrid() {
               >
                 {row.map((skill) => (
                   <div
-                    key={skill.name}
+                    key={skill.id} // Use skill.id instead of skill.name
                     className="relative group cursor-pointer transition-all duration-300 flex flex-col items-center"
-                    onMouseEnter={() => setHoveredSkill(skill.name)}
+                    onMouseEnter={() => setHoveredSkill(skill.id)} // Use skill.id
                     onMouseLeave={() => setHoveredSkill(null)}
                   >
                     {/* Skill Name Label - Above the icon with increased margin */}
@@ -101,7 +136,7 @@ export default function SkillsGrid() {
                         className="text-sm font-medium transition-colors duration-300"
                         style={{
                           color:
-                            hoveredSkill === skill.name
+                            hoveredSkill === skill.id // Use skill.id
                               ? skill.color
                               : hoveredRow === rowIndex
                               ? "#f0f0f0"
@@ -117,13 +152,13 @@ export default function SkillsGrid() {
                       className="transition-all duration-300"
                       style={{
                         transform:
-                          hoveredSkill === skill.name
+                          hoveredSkill === skill.id // Use skill.id
                             ? "translateY(-6px) scale(1.1)"
                             : hoveredRow === rowIndex
                             ? "translateY(-3px) scale(1.05)"
                             : "translateY(0) scale(1)",
                         filter:
-                          hoveredSkill === skill.name
+                          hoveredSkill === skill.id // Use skill.id
                             ? `drop-shadow(0 12px 24px ${skill.color}40)`
                             : hoveredRow === rowIndex
                             ? `drop-shadow(0 8px 16px rgba(0, 0, 0, 0.3))`
@@ -135,7 +170,7 @@ export default function SkillsGrid() {
                         iconPath={skill.iconPath}
                         color={skill.color}
                         size={96}
-                        isHovered={hoveredSkill === skill.name}
+                        isHovered={hoveredSkill === skill.id} // Use skill.id
                         isRowHovered={hoveredRow === rowIndex}
                       />
                     </div>
