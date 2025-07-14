@@ -1,7 +1,6 @@
-// app/projects/[slug]/page.tsx
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -11,61 +10,86 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import PageLayout from "@/components/layout/page-layout";
 import ProjectNavigation from "@/components/sections/project/project-navigation";
-import SvgIcon from "@/components/sections/skill/svg-icon";
 import { cn } from "@/lib/utils";
 import { scrollToTop } from "@/lib/scroll";
-import projects from "@/data/projects";
-import skills from "@/data/skills";
+import { useProject } from "@/hooks/use-project";
+import { ProjectItem } from "@/types/project";
 
 export default function ProjectPage({ params }: { params: { slug: string } }) {
   const { slug } = params;
-  const project = projects[slug];
+  const { projects, loading, error } = useProject();
+  const [project, setProject] = useState<ProjectItem | null>(null);
   const router = useRouter();
+
+  // Find the project by slug
+  useEffect(() => {
+    if (projects.length > 0) {
+      const foundProject = projects.find((p) => p.id === slug);
+      setProject(foundProject || null);
+    }
+  }, [projects, slug]);
 
   // Handle scroll restoration and reset
   useEffect(() => {
-    // Prevent scroll restoration
     if ("scrollRestoration" in history) {
       history.scrollRestoration = "manual";
     }
-
-    // Use utility function for scroll reset
     scrollToTop();
-
-    // Also execute on any potential async updates
     const timeoutId = setTimeout(scrollToTop, 0);
-
-    return () => {
-      clearTimeout(timeoutId);
-    };
+    return () => clearTimeout(timeoutId);
   }, [slug]);
 
   const handleBackClick = () => {
-    // Store a flag to indicate we want to go directly to work section
     sessionStorage.setItem("scrollToWork", "true");
     router.push("/");
   };
 
-  // Helper function to get skill icon path by name
-  const getSkillIcon = (techName: string) => {
-    const skill = skills.find(
-      (s) => s.name.toLowerCase() === techName.toLowerCase()
+  // Loading state
+  if (loading) {
+    return (
+      <PageLayout activeSection="work">
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="text-center">
+            <div className="text-gray-400 text-lg">Loading project...</div>
+          </div>
+        </div>
+      </PageLayout>
     );
-    return skill ? skill.iconPath : null;
-  };
+  }
 
+  // Error state
+  if (error) {
+    return (
+      <PageLayout activeSection="work">
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="text-center">
+            <div className="text-red-400 bg-red-900/20 p-4 rounded-lg mb-4">
+              {error}
+            </div>
+            <Button asChild>
+              <Link href="/">Return Home</Link>
+            </Button>
+          </div>
+        </div>
+      </PageLayout>
+    );
+  }
+
+  // Project not found
   if (!project) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-white mb-4">
-            Project not found
-          </h1>
-          <Button asChild>
-            <Link href="/">Return Home</Link>
-          </Button>
+      <PageLayout activeSection="work">
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="text-center">
+            <h1 className="text-2xl font-bold text-white mb-4">
+              Project not found
+            </h1>
+            <Button asChild>
+              <Link href="/">Return Home</Link>
+            </Button>
+          </div>
         </div>
-      </div>
+      </PageLayout>
     );
   }
 
@@ -137,16 +161,20 @@ export default function ProjectPage({ params }: { params: { slug: string } }) {
           {/* Project metadata grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-12">
             <ProjectMetadata title="Client" content={project.client} />
-            <ProjectMetadata
-              title="Technologies"
-              content={
-                <TechnologyList
-                  technologies={project.technologies}
-                  getSkillIcon={getSkillIcon}
-                />
-              }
-            />
+            <ProjectMetadata title="Duration" content={project.duration} />
+            <ProjectMetadata title="Year" content={project.year} />
+            <ProjectMetadata title="Category" content={project.category} />
           </div>
+
+          {/* Technologies */}
+          {project.technologies && project.technologies.length > 0 && (
+            <div className="mb-8">
+              <h3 className="text-lg font-semibold text-white mb-4">
+                Technologies
+              </h3>
+              <TechnologyList technologies={project.technologies} />
+            </div>
+          )}
 
           {/* Main description */}
           <div className="mb-8">
@@ -154,7 +182,7 @@ export default function ProjectPage({ params }: { params: { slug: string } }) {
               {project.description}
             </p>
 
-            {/* Open Project Link */}
+            {/* Open Project Link - you can add a website URL field to your Notion database */}
             <a
               href="#"
               target="_blank"
@@ -193,7 +221,7 @@ export default function ProjectPage({ params }: { params: { slug: string } }) {
   );
 }
 
-// Extracted Components for better organization
+// Updated Components
 
 interface ProjectMetadataProps {
   title: string;
@@ -214,30 +242,29 @@ function ProjectMetadata({ title, content }: ProjectMetadataProps) {
 }
 
 interface TechnologyListProps {
-  technologies?: string[];
-  getSkillIcon: (techName: string) => string | null;
+  technologies: string[];
 }
 
-function TechnologyList({ technologies, getSkillIcon }: TechnologyListProps) {
-  if (!technologies || technologies.length === 0) {
-    return <p className="text-gray-300">Coming Soon</p>;
-  }
-
+function TechnologyList({ technologies }: TechnologyListProps) {
   return (
     <div className="flex flex-wrap gap-2">
-      {technologies.map((tech, index) => {
-        const iconPath = getSkillIcon(tech);
-        return iconPath ? (
-          <div key={index} className="flex items-center" title={tech}>
-            <SvgIcon
-              src={iconPath}
-              alt={`${tech} icon`}
-              size={24}
-              className="flex-shrink-0"
-            />
-          </div>
-        ) : null;
-      })}
+      {technologies.map((techUrl, index) => (
+        <div
+          key={index}
+          className="flex items-center"
+          title={`Technology ${index + 1}`}
+        >
+          <img
+            src={techUrl}
+            alt={`Technology ${index + 1}`}
+            className="w-8 h-8 object-contain"
+            onError={(e) => {
+              // Fallback if image fails to load
+              e.currentTarget.style.display = "none";
+            }}
+          />
+        </div>
+      ))}
     </div>
   );
 }
@@ -275,14 +302,14 @@ function ProjectSection({ title, items, type }: ProjectSectionProps) {
 }
 
 interface ProjectImagesProps {
-  images: Array<{ src: string; alt: string }>;
+  images: string[];
 }
 
 function ProjectImages({ images }: ProjectImagesProps) {
   return (
     <div className="w-full mb-32">
       <div className="w-full space-y-8">
-        {images.map((image, index) => (
+        {images.map((imageUrl, index) => (
           <div key={index} className="flex flex-col items-center">
             <div
               className={cn(
@@ -291,8 +318,8 @@ function ProjectImages({ images }: ProjectImagesProps) {
               )}
             >
               <Image
-                src={image.src || "/placeholder.svg"}
-                alt={image.alt}
+                src={imageUrl || "/placeholder.svg"}
+                alt={`Project image ${index + 1}`}
                 fill
                 className="object-cover"
                 priority={index === 0}
