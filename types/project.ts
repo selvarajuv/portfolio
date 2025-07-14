@@ -21,7 +21,6 @@ export type ProjectItem = {
   large: boolean;
 };
 
-// Work Box shared types (used in multiple components)
 export type WorkBoxSize = "default" | "large";
 
 export type WorkBoxDimensions = {

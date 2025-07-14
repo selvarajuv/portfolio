@@ -3,11 +3,17 @@
 "use client";
 
 import { Plus, Minus, MapPin, Globe } from "lucide-react";
-import { useState, useEffect } from "react";
-import { ExperienceCardProps } from "@/types/experience";
+import { useState } from "react";
+import { ExperienceItem } from "@/types/experience";
+import { useExperienceAnimation } from "@/hooks/experience/use-experience-animation";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import WoodenBox from "@/components/forest-theme/wood-box";
+
+type ExperienceCardProps = ExperienceItem & {
+  isExpanded: boolean;
+  onToggle: (id: string) => void;
+};
 
 export default function ExperienceCard({
   id,
@@ -22,16 +28,8 @@ export default function ExperienceCard({
   isExpanded,
   onToggle,
 }: ExperienceCardProps) {
-  const [isAnimating, setIsAnimating] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
-
-  useEffect(() => {
-    if (isExpanded) {
-      setIsAnimating(true);
-    } else {
-      setIsAnimating(false);
-    }
-  }, [isExpanded]);
+  const { isAnimating } = useExperienceAnimation(isExpanded);
 
   return (
     <WoodenBox

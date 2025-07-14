@@ -2,17 +2,13 @@
 
 "use client";
 
-import { useState } from "react";
-import { useExperience } from "@/hooks/use-experience";
+import { useExperience } from "@/hooks/experience/use-experience";
+import { useExperienceExpansion } from "@/hooks/experience/use-experience-expansion";
 import ExperienceCard from "./experience-card";
 
 export default function ExperienceSection() {
   const { experience, loading, error } = useExperience();
-  const [expandedCard, setExpandedCard] = useState<string>("");
-
-  const handleCardToggle = (cardId: string) => {
-    setExpandedCard(expandedCard === cardId ? "" : cardId);
-  };
+  const { handleCardToggle, isCardExpanded } = useExperienceExpansion();
 
   return (
     <section id="experience" className="py-24 px-4 md:px-8">
@@ -41,7 +37,7 @@ export default function ExperienceSection() {
               <ExperienceCard
                 key={item.id}
                 {...item}
-                isExpanded={expandedCard === item.id}
+                isExpanded={isCardExpanded(item.id)}
                 onToggle={handleCardToggle}
               />
             ))}
