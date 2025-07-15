@@ -126,10 +126,7 @@ export default function Navbar({
   }
 
   return (
-    <header
-      className="fixed top-0 left-0 right-0 z-50 flex justify-center pointer-events-none"
-      style={{ paddingTop: "clamp(15px, 1vw, 30px)" }}
-    >
+    <header className="fixed top-0 left-0 right-0 z-50 flex justify-center pt-4 pointer-events-none">
       {/* Fixed-width inner container that never changes size or position */}
       <div className="w-fit mx-auto relative">
         {/* Background element with design tokens */}
@@ -148,8 +145,8 @@ export default function Navbar({
         <nav
           className="flex items-center justify-center relative pointer-events-auto"
           style={{
-            gap: "1.7vw",
-            padding: "clamp(8px, 0.4vw, 10px) clamp(17px, 0.8vw, 20px)",
+            gap: "2vw",
+            padding: "0.45vw .9vw",
           }}
         >
           {navSections.map((section) => (
@@ -207,8 +204,8 @@ function NavItem({ href, children, isActive }: NavItemProps) {
         "transition-colors duration-200"
       )}
       style={{
-        fontSize: "clamp(16px, 0.75vw, 20px)",
-        padding: "clamp(5px, 0.225vw, 8px) clamp(11px, 0.65vw, 16px)",
+        fontSize: "0.75vw",
+        padding: "0.2vw 0.4vw",
       }}
     >
       {/* Active indicator bubble using design tokens */}
