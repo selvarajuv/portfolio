@@ -409,64 +409,127 @@ export const generateSideVines = (side: "left" | "right"): VineConfig[] => {
   const vines: VineConfig[] = [];
   const isLeft = side === "left";
 
+  // Top vines - coverage for very top
+  const topVines = ["-15%", "-8%", "-2%", "2%"];
+  topVines.forEach((top, index) => {
+    vines.push({
+      top,
+      [isLeft ? "left" : "right"]: index % 2 === 0 ? "-1vw" : "4vw",
+      width: `${6 + (index % 2) * 0.5}vw`,
+      height: `${25 + (index % 2) * 3}vw`,
+      opacity: 0.12 + (index % 2) * 0.02,
+      rotate: `${isLeft ? "-" : ""}${8 + (index % 2) * 4}deg`,
+      scale: `${0.7 + (index % 2) * 0.1}`,
+      scaleX: index % 2 === 1,
+    });
+  });
+
   // Layer 1 - Background vines
-  const layer1Positions = ["-10%", "15%", "40%", "65%", "85%"];
+  const layer1Positions = ["25%", "45%", "65%", "85%"];
   layer1Positions.forEach((top, index) => {
     vines.push({
       top,
-      [isLeft ? "left" : "right"]: index % 2 === 0 ? "-20px" : "80px",
-      width: `${115 + (index % 3) * 5}px`,
-      height: `${520 + (index % 4) * 20}px`,
+      [isLeft ? "left" : "right"]: index % 2 === 0 ? "-1.2vw" : "5vw",
+      width: `${6.5 + (index % 3) * 0.3}vw`,
+      height: `${30 + (index % 3) * 2}vw`,
       opacity: 0.14 + (index % 3) * 0.02,
       rotate: `${isLeft ? "-" : ""}${5 + (index % 3) * 3}deg`,
-      scale: `${0.85 + (index % 4) * 0.1}`,
+      scale: `${0.75 + (index % 3) * 0.1}`,
       scaleX: index % 2 === 1,
     });
   });
 
   // Layer 2 - Mid-ground vines
-  const layer2Positions = ["5%", "30%", "55%", "80%"];
+  const layer2Positions = ["15%", "35%", "55%", "75%"];
   layer2Positions.forEach((top, index) => {
     vines.push({
       top,
-      [isLeft ? "left" : "right"]: index % 2 === 0 ? "60px" : "100px",
-      width: `${105 + (index % 3) * 5}px`,
-      height: `${480 + (index % 4) * 30}px`,
-      opacity: 0.2 + (index % 3) * 0.02,
+      [isLeft ? "left" : "right"]: index % 2 === 0 ? "3.5vw" : "6vw",
+      width: `${6 + (index % 3) * 0.3}vw`,
+      height: `${28 + (index % 3) * 2}vw`,
+      opacity: 0.18 + (index % 3) * 0.02,
       rotate: `${isLeft ? "" : "-"}${4 + (index % 3) * 3}deg`,
-      scale: `${0.88 + (index % 4) * 0.1}`,
+      scale: `${0.8 + (index % 3) * 0.1}`,
       scaleX: index % 2 === 1,
     });
   });
 
   // Layer 3 - Foreground vines
-  const layer3Positions = ["0%", "25%", "50%", "75%"];
+  const layer3Positions = ["10%", "30%", "50%", "80%"];
   layer3Positions.forEach((top, index) => {
     vines.push({
       top,
-      [isLeft ? "left" : "right"]: index % 2 === 0 ? "40px" : "85px",
-      width: `${100 + (index % 3) * 10}px`,
-      height: `${510 + (index % 4) * 20}px`,
-      opacity: 0.26 + (index % 3) * 0.02,
+      [isLeft ? "left" : "right"]: index % 2 === 0 ? "2.5vw" : "5.5vw",
+      width: `${6.5 + (index % 3) * 0.4}vw`,
+      height: `${32 + (index % 3) * 1.5}vw`,
+      opacity: 0.22 + (index % 3) * 0.02,
       rotate: `${isLeft ? "-" : ""}${3 + (index % 3) * 2}deg`,
-      scale: `${0.92 + (index % 4) * 0.08}`,
+      scale: `${0.85 + (index % 3) * 0.08}`,
       scaleX: index % 2 === 1,
     });
   });
 
-  // Extended bottom coverage
-  for (let i = 100; i <= 270; i += 10) {
+  // Extended coverage with more bottom layering
+  for (let i = 100; i <= 280; i += 10) {
     vines.push({
       top: `${i}%`,
-      [isLeft ? "left" : "right"]: i % 20 === 0 ? "-15px" : "70px",
-      width: `${120 + (i % 3) * 5}px`,
-      height: `${480 + (i % 4) * 30}px`,
-      opacity: 0.16 + (i % 5) * 0.02,
-      rotate: `${isLeft ? "-" : ""}${4 + (i % 4) * 2}deg`,
-      scale: `${0.89 + (i % 5) * 0.04}`,
+      [isLeft ? "left" : "right"]: i % 20 === 0 ? "-0.8vw" : "4.5vw",
+      width: `${7 + (i % 3) * 0.3}vw`,
+      height: `${28 + (i % 4) * 1.5}vw`,
+      opacity: 0.15 + (i % 3) * 0.01,
+      rotate: `${isLeft ? "-" : ""}${4 + (i % 3) * 2}deg`,
+      scale: `${0.78 + (i % 4) * 0.03}`,
       scaleX: i % 3 === 1,
     });
   }
+
+  // Additional bottom layer for extra depth
+  const bottomPositions = [
+    "120%",
+    "140%",
+    "160%",
+    "180%",
+    "200%",
+    "220%",
+    "240%",
+    "260%",
+  ];
+  bottomPositions.forEach((top, index) => {
+    vines.push({
+      top,
+      [isLeft ? "left" : "right"]:
+        index % 3 === 0 ? "1.5vw" : index % 3 === 1 ? "3.8vw" : "6.2vw",
+      width: `${6.8 + (index % 3) * 0.4}vw`,
+      height: `${26 + (index % 4) * 2}vw`,
+      opacity: 0.16 + (index % 4) * 0.015,
+      rotate: `${isLeft ? "" : "-"}${6 + (index % 4) * 2}deg`,
+      scale: `${0.82 + (index % 4) * 0.04}`,
+      scaleX: index % 2 === 1,
+    });
+  });
+
+  // Deep bottom layer for maximum coverage
+  const deepBottomPositions = [
+    "150%",
+    "170%",
+    "190%",
+    "210%",
+    "230%",
+    "250%",
+    "270%",
+  ];
+  deepBottomPositions.forEach((top, index) => {
+    vines.push({
+      top,
+      [isLeft ? "left" : "right"]: index % 2 === 0 ? "-0.5vw" : "5.8vw",
+      width: `${7.2 + (index % 3) * 0.3}vw`,
+      height: `${30 + (index % 3) * 1.8}vw`,
+      opacity: 0.14 + (index % 3) * 0.02,
+      rotate: `${isLeft ? "-" : ""}${5 + (index % 3) * 3}deg`,
+      scale: `${0.76 + (index % 3) * 0.06}`,
+      scaleX: index % 3 === 1,
+    });
+  });
 
   return vines;
 };

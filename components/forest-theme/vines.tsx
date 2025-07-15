@@ -50,7 +50,7 @@ export const VineDecorations = React.forwardRef<
       ref={ref}
       className={`fixed ${side}-0 top-0 h-full z-5 pointer-events-none`}
       style={{
-        width: "300px",
+        width: "13vw",
         willChange: "transform",
       }}
     >
