@@ -9,56 +9,101 @@ import { footerVines } from "@/data/vine-configs";
 
 export default function Footer() {
   return (
-    <footer className="relative mt-32 py-16 px-4 md:px-8">
+    <footer
+      className="relative px-4 md:px-8 "
+      style={{ marginTop: "2vw", padding: "1.2vw" }}
+    >
       {/* Footer content */}
-      <div className="max-w-6xl mx-auto relative z-10">
+      <div className="mx-auto relative z-10 " style={{ width: "70vw" }}>
         <div className="flex justify-between items-start">
           {/* Left side - Copyright */}
           <div className="flex-shrink-0">
-            <p className="text-gray-300 text-lg font-bold">
+            <p
+              className="text-gray-300  font-bold"
+              style={{ fontSize: ".9vw" }}
+            >
               © 2025 Vichu • Portfolio
             </p>
           </div>
 
           {/* Right side - Two columns grouped together */}
-          <div className="flex gap-16">
+          <div className="flex" style={{ gap: "2vw" }}>
             {/* Elsewhere links */}
             <div>
-              <h3 className="text-white text-xl font-semibold mb-6">
+              <h3
+                className="text-white font-semibold"
+                style={{ fontSize: ".9vw", marginBottom: "1vw" }}
+              >
                 Elsewhere
               </h3>
-              <div className="space-y-4">
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: ".7vw",
+                }}
+              >
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="flex items-center gap-3 text-gray-300 hover:text-[#016428] hover:bg-transparent transition-colors duration-200 group p-0 h-auto justify-start"
+                  className="flex items-center text-gray-300 hover:text-[#016428] hover:bg-transparent transition-colors duration-200 group p-0 h-auto justify-start"
                   asChild
                 >
-                  <a href="#" className="flex items-center gap-3">
-                    <Github className="w-5 h-5 group-hover:scale-110 transition-transform duration-200" />
-                    <span>Github</span>
+                  <a
+                    href="#"
+                    className="flex items-center"
+                    style={{ gap: "0.5vw" }}
+                  >
+                    <Github
+                      className="group-hover:scale-110 transition-transform duration-200"
+                      style={{
+                        width: ".9vw",
+                        height: ".9vw",
+                      }}
+                    />
+                    <span style={{ fontSize: "0.7vw" }}>Github</span>
                   </a>
                 </Button>
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="flex items-center gap-3 text-gray-300 hover:text-[#016428] hover:bg-transparent transition-colors duration-200 group p-0 h-auto justify-start"
+                  className="flex items-center text-gray-300 hover:text-[#016428] hover:bg-transparent transition-colors duration-200 group p-0 h-auto justify-start"
                   asChild
                 >
-                  <a href="#" className="flex items-center gap-3">
-                    <Linkedin className="w-5 h-5 group-hover:scale-110 transition-transform duration-200" />
-                    <span>LinkedIn</span>
+                  <a
+                    href="#"
+                    className="flex items-center"
+                    style={{ gap: "0.5vw" }}
+                  >
+                    <Linkedin
+                      className="group-hover:scale-110 transition-transform duration-200"
+                      style={{
+                        width: ".9vw",
+                        height: ".9vw",
+                      }}
+                    />
+                    <span style={{ fontSize: "0.7vw" }}>LinkedIn</span>
                   </a>
                 </Button>
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="flex items-center gap-3 text-gray-300 hover:text-[#016428] hover:bg-transparent transition-colors duration-200 group p-0 h-auto justify-start"
+                  className="flex items-center text-gray-300 hover:text-[#016428] hover:bg-transparent transition-colors duration-200 group p-0 h-auto justify-start"
                   asChild
                 >
-                  <a href="#" className="flex items-center gap-3">
-                    <FileText className="w-5 h-5 group-hover:scale-110 transition-transform duration-200" />
-                    <span>Resume</span>
+                  <a
+                    href="#"
+                    className="flex items-center"
+                    style={{ gap: "0.5vw" }}
+                  >
+                    <FileText
+                      className="group-hover:scale-110 transition-transform duration-200"
+                      style={{
+                        width: ".9vw",
+                        height: ".9vw",
+                      }}
+                    />
+                    <span style={{ fontSize: "0.7vw" }}>Resume</span>
                   </a>
                 </Button>
               </div>
@@ -66,20 +111,38 @@ export default function Footer() {
 
             {/* Contact */}
             <div>
-              <h3 className="text-white text-xl font-semibold mb-6">Contact</h3>
-              <div className="space-y-4">
+              <h3
+                className="text-white font-semibold"
+                style={{ fontSize: ".9vw", marginBottom: "1vw" }}
+              >
+                Contact
+              </h3>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "0.7vw",
+                }}
+              >
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="flex items-center gap-3 text-gray-300 hover:text-[#016428] hover:bg-transparent transition-colors duration-200 group p-0 h-auto justify-start"
+                  className="flex items-center text-gray-300 hover:text-[#016428] hover:bg-transparent transition-colors duration-200 group p-0 h-auto justify-start"
                   asChild
                 >
                   <a
                     href="mailto:your.email@example.com"
-                    className="flex items-center gap-3"
+                    className="flex items-center"
+                    style={{ gap: "0.5vw" }}
                   >
-                    <MessageCircle className="w-5 h-5 group-hover:scale-110 transition-transform duration-200" />
-                    <span>Message</span>
+                    <MessageCircle
+                      className="group-hover:scale-110 transition-transform duration-200"
+                      style={{
+                        width: ".9vw",
+                        height: ".9vw",
+                      }}
+                    />
+                    <span style={{ fontSize: "0.7vw" }}>Message</span>
                   </a>
                 </Button>
               </div>
