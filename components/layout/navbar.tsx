@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 
 // Define the navigation sections
-const navSections = ["home", "work", "experience", "skill"];
+const navSections = ["home", "work", "experience", "skills"];
 
 export default function Navbar({
   activeSection: initialActiveSection = "home",
