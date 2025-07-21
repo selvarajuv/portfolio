@@ -24,14 +24,10 @@ export default function Home() {
 
   return (
     <PageLayout activeSection="home">
-      {/* Hero Section */}
       <HeroSection />
-      {/* Work Section */}
-      <ProjectSection /> {/* ← Simplified! */}
-      {/* Experience Section */}
-      <ExperienceSection />
-      {/* Skills Section */}
-      <SkillsSection />
+      {/* <ProjectSection /> */}
+      {/* <ExperienceSection /> */}
+      {/* <SkillsSection /> */}
     </PageLayout>
   );
 }
@@ -42,7 +38,7 @@ function HeroSection() {
       id="home"
       className="min-h-screen flex items-center px-4 md:px-8 pb-24"
     >
-      <div className="max-w-7xl mx-auto w-full flex items-center justify-between">
+      {/* <div className="max-w-7xl mx-auto w-full flex items-center justify-between">
         <div className="flex-1 max-w-2xl">
           <TypewriterTitle />
           <p className="text-xl text-gray-300 leading-relaxed">
@@ -58,7 +54,7 @@ function HeroSection() {
             <ProfilePlaceholder />
           </WoodenBox>
         </div>
-      </div>
+      </div> */}
     </section>
   );
 }
