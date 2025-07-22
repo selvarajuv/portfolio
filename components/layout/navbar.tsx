@@ -7,8 +7,8 @@ import { NavbarProps, NavItemProps } from "@/types/layout";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import { Leaf, X } from "lucide-react";
 
-// Define the navigation sections
 const navSections = ["home", "work", "experience", "skills"];
 
 export default function Navbar({
@@ -16,56 +16,60 @@ export default function Navbar({
 }: NavbarProps) {
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState(initialActiveSection);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const observerRefs = useRef<IntersectionObserver[]>([]);
   const pathname = usePathname();
 
-  // ALL HOOKS MUST BE CALLED BEFORE ANY EARLY RETURNS
+  // Handle scroll detection for navbar styling
   useEffect(() => {
-    const handleScroll = () => {
-      const isScrolled = window.scrollY > 100;
-      setScrolled(isScrolled);
-    };
-
+    const handleScroll = () => setScrolled(window.scrollY > 100);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Set up intersection observers for each section when on the home page
+  // Handle intersection observers and navigation
   useEffect(() => {
-    // Only set up observers if we're on the home page (where all sections exist)
     if (pathname !== "/") return;
 
-    // Listen for manual navbar updates from clicks
     const handleForceUpdate = (event: CustomEvent) => {
-      const { section } = event.detail;
-      setActiveSection(section);
+      setActiveSection(event.detail.section);
     };
 
-    window.addEventListener(
-      "forceNavbarUpdate",
-      handleForceUpdate as EventListener
-    );
-
-    // Handle initial hash in URL
     const handleInitialHash = () => {
       const hash = window.location.hash.replace("#", "");
       if (hash && navSections.includes(hash)) {
         setActiveSection(hash);
-        const element = document.getElementById(hash);
-        if (element) {
-          element.scrollIntoView({ behavior: "smooth", block: "start" });
-        }
+        document.getElementById(hash)?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
       }
     };
 
-    // Handle hash on initial load
+    const handleHashChange = () => {
+      const hash = window.location.hash.replace("#", "");
+      if (hash && navSections.includes(hash)) {
+        setActiveSection(hash);
+        document.getElementById(hash)?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }
+    };
+
+    // Setup
+    window.addEventListener(
+      "forceNavbarUpdate",
+      handleForceUpdate as EventListener
+    );
+    window.addEventListener("hashchange", handleHashChange);
     handleInitialHash();
 
     // Clean up previous observers
     observerRefs.current.forEach((observer) => observer.disconnect());
     observerRefs.current = [];
 
-    // Create new observers for each section
+    // Create intersection observers
     navSections.forEach((section) => {
       const element = document.getElementById(section);
       if (!element) return;
@@ -73,40 +77,24 @@ export default function Navbar({
       const observer = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
-            // Only process if observers are not disabled and section is sufficiently visible
             if (
               entry.isIntersecting &&
               entry.intersectionRatio >= 0.2 &&
               !(window as any).observersDisabled
             ) {
               setActiveSection(section);
-              // Update URL hash without triggering scroll
               if (window.location.hash !== `#${section}`) {
                 window.history.replaceState(null, "", `#${section}`);
               }
             }
           });
         },
-        { threshold: 0.2 } // Trigger when 20% of the element is visible
+        { threshold: 0.2 }
       );
 
       observer.observe(element);
       observerRefs.current.push(observer);
     });
-
-    // Listen for hash changes (back/forward navigation)
-    const handleHashChange = () => {
-      const hash = window.location.hash.replace("#", "");
-      if (hash && navSections.includes(hash)) {
-        setActiveSection(hash);
-        const element = document.getElementById(hash);
-        if (element) {
-          element.scrollIntoView({ behavior: "smooth", block: "start" });
-        }
-      }
-    };
-
-    window.addEventListener("hashchange", handleHashChange);
 
     return () => {
       observerRefs.current.forEach((observer) => observer.disconnect());
@@ -118,100 +106,193 @@ export default function Navbar({
     };
   }, [pathname]);
 
-  // NOW check if we should hide the navbar (after all hooks are called)
-  const isOnProjectPage = pathname !== "/";
+  // Handle mobile menu keyboard controls and scroll lock
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
 
-  if (isOnProjectPage) {
-    return null; // Don't render navbar at all on project pages
-  }
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setMobileMenuOpen(false);
+    };
+
+    document.addEventListener("keydown", handleEscape);
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.removeEventListener("keydown", handleEscape);
+      document.body.style.overflow = "unset";
+    };
+  }, [mobileMenuOpen]);
+
+  // Desktop navigation click handler
+  const handleDesktopNavClick = (e: React.MouseEvent, href: string) => {
+    e.preventDefault();
+    setMobileMenuOpen(false);
+
+    const hash = href.replace("/#", "");
+
+    // Temporarily disable observers to prevent conflicts
+    (window as any).observersDisabled = true;
+
+    // Trigger manual update
+    window.dispatchEvent(
+      new CustomEvent("forceNavbarUpdate", {
+        detail: { section: hash },
+      })
+    );
+
+    // Update URL and scroll
+    window.history.pushState(null, "", href);
+    document.getElementById(hash)?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+
+    // Re-enable observers after scroll completes
+    setTimeout(() => {
+      (window as any).observersDisabled = false;
+    }, 1500);
+  };
+
+  // Mobile menu navigation handler
+  const handleMobileNavClick = (section: string) => {
+    setMobileMenuOpen(false);
+
+    // Temporarily disable observers to prevent conflicts
+    (window as any).observersDisabled = true;
+
+    // Trigger manual update
+    window.dispatchEvent(
+      new CustomEvent("forceNavbarUpdate", {
+        detail: { section },
+      })
+    );
+
+    // Update URL and scroll
+    window.history.pushState(null, "", `/#${section}`);
+    document.getElementById(section)?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+
+    // Re-enable observers after scroll completes
+    setTimeout(() => {
+      (window as any).observersDisabled = false;
+    }, 1500);
+  };
+
+  // Don't render on project pages
+  if (pathname !== "/") return null;
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 flex justify-center pt-4 pointer-events-none">
-      {/* Fixed-width inner container that never changes size or position */}
-      <div className="w-fit mx-auto relative">
-        {/* Background element with design tokens */}
-        {scrolled && (
+    <>
+      <header className="sticky top-0 left-0 right-0 z-50">
+        <div className="w-full p-4">
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex justify-center">
+            <div className="w-fit mx-auto relative">
+              {scrolled && (
+                <div
+                  className="absolute inset-0 backdrop-blur-md shadow-md rounded-full z-0"
+                  style={{ backgroundColor: "var(--navbar-bg)" }}
+                />
+              )}
+              <nav className="flex items-center justify-center relative rounded-full gap-6 py-2 px-6">
+                {navSections.map((section) => (
+                  <NavItem
+                    key={section}
+                    href={`/#${section}`}
+                    isActive={activeSection === section}
+                    onClick={handleDesktopNavClick}
+                  >
+                    {section.charAt(0).toUpperCase() + section.slice(1)}
+                  </NavItem>
+                ))}
+              </nav>
+            </div>
+          </div>
+
+          {/* Mobile Navigation Header */}
+          <div className="md:hidden w-full">
+            <div className="flex justify-between items-center">
+              <button
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="p-2 rounded-full transition-all duration-300"
+                aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+                aria-expanded={mobileMenuOpen}
+              >
+                {mobileMenuOpen ? (
+                  <X className="w-6 h-6 text-white" />
+                ) : (
+                  <Leaf className="w-6 h-6 text-white" />
+                )}
+              </button>
+              <div className="text-white font-medium text-lg">vichu.dev</div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Mobile Menu Overlay */}
+      {mobileMenuOpen && (
+        <div className="fixed inset-0 z-40 md:hidden">
           <div
-            className={cn(
-              "absolute inset-0 backdrop-blur-md shadow-md rounded-full z-0"
-            )}
+            className="fixed top-0 left-0 h-full w-60"
             style={{
               backgroundColor: "var(--navbar-bg)",
+              backdropFilter: "blur(16px)",
             }}
-          />
-        )}
-
-        {/* Navigation content with fixed positioning - increased spacing between items */}
-        <nav className="flex items-center space-x-7 justify-center py-2 px-6 relative pointer-events-auto">
-          {navSections.map((section) => (
-            <NavItem
-              key={section}
-              href={`/#${section}`}
-              isActive={activeSection === section}
-            >
-              {section.charAt(0).toUpperCase() + section.slice(1)}
-            </NavItem>
-          ))}
-        </nav>
-      </div>
-    </header>
+          >
+            <nav className="px-6 py-16">
+              {navSections.map((section) => (
+                <div
+                  key={section}
+                  onClick={() => handleMobileNavClick(section)}
+                  className={cn(
+                    "flex items-center py-4 cursor-pointer transition-colors duration-200",
+                    activeSection === section
+                      ? "text-[#016428]"
+                      : "text-white hover:text-[var(--navbar-hover-color)]"
+                  )}
+                >
+                  {section}
+                  {activeSection === section && <Leaf className="ml-auto" />}
+                </div>
+              ))}
+            </nav>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
 
-function NavItem({ href, children, isActive }: NavItemProps) {
-  const handleClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    const hash = href.replace("/#", "");
-
-    // We're on homepage - use the existing logic
-    // Temporarily disable all observers
-    (window as any).observersDisabled = true;
-
-    // Manually trigger the state update in the parent component
-    const updateEvent = new CustomEvent("forceNavbarUpdate", {
-      detail: { section: hash },
-    });
-    window.dispatchEvent(updateEvent);
-
-    // Update URL immediately
-    window.history.pushState(null, "", href);
-
-    // Scroll to element
-    const element = document.getElementById(hash);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth", block: "start" });
-
-      // Re-enable observers after scroll
-      setTimeout(() => {
-        (window as any).observersDisabled = false;
-      }, 1500);
-    }
-  };
-
+function NavItem({
+  href,
+  children,
+  isActive,
+  onClick,
+  className = "",
+}: NavItemProps & {
+  onClick: (e: React.MouseEvent, href: string) => void;
+  className?: string;
+}) {
   return (
     <Link
       href={href}
-      onClick={handleClick}
+      onClick={(e) => onClick(e, href)}
       className={cn(
-        "relative px-4 py-2 font-medium text-base group text-white",
+        "relative font-medium group text-white transition-colors duration-200 py-2 px-4",
         !isActive && "hover:text-[var(--navbar-hover-color)]",
-        "transition-colors duration-200"
+        className
       )}
+      style={{ minHeight: "44px" }}
     >
-      {/* Active indicator bubble using design tokens */}
       {isActive && (
         <span
-          className={cn(
-            "absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2",
-            "w-[calc(100%+16px)] h-full backdrop-blur-md rounded-full z-10 shadow-sm"
-          )}
-          style={{
-            backgroundColor: "var(--navbar-active-bg)",
-          }}
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[calc(100%+16px)] h-full backdrop-blur-md rounded-full z-10 shadow-sm"
+          style={{ backgroundColor: "var(--navbar-active-bg)" }}
         />
       )}
-
-      {/* Text needs to be above both backgrounds */}
       <span className="relative z-20">{children}</span>
     </Link>
   );

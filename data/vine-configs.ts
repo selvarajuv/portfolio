@@ -480,7 +480,7 @@ export const generateSideVines = (
         ...vineLocations(-20, 100, 15),
         ...vineLocations(-20, 100, 29),
       ],
-      layer1: [...vineLocations(-20, 100, 12), ...vineLocations(-20, 100, 26)],
+      layer1: [...vineLocations(-50, 100, 12), ...vineLocations(-20, 100, 26)],
       layer2: [...vineLocations(-20, 100, 18), ...vineLocations(-20, 100, 10)],
       layer3: [...vineLocations(-20, 100, 18)],
     },
