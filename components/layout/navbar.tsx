@@ -196,7 +196,16 @@ export default function Navbar({
                   style={{ backgroundColor: "var(--navbar-bg)" }}
                 />
               )}
-              <nav className="flex items-center justify-center relative rounded-full gap-6 py-2 px-6">
+              <nav
+                className="flex items-center justify-center relative rounded-full"
+                style={{
+                  gap: "1vw",
+                  paddingTop: "clamp(8px, .4vw, 14px)",
+                  paddingBottom: "clamp(7px, .4vw, 14px)",
+                  paddingLeft: "clamp(18px, .9vw, 36px)",
+                  paddingRight: "clamp(18px, .9vw, 36px)",
+                }}
+              >
                 {navSections.map((section) => (
                   <NavItem
                     key={section}
@@ -281,11 +290,16 @@ function NavItem({
       href={href}
       onClick={(e) => onClick(e, href)}
       className={cn(
-        "relative font-medium group text-white transition-colors duration-200 py-2 px-4",
+        "relative font-medium group text-white transition-colors duration-200 flex items-center justify-center ",
         !isActive && "hover:text-[var(--navbar-hover-color)]",
         className
       )}
-      style={{ minHeight: "44px" }}
+      style={{
+        height: "clamp(40px, 1.6vw, 80px)",
+        paddingLeft: "clamp(12px, .7vw, 100px)",
+        paddingRight: "clamp(12px, .7vw, 100px)",
+        fontSize: "clamp(.85rem, .65vw, 2rem)",
+      }}
     >
       {isActive && (
         <span
@@ -293,7 +307,9 @@ function NavItem({
           style={{ backgroundColor: "var(--navbar-active-bg)" }}
         />
       )}
-      <span className="relative z-20">{children}</span>
+      <span className="relative z-20 flex items-center justify-center w-full h-full">
+        {children}
+      </span>
     </Link>
   );
 }
