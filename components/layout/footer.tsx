@@ -4,106 +4,71 @@
 
 import { Github, Linkedin, FileText, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { VineGenerator } from "@/components/forest-theme/vines";
-import { footerVines } from "@/data/vine-configs";
 
 export default function Footer() {
   return (
-    <footer
-      className="relative px-4 md:px-8 "
-      style={{ marginTop: "2vw", padding: "1.2vw" }}
-    >
+    <footer className="">
       {/* Footer content */}
-      <div className="mx-auto relative z-10 " style={{ width: "70vw" }}>
+      <div className="mx-auto relative z-10" style={{ width: "70vw" }}>
         <div className="flex justify-between items-start">
-          {/* Left side - Copyright */}
-          <div className="flex-shrink-0">
+          {/* Left side - Copyright (hidden on mobile) */}
+          <div className="hidden md:flex">
             <p
-              className="text-gray-300  font-bold"
-              style={{ fontSize: ".9vw" }}
+              className="text-gray-300 font-bold"
+              style={{ fontSize: "clamp(1.1rem, .7vw, 2rem)" }}
             >
               © 2025 Vichu • Portfolio
             </p>
           </div>
 
-          {/* Right side - Two columns grouped together */}
-          <div className="flex" style={{ gap: "2vw" }}>
+          {/* Right side - Two columns side by side (full width on mobile for proper spacing) */}
+          <div
+            className="flex w-full md:w-auto justify-between md:justify-start md:mx-0"
+            style={{ gap: "clamp(20px, 3vw, 64px)" }}
+          >
             {/* Elsewhere links */}
             <div>
               <h3
-                className="text-white font-semibold"
-                style={{ fontSize: ".9vw", marginBottom: "1vw" }}
+                className="text-white font-semibold mb-4"
+                style={{ fontSize: "clamp(1.1rem, .8vw, 2rem)" }}
               >
                 Elsewhere
               </h3>
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: ".7vw",
-                }}
-              >
+              <div>
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="flex items-center text-gray-300 hover:text-[#016428] hover:bg-transparent transition-colors duration-200 group p-0 h-auto justify-start"
+                  className="flex items-center gap-3 text-gray-300 hover:text-[#016428] hover:bg-transparent transition-colors duration-200 group p-0 justify-start"
+                  style={{ height: "44px" }}
                   asChild
                 >
-                  <a
-                    href="#"
-                    className="flex items-center"
-                    style={{ gap: "0.5vw" }}
-                  >
-                    <Github
-                      className="group-hover:scale-110 transition-transform duration-200"
-                      style={{
-                        width: ".9vw",
-                        height: ".9vw",
-                      }}
-                    />
-                    <span style={{ fontSize: "0.7vw" }}>Github</span>
+                  <a href="#" className="flex items-center gap-3">
+                    <Github className="w-5 h-5 group-hover:scale-110 transition-transform duration-200" />
+                    <span>Github</span>
                   </a>
                 </Button>
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="flex items-center text-gray-300 hover:text-[#016428] hover:bg-transparent transition-colors duration-200 group p-0 h-auto justify-start"
+                  className="flex items-center gap-3 text-gray-300 hover:text-[#016428] hover:bg-transparent transition-colors duration-200 group p-0 h-auto justify-start"
+                  style={{ minHeight: "44px" }}
                   asChild
                 >
-                  <a
-                    href="#"
-                    className="flex items-center"
-                    style={{ gap: "0.5vw" }}
-                  >
-                    <Linkedin
-                      className="group-hover:scale-110 transition-transform duration-200"
-                      style={{
-                        width: ".9vw",
-                        height: ".9vw",
-                      }}
-                    />
-                    <span style={{ fontSize: "0.7vw" }}>LinkedIn</span>
+                  <a href="#" className="flex items-center gap-3">
+                    <Linkedin className="w-5 h-5 group-hover:scale-110 transition-transform duration-200" />
+                    <span>LinkedIn</span>
                   </a>
                 </Button>
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="flex items-center text-gray-300 hover:text-[#016428] hover:bg-transparent transition-colors duration-200 group p-0 h-auto justify-start"
+                  className="flex items-center gap-3 text-gray-300 hover:text-[#016428] hover:bg-transparent transition-colors duration-200 group p-0 h-auto justify-start"
+                  style={{ minHeight: "44px" }}
                   asChild
                 >
-                  <a
-                    href="#"
-                    className="flex items-center"
-                    style={{ gap: "0.5vw" }}
-                  >
-                    <FileText
-                      className="group-hover:scale-110 transition-transform duration-200"
-                      style={{
-                        width: ".9vw",
-                        height: ".9vw",
-                      }}
-                    />
-                    <span style={{ fontSize: "0.7vw" }}>Resume</span>
+                  <a href="#" className="flex items-center gap-3">
+                    <FileText className="w-5 h-5 group-hover:scale-110 transition-transform duration-200" />
+                    <span>Resume</span>
                   </a>
                 </Button>
               </div>
@@ -112,37 +77,25 @@ export default function Footer() {
             {/* Contact */}
             <div>
               <h3
-                className="text-white font-semibold"
-                style={{ fontSize: ".9vw", marginBottom: "1vw" }}
+                className="text-white font-semibold mb-4"
+                style={{ fontSize: "clamp(1.1rem, .8vw, 2rem)" }}
               >
                 Contact
               </h3>
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "0.7vw",
-                }}
-              >
+              <div>
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="flex items-center text-gray-300 hover:text-[#016428] hover:bg-transparent transition-colors duration-200 group p-0 h-auto justify-start"
+                  className="flex items-center gap-3 text-gray-300 hover:text-[#016428] hover:bg-transparent transition-colors duration-200 group p-0 h-auto justify-start"
+                  style={{ height: "44px" }}
                   asChild
                 >
                   <a
-                    href="mailto:your.email@example.com"
-                    className="flex items-center"
-                    style={{ gap: "0.5vw" }}
+                    href="https://mail.google.com/mail/?view=cm&to=vichuselvaraju@gmail.com"
+                    className="flex items-center gap-3"
                   >
-                    <MessageCircle
-                      className="group-hover:scale-110 transition-transform duration-200"
-                      style={{
-                        width: ".9vw",
-                        height: ".9vw",
-                      }}
-                    />
-                    <span style={{ fontSize: "0.7vw" }}>Message</span>
+                    <MessageCircle className="w-5 h-5 group-hover:scale-110 transition-transform duration-200" />
+                    <span>Message</span>
                   </a>
                 </Button>
               </div>
@@ -150,9 +103,6 @@ export default function Footer() {
           </div>
         </div>
       </div>
-
-      {/* Subtle vine decorations around footer */}
-      <VineGenerator vines={footerVines} />
     </footer>
   );
 }
