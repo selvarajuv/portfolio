@@ -40,8 +40,8 @@
     inset 0 0 40px rgba(0, 0, 0, 0.7), inset 0 0 60px rgba(0, 0, 0, 0.4);
 
   /* Navbar Colors */
-  --navbar-bg: rgba(0, 0, 0, 0.5);
-  --navbar-active-bg: rgba(1, 68, 33, 0.5); /* #014421 with 50% opacity */
+  --navbar-bg: rgba(0, 0, 0, 0.3);
+  --navbar-active-bg: rgba(1, 68, 33, 0.4); /* #014421 with 50% opacity */
   --navbar-hover-color: #016428;
 
   /* Spacing */

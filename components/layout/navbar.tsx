@@ -200,7 +200,7 @@ export default function Navbar({
                 className="flex items-center justify-center relative rounded-full"
                 style={{
                   gap: "1vw",
-                  paddingTop: "clamp(8px, .4vw, 14px)",
+                  paddingTop: "clamp(7px, .4vw, 14px)",
                   paddingBottom: "clamp(7px, .4vw, 14px)",
                   paddingLeft: "clamp(18px, .9vw, 36px)",
                   paddingRight: "clamp(18px, .9vw, 36px)",
@@ -298,7 +298,7 @@ function NavItem({
         height: "clamp(40px, 1.6vw, 80px)",
         paddingLeft: "clamp(12px, .7vw, 100px)",
         paddingRight: "clamp(12px, .7vw, 100px)",
-        fontSize: "clamp(.85rem, .65vw, 2rem)",
+        fontSize: "clamp(1.1rem, .65vw, 2rem)",
       }}
     >
       {isActive && (
