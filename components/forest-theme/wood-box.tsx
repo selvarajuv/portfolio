@@ -36,10 +36,11 @@ const WoodenBox: React.FC<WoodenBoxProps> = ({
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
-      {/* Wood grain pattern overlay */}
+      {/* Wood grain pattern overlay - decorative background */}
       <div {...overlayProps} />
-      {/* Content */}
-      <div className="relative z-10">{children}</div>
+
+      {/* Content - takes full available space after padding */}
+      <div className="relative z-10 w-full h-full">{children}</div>
     </div>
   );
 };

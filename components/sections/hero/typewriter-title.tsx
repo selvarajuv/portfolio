@@ -57,10 +57,19 @@ export default function TypewriterTitle() {
   }, [currentText, isDeleting, isPaused, currentDescriptionIndex]);
 
   return (
-    <div className="h-[160px] flex items-start mb-8">
-      <h1 className="text-6xl font-bold text-white leading-tight inline-block">
+    <div className="flex items-start mb-8">
+      <h1
+        className="font-bold text-white leading-tight inline-block"
+        style={{ fontSize: "clamp(2.3rem, 3.5vw, 4rem)", paddingBottom: "1vw" }}
+      >
         Hi I'm Vichu, {currentText}
-        <span className="animate-pulse inline-block w-[4px] h-[1em] bg-white ml-1 align-middle"></span>
+        <span
+          className="animate-pulse inline-block bg-white ml-1 align-middle"
+          style={{
+            width: "0.2vw",
+            height: "1em",
+          }}
+        />
       </h1>
     </div>
   );

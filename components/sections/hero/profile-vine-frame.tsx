@@ -11,7 +11,12 @@ const ProfileVineFrame: React.FC<ProfileVineFrameProps> = ({
   return (
     <div
       className={`absolute inset-0 pointer-events-none ${className}`}
-      style={{ width: "600px", height: "690px", left: "-30px", top: "-30px" }}
+      style={{
+        width: "clamp(240px, 45vw, 600px)",
+        height: "clamp(280px, 52vw, 690px)",
+        left: "clamp(-25px, -2.23vw, -20px)",
+        top: "clamp(-25px, -2.3vw, -30px)",
+      }}
     >
       <VineGenerator vines={profileFrameVines} />
     </div>
