@@ -47,7 +47,7 @@ export default function PageLayout({
 
         {children}
 
-        <Footer />
+        {/* <Footer /> */}
       </div>
     </main>
   );

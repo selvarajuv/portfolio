@@ -404,8 +404,19 @@ export const footerVines: VineConfig[] = [
   },
 ];
 
-// Generate side vines programmatically to reduce repetition
-export const generateSideVines = (side: "left" | "right"): VineConfig[] => {
+function vineLocations(start: number, end: number, iterator: number): string[] {
+  const result: string[] = [];
+  for (let i = start; i <= end; i += iterator) {
+    result.push(`${i}%`);
+  }
+  return result;
+}
+
+// Hybrid approach: clamp() for sizes + breakpoint-specific density
+export const generateSideVines = (
+  side: "left" | "right",
+  density: "mobile" | "tablet" | "desktop" = "desktop"
+): VineConfig[] => {
   const vines: VineConfig[] = [];
   const isLeft = side === "left";
 
@@ -424,14 +435,97 @@ export const generateSideVines = (side: "left" | "right"): VineConfig[] => {
     });
   });
 
-  // Layer 1 - Background vines
-  const layer1Positions = ["25%", "45%", "65%", "85%"];
-  layer1Positions.forEach((top, index) => {
+  // Use clamp() for smooth size scaling
+  const getClampedWidth = (baseVw: number) => {
+    const minPx = Math.max(20, baseVw * 2);
+    const maxPx = baseVw * 20;
+    return `clamp(${minPx}px, ${baseVw}vw, ${maxPx}px)`;
+  };
+
+  const getClampedHeight = (baseVw: number) => {
+    // Make vines MUCH taller to fill vertical gaps
+    const minPx = Math.max(120, baseVw * 12); // Increased minimum height
+    const maxPx = baseVw * 40; // Much taller maximum height
+    return `clamp(${minPx}px, ${baseVw}vw, ${maxPx}px)`;
+  };
+
+  const getClampedPosition = (baseVw: number) => {
+    if (baseVw < 0) {
+      const minPx = baseVw * 20;
+      const maxPx = Math.max(-40, baseVw * 2);
+      return `clamp(${minPx}px, ${baseVw}vw, ${maxPx}px)`;
+    } else {
+      const minPx = Math.max(5, baseVw * 2);
+      const maxPx = baseVw * 20;
+      return `clamp(${minPx}px, ${baseVw}vw, ${maxPx}px)`;
+    }
+  };
+
+  const densityConfigs = {
+    mobile: {
+      topVines: [...vineLocations(-20, 100, 3), ...vineLocations(-20, 100, 16)],
+      layer1: [...vineLocations(-7, 100, 4), ...vineLocations(-20, 100, 14)],
+      layer2: [...vineLocations(-20, 100, 5), ...vineLocations(-7, 100, 13)],
+      layer3: [...vineLocations(-7, 100, 2), ...vineLocations(-20, 100, 11)],
+    },
+    tablet: {
+      topVines: [
+        ...vineLocations(-20, 100, 7),
+        ...vineLocations(-20, 100, 20),
+        ...vineLocations(-20, 100, 25),
+      ],
+      layer1: [
+        ...vineLocations(-20, 100, 3),
+        ...vineLocations(-20, 100, 23),
+        ...vineLocations(-20, 100, 27),
+      ],
+      layer2: [
+        ...vineLocations(-20, 100, 9),
+        ...vineLocations(-20, 100, 26),
+        ...vineLocations(-20, 100, 33),
+      ],
+      layer3: [
+        ...vineLocations(-20, 100, 6),
+        ...vineLocations(-20, 100, 24),
+        ...vineLocations(-20, 100, 30),
+      ],
+    },
+    desktop: {
+      topVines: [
+        ...vineLocations(-20, 100, 15),
+        ...vineLocations(-20, 100, 29),
+      ],
+      layer1: [...vineLocations(-50, 100, 12), ...vineLocations(-20, 100, 26)],
+      layer2: [...vineLocations(-20, 100, 18), ...vineLocations(-20, 100, 10)],
+      layer3: [...vineLocations(-20, 100, 18)],
+    },
+  };
+
+  const config = densityConfigs[density];
+
+  // Top vines - more on smaller screens with taller vines
+  config.topVines.forEach((top, index) => {
     vines.push({
       top,
-      [isLeft ? "left" : "right"]: index % 2 === 0 ? "-1.2vw" : "5vw",
-      width: `${6.5 + (index % 3) * 0.3}vw`,
-      height: `${30 + (index % 3) * 2}vw`,
+      [isLeft ? "left" : "right"]:
+        index % 2 === 0 ? getClampedPosition(-1) : getClampedPosition(4),
+      width: getClampedWidth(6 + (index % 2) * 0.5),
+      height: getClampedHeight(35 + (index % 2) * 8), // Much taller vines
+      opacity: 0.12 + (index % 2) * 0.02,
+      rotate: `${isLeft ? "-" : ""}${8 + (index % 2) * 4}deg`,
+      scale: `${0.7 + (index % 2) * 0.1}`,
+      scaleX: index % 2 === 1,
+    });
+  });
+
+  // Layer 1 - Background vines with increased height
+  config.layer1.forEach((top, index) => {
+    vines.push({
+      top,
+      [isLeft ? "left" : "right"]:
+        index % 2 === 0 ? getClampedPosition(-1.2) : getClampedPosition(5),
+      width: getClampedWidth(6.5 + (index % 3) * 0.3),
+      height: getClampedHeight(40 + (index % 3) * 10), // Much taller
       opacity: 0.14 + (index % 3) * 0.02,
       rotate: `${isLeft ? "-" : ""}${5 + (index % 3) * 3}deg`,
       scale: `${0.75 + (index % 3) * 0.1}`,
@@ -439,14 +533,14 @@ export const generateSideVines = (side: "left" | "right"): VineConfig[] => {
     });
   });
 
-  // Layer 2 - Mid-ground vines
-  const layer2Positions = ["15%", "35%", "55%", "75%"];
-  layer2Positions.forEach((top, index) => {
+  // Layer 2 - Mid-ground vines with increased height
+  config.layer2.forEach((top, index) => {
     vines.push({
       top,
-      [isLeft ? "left" : "right"]: index % 2 === 0 ? "3.5vw" : "6vw",
-      width: `${6 + (index % 3) * 0.3}vw`,
-      height: `${28 + (index % 3) * 2}vw`,
+      [isLeft ? "left" : "right"]:
+        index % 2 === 0 ? getClampedPosition(3.5) : getClampedPosition(6),
+      width: getClampedWidth(6 + (index % 3) * 0.3),
+      height: getClampedHeight(38 + (index % 3) * 8), // Taller
       opacity: 0.18 + (index % 3) * 0.02,
       rotate: `${isLeft ? "" : "-"}${4 + (index % 3) * 3}deg`,
       scale: `${0.8 + (index % 3) * 0.1}`,
@@ -454,80 +548,18 @@ export const generateSideVines = (side: "left" | "right"): VineConfig[] => {
     });
   });
 
-  // Layer 3 - Foreground vines
-  const layer3Positions = ["10%", "30%", "50%", "80%"];
-  layer3Positions.forEach((top, index) => {
+  // Layer 3 - Foreground vines with increased height
+  config.layer3.forEach((top, index) => {
     vines.push({
       top,
-      [isLeft ? "left" : "right"]: index % 2 === 0 ? "2.5vw" : "5.5vw",
-      width: `${6.5 + (index % 3) * 0.4}vw`,
-      height: `${32 + (index % 3) * 1.5}vw`,
+      [isLeft ? "left" : "right"]:
+        index % 2 === 0 ? getClampedPosition(2.5) : getClampedPosition(5.5),
+      width: getClampedWidth(6.5 + (index % 3) * 0.4),
+      height: getClampedHeight(42 + (index % 3) * 6), // Taller foreground vines
       opacity: 0.22 + (index % 3) * 0.02,
       rotate: `${isLeft ? "-" : ""}${3 + (index % 3) * 2}deg`,
       scale: `${0.85 + (index % 3) * 0.08}`,
       scaleX: index % 2 === 1,
-    });
-  });
-
-  // Extended coverage with more bottom layering
-  for (let i = 100; i <= 280; i += 10) {
-    vines.push({
-      top: `${i}%`,
-      [isLeft ? "left" : "right"]: i % 20 === 0 ? "-0.8vw" : "4.5vw",
-      width: `${7 + (i % 3) * 0.3}vw`,
-      height: `${28 + (i % 4) * 1.5}vw`,
-      opacity: 0.15 + (i % 3) * 0.01,
-      rotate: `${isLeft ? "-" : ""}${4 + (i % 3) * 2}deg`,
-      scale: `${0.78 + (i % 4) * 0.03}`,
-      scaleX: i % 3 === 1,
-    });
-  }
-
-  // Additional bottom layer for extra depth
-  const bottomPositions = [
-    "120%",
-    "140%",
-    "160%",
-    "180%",
-    "200%",
-    "220%",
-    "240%",
-    "260%",
-  ];
-  bottomPositions.forEach((top, index) => {
-    vines.push({
-      top,
-      [isLeft ? "left" : "right"]:
-        index % 3 === 0 ? "1.5vw" : index % 3 === 1 ? "3.8vw" : "6.2vw",
-      width: `${6.8 + (index % 3) * 0.4}vw`,
-      height: `${26 + (index % 4) * 2}vw`,
-      opacity: 0.16 + (index % 4) * 0.015,
-      rotate: `${isLeft ? "" : "-"}${6 + (index % 4) * 2}deg`,
-      scale: `${0.82 + (index % 4) * 0.04}`,
-      scaleX: index % 2 === 1,
-    });
-  });
-
-  // Deep bottom layer for maximum coverage
-  const deepBottomPositions = [
-    "150%",
-    "170%",
-    "190%",
-    "210%",
-    "230%",
-    "250%",
-    "270%",
-  ];
-  deepBottomPositions.forEach((top, index) => {
-    vines.push({
-      top,
-      [isLeft ? "left" : "right"]: index % 2 === 0 ? "-0.5vw" : "5.8vw",
-      width: `${7.2 + (index % 3) * 0.3}vw`,
-      height: `${30 + (index % 3) * 1.8}vw`,
-      opacity: 0.14 + (index % 3) * 0.02,
-      rotate: `${isLeft ? "-" : ""}${5 + (index % 3) * 3}deg`,
-      scale: `${0.76 + (index % 3) * 0.06}`,
-      scaleX: index % 3 === 1,
     });
   });
 
