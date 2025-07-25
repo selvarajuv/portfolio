@@ -40,18 +40,32 @@ function HeroSection() {
       style={{ paddingTop: "clamp(32px, 6vw, 96px)" }}
     >
       <div
-        className="mx-auto flex flex-col lg:flex-row lg:items-center lg:justify-between "
+        className="mx-auto flex flex-col lg:flex-row lg:items-center lg:justify-between"
         style={{
           width: "70vw",
           gap: "4vw",
         }}
       >
         {/* Text Content */}
-        <div className="mx-auto lg:mx-0 lg:mb-0 ">
-          <TypewriterTitle />
+        <div className="mx-auto lg:mx-0 lg:mb-0">
+          {/* Container with relative positioning and fixed height */}
+          <div
+            className="relative"
+            style={{
+              height: "clamp(120px, 12vw, 160px)", // Adjust based on your title size
+              marginBottom: "1rem",
+            }}
+          >
+            <div className="absolute inset-0">
+              <TypewriterTitle />
+            </div>
+          </div>
+
           <p
             className="text-gray-300 leading-relaxed"
-            style={{ fontSize: "clamp(1rem, 1.5vw, 1.5rem)" }}
+            style={{
+              fontSize: "clamp(1rem, 1.5vw, 1.5rem)",
+            }}
           >
             I'm a software engineer with 7+ years of experience building
             scalable web applications. I specialize in React, Node.js, and cloud
