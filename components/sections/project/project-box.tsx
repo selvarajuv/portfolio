@@ -23,7 +23,7 @@ type ProjectBoxProps = {
 const sizeVariants: Record<ProjectBoxSize, ProjectBoxDimensions> = {
   default: {
     container: {
-      width: "min(380px, 65vw)",
+      width: "min(380px, 80vw)",
       height: "auto",
       aspectRatio: ".9",
     },

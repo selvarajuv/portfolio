@@ -12,8 +12,8 @@ export default function ProjectSection() {
     useProjectSections();
 
   return (
-    <section id="work" className="section-spacing px-4 md:px-8">
-      <div className="mx-auto" style={{ width: "65vw" }}>
+    <section id="work">
+      <div className="mx-auto w-full p-4 md:px-[10vw]">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
           <WorkDescription />
           <FeaturedProjectSection

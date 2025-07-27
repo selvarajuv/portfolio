@@ -26,7 +26,7 @@ export default function Home() {
     <PageLayout activeSection="home">
       <HeroSection />
       <ProjectSection />
-      {/* <ExperienceSection /> */}
+      <ExperienceSection />
       {/* <SkillsSection /> */}
     </PageLayout>
   );
@@ -40,15 +40,10 @@ function HeroSection() {
       style={{ paddingTop: "clamp(32px, 6vw, 96px)" }}
     >
       <div
-        className="mx-auto flex flex-col lg:flex-row lg:items-center lg:justify-between"
-        style={{
-          width: "65vw",
-          gap: "4vw",
-        }}
+        className="mx-auto w-full p-4 md:px-[10vw] flex flex-col lg:flex-row lg:items-center"
+        style={{ gap: "2vw" }}
       >
-        {/* Text Content */}
-        <div className="mx-auto lg:mx-0 lg:mb-0">
-          {/* Container with relative positioning and fixed height */}
+        <div className="mx-auto">
           <div
             className="relative"
             style={{

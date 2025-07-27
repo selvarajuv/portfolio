@@ -38,8 +38,8 @@ export default function PageLayout({
       <WoodGrainBackground ref={backgroundRef} />
 
       {/* Vine decorations */}
-      <VineDecorations side="left" ref={leftVinesRef} />
-      <VineDecorations side="right" ref={rightVinesRef} />
+      {/* <VineDecorations side="left" ref={leftVinesRef} />
+      <VineDecorations side="right" ref={rightVinesRef} /> */}
 
       {/* Content container with relative positioning to appear above the background */}
       <div className="relative z-10">

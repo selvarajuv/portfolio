@@ -11,9 +11,13 @@ export default function ExperienceSection() {
   const { handleCardToggle, isCardExpanded } = useExperienceExpansion();
 
   return (
-    <section id="experience" className="py-24 px-4 md:px-8">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-7xl font-bold mb-16 tracking-tight leading-none text-center">
+    <section id="experience" className="py-24 p-2">
+      {/* Container using full width on mobile, 70vw on larger screens */}
+      <div className="mx-auto w-full md:w-[40vw]">
+        <h1
+          className="font-bold mb-16 tracking-tight leading-none text-center"
+          style={{ fontSize: "clamp(2.5rem, 7vw, 5rem)" }}
+        >
           Experience
         </h1>
 
