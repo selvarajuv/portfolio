@@ -27,7 +27,7 @@ export default function Home() {
       <HeroSection />
       <ProjectSection />
       <ExperienceSection />
-      {/* <SkillsSection /> */}
+      <SkillsSection />
     </PageLayout>
   );
 }
@@ -130,11 +130,12 @@ function ProfileImage() {
 function SkillsSection() {
   return (
     <section id="skill" className={cn("section-spacing px-4 md:px-8 pb-32")}>
-      <div className="max-w-6xl mx-auto">
+      <div className="mx-auto w-full md:w-[70vw]">
         <h1
           className={cn(
-            "text-7xl font-bold mb-16 tracking-tight leading-none text-center"
+            "font-bold mb-16 tracking-tight leading-none text-center"
           )}
+          style={{ fontSize: "clamp(2.5rem, 7vw, 5rem)" }}
         >
           Skills
         </h1>

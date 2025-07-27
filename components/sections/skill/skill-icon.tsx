@@ -1,7 +1,8 @@
+// componenets/sections/skill/skill-icon.tsx
+
 "use client";
 
-import type React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import SvgIcon from "@/components/sections/skill/svg-icon";
 import { useWoodGrain } from "@/hooks/use-wood-grain";
 import { SkillIconProps } from "@/types/skill";
@@ -20,12 +21,7 @@ const SkillIcon: React.FC<SkillIconProps> = ({
     backgroundSize: "300px",
   });
 
-  // Fallback to text if image fails to load or iconPath is empty
-  const handleImageError = () => {
-    setImageError(true);
-  };
-
-  // Check if we have a valid iconPath from Notion
+  const handleImageError = () => setImageError(true);
   const hasValidIcon = iconPath && iconPath.trim() !== "" && !imageError;
 
   return (
@@ -48,20 +44,11 @@ const SkillIcon: React.FC<SkillIconProps> = ({
       <div {...overlayProps} />
 
       {/* Icon container */}
-      <div
-        className="relative z-10 flex items-center justify-center rounded-lg overflow-hidden"
-        style={{
-          width: size - 16,
-          height: size - 16,
-          backgroundColor: "#f8f9fa",
-          padding: "var(--forest-padding-small)",
-        }}
-      >
+      <div className="relative z-10 flex items-center justify-center rounded-lg overflow-hidden">
         {hasValidIcon ? (
           <SvgIcon
             src={iconPath}
             alt={`${name} icon`}
-            size={size - 32}
             style={{
               filter: isHovered ? `drop-shadow(0 2px 8px ${color}40)` : "none",
               transition: "var(--forest-transition-fast)",
@@ -69,7 +56,7 @@ const SkillIcon: React.FC<SkillIconProps> = ({
             onError={handleImageError}
           />
         ) : (
-          // Fallback text display for missing icons or errors
+          // Fallback text display
           <div
             className="flex items-center justify-center text-center font-bold"
             style={{

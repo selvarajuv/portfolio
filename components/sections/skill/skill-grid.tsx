@@ -1,5 +1,8 @@
+// componenets/sections/skill/skill-grid.tsx
+
 "use client";
 
+import React from "react";
 import { SkillItem } from "@/types/skill";
 import SkillIcon from "./skill-icon";
 import { useSkills } from "@/hooks/skill/use-skill";
@@ -8,8 +11,15 @@ import { useWoodGrain } from "@/hooks/use-wood-grain";
 import { VineGenerator } from "../../forest-theme/vines";
 import { skillsFrameVines } from "@/data/vine-configs";
 
+// Helper function to determine responsive values
+function getResponsiveValues(width: number) {
+  if (width < 640) return { itemsPerRow: 4, iconSize: 60 };
+  if (width < 1024) return { itemsPerRow: 5, iconSize: 72 };
+  return { itemsPerRow: 7, iconSize: 96 };
+}
+
 // Helper function to group skills into rows
-function groupSkillsIntoRows<T>(items: T[], itemsPerRow = 7): T[][] {
+function groupSkillsIntoRows<T>(items: T[], itemsPerRow: number): T[][] {
   const rows: T[][] = [];
   for (let i = 0; i < items.length; i += itemsPerRow) {
     rows.push(items.slice(i, i + itemsPerRow));
@@ -24,39 +34,8 @@ type SkillsRowProps = {
   hoveredSkill: string | null;
   onRowHover: (rowIndex: number | null) => void;
   onSkillHover: (skillId: string | null) => void;
+  iconSize: number;
 };
-
-function SkillsLoadingState() {
-  return (
-    <div className="w-full relative">
-      <div
-        className="rounded-xl p-8 relative z-10"
-        style={{ backgroundColor: "#2d1810" }}
-      >
-        <div className="text-center py-12">
-          <div className="text-gray-400 text-lg">Loading skills...</div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function SkillsErrorState({ error }: { error: string }) {
-  return (
-    <div className="w-full relative">
-      <div
-        className="rounded-xl p-8 relative z-10"
-        style={{ backgroundColor: "#2d1810" }}
-      >
-        <div className="text-center py-12">
-          <div className="text-red-400 bg-red-900/20 p-4 rounded-lg">
-            {error}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
 
 function SkillsRow({
   skills,
@@ -65,40 +44,33 @@ function SkillsRow({
   hoveredSkill,
   onRowHover,
   onSkillHover,
+  iconSize,
 }: SkillsRowProps) {
   const { overlayProps: hoverOverlayProps } = useWoodGrain();
 
   return (
     <div
-      className="relative mb-8 last:mb-0"
+      className="relative mb-4 md:mb-8 last:mb-0"
       onMouseEnter={() => onRowHover(rowIndex)}
       onMouseLeave={() => onRowHover(null)}
     >
       {/* Full-width highlight background */}
       <div
-        className="absolute inset-0 -inset-x-8 rounded-xl transition-all duration-300"
+        className="absolute inset-0 -inset-x-4 md:-inset-x-8 rounded-xl transition-all duration-300"
         style={{
           backgroundColor: isRowHovered ? "#5e301a" : "transparent",
           boxShadow: isRowHovered
-            ? `
-            inset 0 0 40px rgba(0, 0, 0, 0.9),
-            inset 0 0 80px rgba(0, 0, 0, 0.7),
-            inset 0 0 120px rgba(0, 0, 0, 0.4)
-          `
+            ? "inset 0 0 40px rgba(0, 0, 0, 0.9), inset 0 0 80px rgba(0, 0, 0, 0.7)"
             : "none",
-          top: rowIndex === 0 ? "-16px" : "-20px",
-          bottom: "-16px",
+          top: rowIndex === 0 ? "-8px" : "-10px",
+          bottom: "-8px",
         }}
       >
-        {/* Wood grain pattern overlay for hovered row */}
         {isRowHovered && <div {...hoverOverlayProps} />}
       </div>
 
       {/* Row of Skills */}
-      <div
-        className="flex flex-wrap justify-center gap-8 relative z-10"
-        style={{ paddingBottom: "8px" }}
-      >
+      <div className="flex flex-wrap justify-center gap-2 sm:gap-4 md:gap-6 lg:gap-8 relative z-10 pb-2">
         {skills.map((skill) => (
           <div
             key={skill.id}
@@ -106,24 +78,22 @@ function SkillsRow({
             onMouseEnter={() => onSkillHover(skill.id)}
             onMouseLeave={() => onSkillHover(null)}
           >
-            {/* Skill Name Label - Above the icon with increased margin */}
-            <div className="text-center mb-4">
-              <p
-                className="text-sm font-medium transition-colors duration-300"
-                style={{
-                  color:
-                    hoveredSkill === skill.id
-                      ? skill.color
-                      : isRowHovered
-                      ? "#f0f0f0"
-                      : "#ffffff",
-                }}
-              >
-                {skill.name}
-              </p>
-            </div>
+            {/* Skill Name Label */}
+            <p
+              className="text-xs sm:text-sm font-medium transition-colors duration-300 mb-1 sm:mb-2 md:mb-4 text-center"
+              style={{
+                color:
+                  hoveredSkill === skill.id
+                    ? skill.color
+                    : isRowHovered
+                    ? "#f0f0f0"
+                    : "#ffffff",
+              }}
+            >
+              {skill.name}
+            </p>
 
-            {/* Skill Icon - Sits on top of the shelf */}
+            {/* Skill Icon */}
             <div
               className="transition-all duration-300"
               style={{
@@ -137,15 +107,15 @@ function SkillsRow({
                   hoveredSkill === skill.id
                     ? `drop-shadow(0 12px 24px ${skill.color}40)`
                     : isRowHovered
-                    ? `drop-shadow(0 8px 16px rgba(0, 0, 0, 0.3))`
-                    : "drop-shadow(0 6px 12px rgba(0, 0, 0, 0.2))",
+                    ? "drop-shadow(0 8px 16px rgba(0, 0, 0, 0.3))"
+                    : "none",
               }}
             >
               <SkillIcon
                 name={skill.name}
                 iconPath={skill.iconPath}
                 color={skill.color}
-                size={96}
+                size={iconSize}
                 isHovered={hoveredSkill === skill.id}
                 isRowHovered={isRowHovered}
               />
@@ -156,33 +126,12 @@ function SkillsRow({
 
       {/* Shelf Line */}
       <div
-        className="w-full h-2 rounded-sm relative z-10"
+        className="w-full h-1.5 md:h-2 rounded-sm relative z-10"
         style={{
-          background: `linear-gradient(to bottom, 
-            #8B4513 0%, 
-            #A0522D 20%, 
-            #8B4513 40%, 
-            #654321 60%, 
-            #4A2C17 80%, 
-            #2F1B0C 100%
-          )`,
-          boxShadow: `
-            0 2px 4px rgba(0, 0, 0, 0.3),
-            inset 0 1px 0 rgba(139, 69, 19, 0.8),
-            inset 0 -1px 0 rgba(47, 27, 12, 0.8)
-          `,
-        }}
-      />
-
-      {/* Shelf Support Shadow */}
-      <div
-        className="w-full h-1 mt-1 relative z-10"
-        style={{
-          background: `linear-gradient(to bottom, 
-            rgba(0, 0, 0, 0.4) 0%, 
-            rgba(0, 0, 0, 0.2) 50%, 
-            transparent 100%
-          )`,
+          background:
+            "linear-gradient(to bottom, #8B4513 0%, #654321 60%, #2F1B0C 100%)",
+          boxShadow:
+            "0 2px 4px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(139, 69, 19, 0.8)",
         }}
       />
     </div>
@@ -191,53 +140,75 @@ function SkillsRow({
 
 export default function SkillsGrid() {
   const { skills, loading, error } = useSkills();
-  const {
-    hoveredSkill,
-    hoveredRow,
-    handleSkillHover,
-    handleRowHover,
-    isRowHovered,
-  } = useSkillsHover();
-
-  // Wood grain overlays
+  const { hoveredSkill, handleSkillHover, handleRowHover, isRowHovered } =
+    useSkillsHover();
   const { overlayProps: mainOverlayProps } = useWoodGrain();
 
-  // Loading state
+  // State for responsive values
+  const [screenWidth, setScreenWidth] = React.useState(
+    typeof window !== "undefined" ? window.innerWidth : 1024
+  );
+
+  // Update screen width on resize
+  React.useEffect(() => {
+    const handleResize = () => setScreenWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // Show loading state
   if (loading) {
-    return <SkillsLoadingState />;
+    return (
+      <div
+        className="w-full rounded-xl p-4 md:p-8"
+        style={{ backgroundColor: "#2d1810" }}
+      >
+        <div className="text-center py-12 text-gray-400 text-lg">
+          Loading skills...
+        </div>
+      </div>
+    );
   }
 
-  // Error state
+  // Show error state
   if (error) {
-    return <SkillsErrorState error={error} />;
+    return (
+      <div
+        className="w-full rounded-xl p-4 md:p-8"
+        style={{ backgroundColor: "#2d1810" }}
+      >
+        <div className="text-center py-12">
+          <div className="text-red-400 bg-red-900/20 p-4 rounded-lg">
+            {error}
+          </div>
+        </div>
+      </div>
+    );
   }
 
-  // Group skills into rows
-  const skillRows = groupSkillsIntoRows(skills, 7);
+  // Get responsive values and group skills
+  const { itemsPerRow, iconSize } = getResponsiveValues(screenWidth);
+  const skillRows = groupSkillsIntoRows(skills, itemsPerRow);
 
   return (
     <div className="w-full relative">
-      {/* Vine decorations around the skills box */}
+      {/* Vine decorations - hidden on mobile */}
       <div
-        className="absolute inset-0 pointer-events-none"
+        className="absolute inset-0 pointer-events-none hidden md:block"
         style={{ left: "-30px", top: "-30px", right: "-30px", bottom: "-30px" }}
       >
         <VineGenerator vines={skillsFrameVines} />
       </div>
 
-      {/* Skills Grid Container with Recessed Box */}
+      {/* Skills Grid Container */}
       <div
-        className="rounded-xl p-8 relative z-10"
+        className="rounded-xl p-4 md:p-8 relative z-10"
         style={{
           backgroundColor: "#2d1810",
-          boxShadow: `
-            inset 0 0 40px rgba(0, 0, 0, 0.9),
-            inset 0 0 80px rgba(0, 0, 0, 0.7),
-            inset 0 0 120px rgba(0, 0, 0, 0.4)
-          `,
+          boxShadow:
+            "inset 0 0 40px rgba(0, 0, 0, 0.9), inset 0 0 80px rgba(0, 0, 0, 0.7)",
         }}
       >
-        {/* Wood grain pattern overlay */}
         <div {...mainOverlayProps} />
 
         {/* Skills Grid with Shelves */}
@@ -251,6 +222,7 @@ export default function SkillsGrid() {
               hoveredSkill={hoveredSkill}
               onRowHover={handleRowHover}
               onSkillHover={handleSkillHover}
+              iconSize={iconSize}
             />
           ))}
         </div>
