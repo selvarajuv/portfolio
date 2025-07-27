@@ -25,7 +25,7 @@ export default function Home() {
   return (
     <PageLayout activeSection="home">
       <HeroSection />
-      {/* <ProjectSection /> */}
+      <ProjectSection />
       {/* <ExperienceSection /> */}
       {/* <SkillsSection /> */}
     </PageLayout>
@@ -42,7 +42,7 @@ function HeroSection() {
       <div
         className="mx-auto flex flex-col lg:flex-row lg:items-center lg:justify-between"
         style={{
-          width: "70vw",
+          width: "65vw",
           gap: "4vw",
         }}
       >
@@ -52,8 +52,8 @@ function HeroSection() {
           <div
             className="relative"
             style={{
-              height: "clamp(120px, 12vw, 160px)", // Adjust based on your title size
-              marginBottom: "1rem",
+              height: "clamp(120px, 12vw, 160px)",
+              marginBottom: "2rem",
             }}
           >
             <div className="absolute inset-0">
@@ -64,7 +64,7 @@ function HeroSection() {
           <p
             className="text-gray-300 leading-relaxed"
             style={{
-              fontSize: "clamp(1rem, 1.5vw, 1.5rem)",
+              fontSize: "clamp(1rem, 1.5vw, 1.3rem)",
             }}
           >
             I'm a software engineer with 7+ years of experience building

@@ -45,7 +45,7 @@
   --navbar-hover-color: #016428;
 
   /* Spacing */
-  --forest-padding: 25px;
+  --forest-padding: clamp(10px, 2vw, 25px);
   --forest-padding-small: 8px;
 
   /* Transitions */

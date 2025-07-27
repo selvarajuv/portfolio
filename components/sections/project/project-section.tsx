@@ -2,7 +2,7 @@
 
 "use client";
 
-import WorkDescription from "@/components/sections/project/work-description";
+import WorkDescription from "@/components/sections/project/project-description";
 import FeaturedProject from "@/components/sections/project/featured-project";
 import ProjectGrid from "@/components/sections/project/project-grid";
 import { useProjectSections } from "@/hooks/project/use-project-sections";
@@ -13,7 +13,7 @@ export default function ProjectSection() {
 
   return (
     <section id="work" className="section-spacing px-4 md:px-8">
-      <div className="max-w-7xl mx-auto">
+      <div className="mx-auto" style={{ width: "65vw" }}>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
           <WorkDescription />
           <FeaturedProjectSection
@@ -22,7 +22,6 @@ export default function ProjectSection() {
             error={error}
           />
         </div>
-
         <ProjectGridSection
           projects={regularProjects}
           loading={loading}

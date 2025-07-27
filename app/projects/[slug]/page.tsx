@@ -37,7 +37,7 @@ export default function ProjectPage({ params }: { params: { slug: string } }) {
         <ProjectBackButton onClick={handleBackClick} />
 
         {/* Project Navigation */}
-        <ProjectNavigation currentProjectId={slug} />
+        {/* <ProjectNavigation currentProjectId={slug} /> */}
 
         {/* Main Content */}
         <ProjectContent project={project!} />
@@ -74,13 +74,11 @@ function ProjectContent({
   project: NonNullable<ReturnType<typeof useProjectDetails>["project"]>;
 }) {
   return (
-    <div className="relative z-10 px-8 pt-48 max-w-7xl mx-auto">
+    <div className="pt-48 mx-auto" style={{ width: "65vw" }}>
       {/* Project Title */}
       <h1
-        className={cn(
-          "text-6xl md:text-7xl font-bold mb-16 tracking-tight leading-none",
-          "max-w-4xl"
-        )}
+        className="font-bold mb-16"
+        style={{ fontSize: "clamp(5rem, 8vw, 7rem)" }}
       >
         {project.title}
       </h1>
@@ -99,13 +97,19 @@ function ProjectContent({
 
 function ProjectBreadcrumb({ title }: { title: string }) {
   return (
-    <nav className="flex items-center text-sm text-gray-400 mb-16">
+    <nav
+      className="flex items-center text-gray-400 mb-16"
+      style={{
+        fontSize: "1rem",
+      }}
+    >
       <Button
         variant="link"
         className={cn(
           "p-0 h-auto text-gray-400",
           "hover:text-[var(--navbar-hover-color)]"
         )}
+        style={{ fontSize: "inherit" }}
         asChild
       >
         <Link href="/">Home</Link>
@@ -117,6 +121,7 @@ function ProjectBreadcrumb({ title }: { title: string }) {
           "p-0 h-auto text-gray-400",
           "hover:text-[var(--navbar-hover-color)]"
         )}
+        style={{ fontSize: "inherit" }}
         asChild
       >
         <Link href="/#work">Projects</Link>
@@ -134,8 +139,8 @@ function ProjectDetails({
 }) {
   return (
     <div className="max-w-4xl mb-16">
-      {/* Project Metadata Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-12">
+      {/* Project Metadata Grid - Updated with 3 responsive states */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-12">
         <ProjectMetadata title="Client" content={project.client} />
         <ProjectMetadata title="Duration" content={project.duration} />
         <ProjectMetadata title="Year" content={project.year} />

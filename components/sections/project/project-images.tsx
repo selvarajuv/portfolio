@@ -15,16 +15,17 @@ export default function ProjectImages({ images }: ProjectImagesProps) {
           <div key={index} className="flex flex-col items-center">
             <div
               className={cn(
-                "relative overflow-hidden rounded-lg bg-gray-800",
-                "aspect-video w-full"
+                "relative w-full overflow-hidden rounded-lg bg-gray-800"
               )}
             >
               <Image
                 src={imageUrl || "/placeholder.svg"}
                 alt={`Project image ${index + 1}`}
-                fill
-                className="object-cover"
+                width={1200}
+                height={800}
+                className="w-full h-auto"
                 priority={index === 0}
+                style={{ maxWidth: "100%", height: "auto" }}
               />
             </div>
           </div>

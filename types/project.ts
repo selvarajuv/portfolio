@@ -21,13 +21,23 @@ export type ProjectItem = {
   large: boolean;
 };
 
-export type WorkBoxSize = "default" | "large";
+export type ProjectBoxSize = "default" | "large";
 
-export type WorkBoxDimensions = {
-  container: { width: string; height: string };
-  inner: { width: string; height: string };
-  image: { height: string };
-  bottom: { height: number };
+export type ProjectBoxDimensions = {
+  container: {
+    width: string;
+    height: string;
+    aspectRatio?: string;
+  };
+  inner: {
+    padding: string;
+  };
+  image: {
+    aspectRatio: string;
+  };
+  bottom: {
+    flex: string;
+  };
   text: {
     title: string;
     description: string;

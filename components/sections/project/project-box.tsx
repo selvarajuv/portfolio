@@ -6,9 +6,9 @@ import Image from "next/image";
 import { useState } from "react";
 import Link from "next/link";
 import WoodenBox from "../../forest-theme/wood-box";
-import { WorkBoxSize, WorkBoxDimensions } from "@/types/project";
+import { ProjectBoxSize, ProjectBoxDimensions } from "@/types/project";
 
-type WorkBoxProps = {
+type ProjectBoxProps = {
   className?: string;
   imageUrl?: string;
   imageAlt?: string;
@@ -16,34 +16,54 @@ type WorkBoxProps = {
   bottomContent?: string;
   hoverContent?: string;
   slug?: string;
-  size?: WorkBoxSize;
+  size?: ProjectBoxSize;
   clickable?: boolean;
 };
 
-const sizeVariants: Record<WorkBoxSize, WorkBoxDimensions> = {
+const sizeVariants: Record<ProjectBoxSize, ProjectBoxDimensions> = {
   default: {
-    container: { width: "380px", height: "420px" },
-    inner: { width: "330px", height: "370px" },
-    image: { height: "235px" },
-    bottom: { height: 135 },
+    container: {
+      width: "min(380px, 65vw)",
+      height: "auto",
+      aspectRatio: ".9",
+    },
+    inner: {
+      padding: "0px",
+    },
+    image: {
+      aspectRatio: "1.25",
+    },
+    bottom: {
+      flex: "1",
+    },
     text: {
-      title: "text-2xl",
-      description: "text-sm",
+      title: "clamp(1.25rem, 3vw, 1.5rem)",
+      description: "clamp(0.875rem, 2vw, 0.875rem)",
     },
   },
   large: {
-    container: { width: "800px", height: "600px" },
-    inner: { width: "750px", height: "550px" },
-    image: { height: "415px" },
-    bottom: { height: 135 },
+    container: {
+      width: "min(800px, 65vw)",
+      height: "auto",
+      aspectRatio: "1.33",
+    },
+    inner: {
+      padding: "0px",
+    },
+    image: {
+      aspectRatio: "1.45",
+    },
+    bottom: {
+      flex: "1",
+    },
     text: {
-      title: "text-3xl",
-      description: "text-base",
+      title: "clamp(1.5rem, 4vw, 1.875rem)",
+      description: "clamp(1rem, 2.5vw, 1rem)",
     },
   },
 };
 
-export default function WorkBox({
+export default function ProjectBox({
   className = "",
   imageUrl,
   imageAlt = "Project image",
@@ -53,171 +73,163 @@ export default function WorkBox({
   slug = "",
   size = "default",
   clickable = true,
-}: WorkBoxProps) {
+}: ProjectBoxProps) {
   const [isHovered, setIsHovered] = useState(false);
   const dimensions = sizeVariants[size];
 
   const content = (
-    <WoodenBox
-      className={className}
-      width={dimensions.container.width}
-      height={dimensions.container.height}
-      isHovered={isHovered}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+    <div
+      className="project-box-wrapper"
+      style={{
+        width: dimensions.container.width,
+        aspectRatio: dimensions.container.aspectRatio,
+      }}
     >
-      {/* Inner container with reduced dimensions to account for padding */}
-      <div
-        className="bg-gray-900 overflow-hidden rounded-md"
-        style={{
-          width: dimensions.inner.width,
-          height: dimensions.inner.height,
-          boxShadow:
-            size === "large"
-              ? "0 6px 12px rgba(0, 0, 0, 0.3)"
-              : "0 4px 8px rgba(0, 0, 0, 0.3)",
-        }}
+      <WoodenBox
+        className={className}
+        width="100%"
+        height="100%"
+        isHovered={isHovered}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
       >
-        {/* Image container */}
+        {/* Inner container */}
         <div
-          className="relative w-full overflow-hidden"
-          style={{ height: dimensions.image.height }}
+          className="bg-gray-900 overflow-hidden rounded-md flex flex-col"
+          style={{
+            margin: dimensions.inner.padding,
+            width: `calc(100% - calc(${dimensions.inner.padding} * 2))`,
+            height: `calc(100% - calc(${dimensions.inner.padding} * 2))`,
+            boxShadow:
+              size === "large"
+                ? "0 6px 12px rgba(0, 0, 0, 0.3)"
+                : "0 4px 8px rgba(0, 0, 0, 0.3)",
+          }}
         >
-          {imageUrl ? (
-            <Image
-              src={imageUrl || "/placeholder.svg"}
-              alt={imageAlt}
-              fill
-              className={`object-cover transition-transform duration-700 ease-in-out ${
-                isHovered ? "scale-110" : "scale-100"
-              }`}
-            />
-          ) : (
-            <div className="w-full h-full bg-gray-800 flex items-center justify-center text-gray-500">
-              <span
-                className={`transition-transform duration-700 ease-in-out ${
+          {/* Image container */}
+          <div
+            className="relative w-full overflow-hidden shrink-0"
+            style={{ aspectRatio: dimensions.image.aspectRatio }}
+          >
+            {imageUrl ? (
+              <Image
+                src={imageUrl || "/placeholder.svg"}
+                alt={imageAlt}
+                fill
+                className={`object-cover transition-transform duration-700 ease-in-out ${
                   isHovered ? "scale-110" : "scale-100"
                 }`}
-              >
-                Image Area ({dimensions.inner.width}×{dimensions.image.height})
-              </span>
-            </div>
-          )}
-        </div>
+              />
+            ) : (
+              <div className="w-full h-full bg-gray-800 flex items-center justify-center text-gray-500">
+                <span
+                  className={`transition-transform duration-700 ease-in-out ${
+                    isHovered ? "scale-110" : "scale-100"
+                  }`}
+                >
+                  Image Area
+                </span>
+              </div>
+            )}
+          </div>
 
-        {/* Bottom section with content */}
-        {size === "default" ? (
-          // Default size layout with secondary color background
+          {/* Bottom section - takes remaining space */}
           <div
-            className="w-full flex justify-center items-center bg-[#014421]"
+            className={`w-full flex ${
+              size === "default"
+                ? "justify-center items-center bg-[#014421]"
+                : "items-center bg-transparent"
+            }`}
             style={{
-              height: `${dimensions.bottom.height}px`,
-              backdropFilter: "blur(4px)",
+              flex: dimensions.bottom.flex,
+              backdropFilter: size === "default" ? "blur(4px)" : "none",
             }}
           >
-            <div
-              className="bg-transparent rounded flex flex-col"
-              style={{ width: "275px", height: "70px" }}
-            >
-              {/* Top box with larger white text */}
-              <div className="flex-1 flex items-center justify-start">
-                {topContent ? (
+            {size === "default" ? (
+              // Default size layout
+              <div className="w-[85%] h-[70%] flex flex-col">
+                {/* Title */}
+                <div className="flex-1 flex items-center">
                   <p
-                    className={`text-white px-4 text-left font-medium ${dimensions.text.title} truncate`}
+                    className="text-white font-medium truncate w-full"
+                    style={{ fontSize: dimensions.text.title }}
                   >
-                    {topContent}
-                  </p>
-                ) : (
-                  <p
-                    className={`text-white px-4 text-left font-medium ${dimensions.text.title} truncate`}
-                  >
-                    Project Title
-                  </p>
-                )}
-              </div>
-
-              {/* Bottom box with text that changes on hover */}
-              <div className="flex-1 relative overflow-hidden">
-                {/* Default text */}
-                <div
-                  className={`absolute inset-0 flex items-center px-4 transition-transform duration-300 ${
-                    isHovered ? "-translate-y-full" : "translate-y-0"
-                  }`}
-                >
-                  <p
-                    className={`text-white text-left ${dimensions.text.description} truncate`}
-                  >
-                    {bottomContent || "View Project"}
+                    {topContent || "Project Title"}
                   </p>
                 </div>
 
-                {/* Hover text that rolls in from bottom */}
-                <div
-                  className={`absolute inset-0 flex items-center px-4 transition-transform duration-300 ${
-                    isHovered ? "translate-y-0" : "translate-y-full"
-                  }`}
-                >
-                  <p
-                    className={`text-white text-left ${dimensions.text.description} truncate`}
+                {/* Description with hover effect */}
+                <div className="flex-1 relative overflow-hidden">
+                  <div
+                    className={`absolute inset-0 flex items-center transition-transform duration-300 ${
+                      isHovered ? "-translate-y-full" : "translate-y-0"
+                    }`}
                   >
-                    {hoverContent}
-                  </p>
+                    <p
+                      className="text-white truncate w-full"
+                      style={{ fontSize: dimensions.text.description }}
+                    >
+                      {bottomContent || "View Project"}
+                    </p>
+                  </div>
+
+                  <div
+                    className={`absolute inset-0 flex items-center transition-transform duration-300 ${
+                      isHovered ? "translate-y-0" : "translate-y-full"
+                    }`}
+                  >
+                    <p
+                      className="text-white truncate w-full"
+                      style={{ fontSize: dimensions.text.description }}
+                    >
+                      {hoverContent}
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-        ) : (
-          // Large size layout with transparent background
-          <div
-            className="w-full bg-transparent"
-            style={{ height: `${dimensions.bottom.height}px` }}
-          >
-            <div className="h-full flex flex-col justify-center px-8">
-              {/* Title */}
-              <div className="mb-3">
+            ) : (
+              // Large size layout
+              <div className="w-full px-8">
                 <h3
-                  className={`text-white ${dimensions.text.title} font-medium truncate`}
+                  className="text-white font-medium truncate mb-2"
+                  style={{ fontSize: dimensions.text.title }}
                 >
                   {topContent || "Project Title"}
                 </h3>
-              </div>
 
-              {/* Description with hover effect */}
-              <div
-                className="relative overflow-hidden"
-                style={{ height: "30px" }}
-              >
-                {/* Default text */}
-                <div
-                  className={`absolute inset-0 flex items-center transition-transform duration-300 ${
-                    isHovered ? "-translate-y-full" : "translate-y-0"
-                  }`}
-                >
-                  <p
-                    className={`text-white ${dimensions.text.description} truncate`}
+                <div className="relative h-[30px] overflow-hidden">
+                  <div
+                    className={`absolute inset-0 flex items-center transition-transform duration-300 ${
+                      isHovered ? "-translate-y-full" : "translate-y-0"
+                    }`}
                   >
-                    {bottomContent || "View Project"}
-                  </p>
-                </div>
+                    <p
+                      className="text-white truncate"
+                      style={{ fontSize: dimensions.text.description }}
+                    >
+                      {bottomContent || "View Project"}
+                    </p>
+                  </div>
 
-                {/* Hover text that rolls in from bottom */}
-                <div
-                  className={`absolute inset-0 flex items-center transition-transform duration-300 ${
-                    isHovered ? "translate-y-0" : "translate-y-full"
-                  }`}
-                >
-                  <p
-                    className={`text-white ${dimensions.text.description} truncate`}
+                  <div
+                    className={`absolute inset-0 flex items-center transition-transform duration-300 ${
+                      isHovered ? "translate-y-0" : "translate-y-full"
+                    }`}
                   >
-                    {hoverContent}
-                  </p>
+                    <p
+                      className="text-white truncate"
+                      style={{ fontSize: dimensions.text.description }}
+                    >
+                      {hoverContent}
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
           </div>
-        )}
-      </div>
-    </WoodenBox>
+        </div>
+      </WoodenBox>
+    </div>
   );
 
   // Wrap with Link if clickable and slug is provided
