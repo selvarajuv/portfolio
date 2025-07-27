@@ -16,7 +16,7 @@ export default function TechnologyList({ technologies }: TechnologyListProps) {
           <img
             src={techUrl}
             alt={`Technology ${index + 1}`}
-            className="w-8 h-8 object-contain"
+            className="w-8 h-8 object-contain rounded-sm"
             onError={(e) => {
               // Fallback if image fails to load
               e.currentTarget.style.display = "none";

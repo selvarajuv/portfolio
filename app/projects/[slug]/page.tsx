@@ -138,8 +138,7 @@ function ProjectDetails({
   project: NonNullable<ReturnType<typeof useProjectDetails>["project"]>;
 }) {
   return (
-    <div className="max-w-4xl mb-16">
-      {/* Project Metadata Grid - Updated with 3 responsive states */}
+    <div className="mb-16" style={{ width: "45vw" }}>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-12">
         <ProjectMetadata title="Client" content={project.client} />
         <ProjectMetadata title="Duration" content={project.duration} />
@@ -159,7 +158,10 @@ function ProjectDetails({
 
       {/* Main Description */}
       <div className="mb-8">
-        <p className="text-xl text-gray-300 leading-relaxed mb-8">
+        <p
+          className="text-xl text-gray-300 leading-relaxed mb-8"
+          style={{ fontSize: "clamp(1.1rem, 2vw, 1.3rem)" }}
+        >
           {project.description}
         </p>
 
