@@ -9,7 +9,7 @@ type ProjectGridProps = {
 
 export default function ProjectGrid({ projects }: ProjectGridProps) {
   return (
-    <div className="w-full flex flex-wrap justify-center gap-8 md:gap-16 ">
+    <div className="w-full flex flex-wrap justify-center gap-12 md:gap-20 ">
       {projects.map((project) => (
         <WorkBox
           key={project.id}

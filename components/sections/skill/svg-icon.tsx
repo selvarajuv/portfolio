@@ -1,16 +1,25 @@
-// components/sections/skills/svg-icon.tsx
+// components/sections/skill/svg-icon.tsx
 
-import type React from "react";
+import React from "react";
 import { SvgIconProps } from "@/types/skill";
 
-const SvgIcon: React.FC<SvgIconProps> = ({
+export default function SvgIcon({
   src,
   alt,
   size = 96,
   className = "",
   style = {},
   onError,
-}) => {
+}: SvgIconProps) {
+  // Base image styles
+  const imageStyles = {
+    display: "block",
+    maxWidth: "100%",
+    maxHeight: "100%",
+    objectFit: "contain" as const,
+    ...style,
+  };
+
   return (
     <img
       src={src || "/placeholder.svg"}
@@ -18,17 +27,9 @@ const SvgIcon: React.FC<SvgIconProps> = ({
       width={size}
       height={size}
       className={className}
-      style={{
-        display: "block",
-        maxWidth: "100%",
-        maxHeight: "100%",
-        objectFit: "contain",
-        ...style,
-      }}
+      style={imageStyles}
       onError={onError}
       loading="lazy"
     />
   );
-};
-
-export default SvgIcon;
+}

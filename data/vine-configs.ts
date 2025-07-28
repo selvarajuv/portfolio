@@ -379,31 +379,6 @@ export const skillsFrameVines: VineConfig[] = [
   },
 ];
 
-// Footer accent vines
-export const footerVines: VineConfig[] = [
-  {
-    bottom: "20px",
-    left: "20px",
-    width: "60px",
-    height: "90px",
-    opacity: 0.15,
-    rotate: "45deg",
-    scale: "0.4",
-    scaleY: true,
-  },
-  {
-    bottom: "20px",
-    right: "20px",
-    width: "60px",
-    height: "90px",
-    opacity: 0.15,
-    rotate: "-45deg",
-    scale: "0.4",
-    scaleY: true,
-    scaleX: true,
-  },
-];
-
 function vineLocations(start: number, end: number, iterator: number): string[] {
   const result: string[] = [];
   for (let i = start; i <= end; i += iterator) {

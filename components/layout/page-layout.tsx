@@ -2,8 +2,7 @@
 
 "use client";
 
-import type React from "react";
-import { useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { PageLayoutProps } from "@/types/layout";
 import Navbar from "@/components/layout/navbar";
 import Footer from "@/components/layout/footer";
@@ -31,22 +30,23 @@ export default function PageLayout({
 
   return (
     <main className="min-h-screen text-white relative">
-      {/* Very dark chocolate brown background base */}
-      <div className="fixed inset-0 z-0 bg-[#25130A]" />
+      {/* Background base using CSS variable */}
+      <div
+        className="fixed inset-0 z-0"
+        style={{ backgroundColor: "var(--background-dark)" }}
+      />
 
-      {/* Stylized wood grain pattern */}
+      {/* Texture pattern overlay */}
       <WoodGrainBackground ref={backgroundRef} />
 
       {/* Vine decorations */}
-      {/* <VineDecorations side="left" ref={leftVinesRef} />
-      <VineDecorations side="right" ref={rightVinesRef} /> */}
+      <VineDecorations side="left" ref={leftVinesRef} />
+      <VineDecorations side="right" ref={rightVinesRef} />
 
-      {/* Content container with relative positioning to appear above the background */}
+      {/* Main content */}
       <div className="relative z-10">
         <Navbar activeSection={activeSection} />
-
         {children}
-
         <Footer />
       </div>
     </main>

@@ -1,21 +1,41 @@
-// componenets/sections/skill/skill-grid.tsx
+// components/sections/skill/skill-grid.tsx
 
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { SkillItem } from "@/types/skill";
 import SkillIcon from "./skill-icon";
 import { useSkills } from "@/hooks/skill/use-skill";
 import { useSkillsHover } from "@/hooks/skill/use-skill-hover";
-import { useWoodGrain } from "@/hooks/use-wood-grain";
-import { VineGenerator } from "../../forest-theme/vines";
+import { VineGenerator } from "@/components/forest-theme/vines";
 import { skillsFrameVines } from "@/data/vine-configs";
+import { cn } from "@/lib/utils";
+
+// Constants
+const RESPONSIVE_CONFIG = {
+  mobile: { breakpoint: 640, itemsPerRow: 4, iconSize: 60 },
+  tablet: { breakpoint: 1024, itemsPerRow: 5, iconSize: 72 },
+  desktop: { itemsPerRow: 7, iconSize: 96 },
+} as const;
 
 // Helper function to determine responsive values
 function getResponsiveValues(width: number) {
-  if (width < 640) return { itemsPerRow: 4, iconSize: 60 };
-  if (width < 1024) return { itemsPerRow: 5, iconSize: 72 };
-  return { itemsPerRow: 7, iconSize: 96 };
+  if (width < RESPONSIVE_CONFIG.mobile.breakpoint) {
+    return {
+      itemsPerRow: RESPONSIVE_CONFIG.mobile.itemsPerRow,
+      iconSize: RESPONSIVE_CONFIG.mobile.iconSize,
+    };
+  }
+  if (width < RESPONSIVE_CONFIG.tablet.breakpoint) {
+    return {
+      itemsPerRow: RESPONSIVE_CONFIG.tablet.itemsPerRow,
+      iconSize: RESPONSIVE_CONFIG.tablet.iconSize,
+    };
+  }
+  return {
+    itemsPerRow: RESPONSIVE_CONFIG.desktop.itemsPerRow,
+    iconSize: RESPONSIVE_CONFIG.desktop.iconSize,
+  };
 }
 
 // Helper function to group skills into rows
@@ -25,6 +45,21 @@ function groupSkillsIntoRows<T>(items: T[], itemsPerRow: number): T[][] {
     rows.push(items.slice(i, i + itemsPerRow));
   }
   return rows;
+}
+
+// Custom hook for screen width
+function useScreenWidth() {
+  const [screenWidth, setScreenWidth] = useState(
+    typeof window !== "undefined" ? window.innerWidth : 1024
+  );
+
+  useEffect(() => {
+    const handleResize = () => setScreenWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  return screenWidth;
 }
 
 type SkillsRowProps = {
@@ -46,7 +81,23 @@ function SkillsRow({
   onSkillHover,
   iconSize,
 }: SkillsRowProps) {
-  const { overlayProps: hoverOverlayProps } = useWoodGrain();
+  // Row highlight styles
+  const rowHighlightStyles = {
+    backgroundColor: isRowHovered
+      ? "var(--surface-primary-hover)"
+      : "transparent",
+    boxShadow: isRowHovered ? "var(--shadow-inset-strong)" : "none",
+    top: rowIndex === 0 ? "-8px" : "-10px",
+    bottom: "-8px",
+  };
+
+  // Shelf styles
+  const shelfStyles = {
+    background:
+      "linear-gradient(to bottom, #8B4513 0%, #654321 60%, #2F1B0C 100%)",
+    boxShadow:
+      "0 2px 4px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(139, 69, 19, 0.8)",
+  };
 
   return (
     <div
@@ -56,84 +107,107 @@ function SkillsRow({
     >
       {/* Full-width highlight background */}
       <div
-        className="absolute inset-0 -inset-x-4 md:-inset-x-8 rounded-xl transition-all duration-300"
-        style={{
-          backgroundColor: isRowHovered ? "#5e301a" : "transparent",
-          boxShadow: isRowHovered
-            ? "inset 0 0 40px rgba(0, 0, 0, 0.9), inset 0 0 80px rgba(0, 0, 0, 0.7)"
-            : "none",
-          top: rowIndex === 0 ? "-8px" : "-10px",
-          bottom: "-8px",
-        }}
+        className={cn(
+          "absolute inset-0 -inset-x-4 md:-inset-x-8 rounded-xl",
+          "transition-all duration-300"
+        )}
+        style={rowHighlightStyles}
       >
-        {isRowHovered && <div {...hoverOverlayProps} />}
+        {isRowHovered && <div className="texture-overlay" />}
       </div>
 
       {/* Row of Skills */}
       <div className="flex flex-wrap justify-center gap-2 sm:gap-4 md:gap-6 lg:gap-8 relative z-10 pb-2">
-        {skills.map((skill) => (
-          <div
-            key={skill.id}
-            className="relative group cursor-pointer transition-all duration-300 flex flex-col items-center"
-            onMouseEnter={() => onSkillHover(skill.id)}
-            onMouseLeave={() => onSkillHover(null)}
-          >
-            {/* Skill Name Label */}
-            <p
-              className="text-xs sm:text-sm font-medium transition-colors duration-300 mb-1 sm:mb-2 md:mb-4 text-center"
-              style={{
-                color:
-                  hoveredSkill === skill.id
+        {skills.map((skill) => {
+          const isSkillHovered = hoveredSkill === skill.id;
+
+          // Skill transform styles
+          const skillTransform = isSkillHovered
+            ? "translateY(-6px) scale(1.1)"
+            : isRowHovered
+            ? "translateY(-3px) scale(1.05)"
+            : "translateY(0) scale(1)";
+
+          // Skill filter styles
+          const skillFilter = isSkillHovered
+            ? `drop-shadow(0 12px 24px ${skill.color}40)`
+            : isRowHovered
+            ? "drop-shadow(0 8px 16px rgba(0, 0, 0, 0.3))"
+            : "none";
+
+          return (
+            <div
+              key={skill.id}
+              className={cn(
+                "relative group cursor-pointer transition-all duration-300",
+                "flex flex-col items-center"
+              )}
+              onMouseEnter={() => onSkillHover(skill.id)}
+              onMouseLeave={() => onSkillHover(null)}
+            >
+              {/* Skill Name Label */}
+              <p
+                className={cn(
+                  "text-xs sm:text-sm font-medium transition-colors duration-300",
+                  "mb-1 sm:mb-2 md:mb-4 text-center"
+                )}
+                style={{
+                  color: isSkillHovered
                     ? skill.color
                     : isRowHovered
-                    ? "#f0f0f0"
-                    : "#ffffff",
-              }}
-            >
-              {skill.name}
-            </p>
+                    ? "var(--text-secondary)"
+                    : "var(--text-primary)",
+                }}
+              >
+                {skill.name}
+              </p>
 
-            {/* Skill Icon */}
-            <div
-              className="transition-all duration-300"
-              style={{
-                transform:
-                  hoveredSkill === skill.id
-                    ? "translateY(-6px) scale(1.1)"
-                    : isRowHovered
-                    ? "translateY(-3px) scale(1.05)"
-                    : "translateY(0) scale(1)",
-                filter:
-                  hoveredSkill === skill.id
-                    ? `drop-shadow(0 12px 24px ${skill.color}40)`
-                    : isRowHovered
-                    ? "drop-shadow(0 8px 16px rgba(0, 0, 0, 0.3))"
-                    : "none",
-              }}
-            >
-              <SkillIcon
-                name={skill.name}
-                iconPath={skill.iconPath}
-                color={skill.color}
-                size={iconSize}
-                isHovered={hoveredSkill === skill.id}
-                isRowHovered={isRowHovered}
-              />
+              {/* Skill Icon */}
+              <div
+                className="transition-all duration-300"
+                style={{ transform: skillTransform, filter: skillFilter }}
+              >
+                <SkillIcon
+                  name={skill.name}
+                  iconPath={skill.iconPath}
+                  color={skill.color}
+                  size={iconSize}
+                  isHovered={isSkillHovered}
+                  isRowHovered={isRowHovered}
+                />
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {/* Shelf Line */}
       <div
         className="w-full h-1.5 md:h-2 rounded-sm relative z-10"
-        style={{
-          background:
-            "linear-gradient(to bottom, #8B4513 0%, #654321 60%, #2F1B0C 100%)",
-          boxShadow:
-            "0 2px 4px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(139, 69, 19, 0.8)",
-        }}
+        style={shelfStyles}
       />
+    </div>
+  );
+}
+
+// Loading component
+function SkillsLoading() {
+  return (
+    <div className="surface-box w-full rounded-xl p-4 md:p-8">
+      <div className="text-center py-12 text-gray-400 text-lg">
+        Loading skills...
+      </div>
+    </div>
+  );
+}
+
+// Error component
+function SkillsError({ error }: { error: string }) {
+  return (
+    <div className="surface-box w-full rounded-xl p-4 md:p-8">
+      <div className="text-center py-12">
+        <div className="text-red-400 bg-red-900/20 p-4 rounded-lg">{error}</div>
+      </div>
     </div>
   );
 }
@@ -142,49 +216,13 @@ export default function SkillsGrid() {
   const { skills, loading, error } = useSkills();
   const { hoveredSkill, handleSkillHover, handleRowHover, isRowHovered } =
     useSkillsHover();
-  const { overlayProps: mainOverlayProps } = useWoodGrain();
-
-  // State for responsive values
-  const [screenWidth, setScreenWidth] = React.useState(
-    typeof window !== "undefined" ? window.innerWidth : 1024
-  );
-
-  // Update screen width on resize
-  React.useEffect(() => {
-    const handleResize = () => setScreenWidth(window.innerWidth);
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  const screenWidth = useScreenWidth();
 
   // Show loading state
-  if (loading) {
-    return (
-      <div
-        className="w-full rounded-xl p-4 md:p-8"
-        style={{ backgroundColor: "#2d1810" }}
-      >
-        <div className="text-center py-12 text-gray-400 text-lg">
-          Loading skills...
-        </div>
-      </div>
-    );
-  }
+  if (loading) return <SkillsLoading />;
 
   // Show error state
-  if (error) {
-    return (
-      <div
-        className="w-full rounded-xl p-4 md:p-8"
-        style={{ backgroundColor: "#2d1810" }}
-      >
-        <div className="text-center py-12">
-          <div className="text-red-400 bg-red-900/20 p-4 rounded-lg">
-            {error}
-          </div>
-        </div>
-      </div>
-    );
-  }
+  if (error) return <SkillsError error={error} />;
 
   // Get responsive values and group skills
   const { itemsPerRow, iconSize } = getResponsiveValues(screenWidth);
@@ -195,7 +233,12 @@ export default function SkillsGrid() {
       {/* Vine decorations - hidden on mobile */}
       <div
         className="absolute inset-0 pointer-events-none hidden md:block"
-        style={{ left: "-30px", top: "-30px", right: "-30px", bottom: "-30px" }}
+        style={{
+          left: "-30px",
+          top: "-30px",
+          right: "-30px",
+          bottom: "-30px",
+        }}
       >
         <VineGenerator vines={skillsFrameVines} />
       </div>
@@ -204,12 +247,11 @@ export default function SkillsGrid() {
       <div
         className="rounded-xl p-4 md:p-8 relative z-10"
         style={{
-          backgroundColor: "#2d1810",
-          boxShadow:
-            "inset 0 0 40px rgba(0, 0, 0, 0.9), inset 0 0 80px rgba(0, 0, 0, 0.7)",
+          backgroundColor: "var(--surface-primary)",
+          boxShadow: "var(--shadow-inset-strong)",
         }}
       >
-        <div {...mainOverlayProps} />
+        <div className="texture-overlay" />
 
         {/* Skills Grid with Shelves */}
         <div className="relative z-10">

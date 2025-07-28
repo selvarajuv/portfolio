@@ -13,7 +13,7 @@ export default function ProjectSection() {
 
   return (
     <section id="work">
-      <div className="mx-auto w-full p-4 md:px-[10vw]">
+      <div className="mx-auto w-full p-4 md:px-[15vw]">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
           <WorkDescription />
           <FeaturedProjectSection
