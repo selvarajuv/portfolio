@@ -274,18 +274,11 @@ function HeroSectionContent({ heroDescription }: { heroDescription: string }) {
 
         {/* Profile Image */}
         <div className="relative flex justify-center lg:justify-end">
-          <WoodenBox
-            width={profileBoxSizing.desktop.width}
-            height={profileBoxSizing.desktop.height}
-            className={cn(
-              "max-sm:!w-[clamp(200px,80vw,400px)]",
-              "max-sm:!h-[clamp(240px,90vw,450px)]",
-              "lg:!w-[clamp(280px,40vw,540px)]",
-              "lg:!h-[clamp(320px,45vw,630px)]"
-            )}
-          >
-            <ProfileImage />
-          </WoodenBox>
+          <div className="w-full p-4 max-w-[540px] lg:p-0 lg:w-[35vw] lg:max-w-[540px]">
+            <WoodenBox className="w-full aspect-[6/7]">
+              <ProfileImage />
+            </WoodenBox>
+          </div>
         </div>
       </div>
     </section>
