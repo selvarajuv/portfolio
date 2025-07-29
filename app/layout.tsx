@@ -2,13 +2,14 @@
 
 import type React from "react";
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+
+import { Instrument_Sans } from "next/font/google";
 import "./globals.css";
 import ClientLayout from "@/components/layout/client-layout";
 
-const inter = Inter({ subsets: ["latin"] });
+const font = Instrument_Sans({ subsets: ["latin"] });
 
-export const metadata: Metadata = {
+const metadata: Metadata = {
   title: "Vichu's Portfolio",
   description: "My personal portfolio",
 };
@@ -20,7 +21,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.className}`}>
+      <body className={`${font.className}`}>
         <ClientLayout>{children}</ClientLayout>
       </body>
     </html>
