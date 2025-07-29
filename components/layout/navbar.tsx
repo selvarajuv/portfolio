@@ -24,7 +24,7 @@ interface NavItemProps {
 const NAV_SECTIONS = ["home", "work", "experience", "skills"];
 const SCROLL_THRESHOLD = 100;
 const OBSERVER_THRESHOLD = 0.2;
-const OBSERVER_DISABLE_DURATION = 1500;
+const OBSERVER_DISABLE_DURATION = 1000;
 
 // Container styles as constant
 const CONTAINER_STYLES = {
@@ -70,15 +70,14 @@ function useSectionObserver(
   onSectionChange: (section: string) => void
 ) {
   const observerRefs = useRef<IntersectionObserver[]>([]);
+  const visibleSections = useRef<Map<string, number>>(new Map());
 
   useEffect(() => {
     if (pathname !== "/") return;
 
-    // Clean up previous observers
     observerRefs.current.forEach((observer) => observer.disconnect());
     observerRefs.current = [];
 
-    // Create intersection observers
     sections.forEach((section) => {
       const element = document.getElementById(section);
       if (!element) return;
@@ -86,19 +85,40 @@ function useSectionObserver(
       const observer = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
-            if (
-              entry.isIntersecting &&
-              entry.intersectionRatio >= OBSERVER_THRESHOLD &&
-              !window.observersDisabled
-            ) {
-              onSectionChange(section);
-              if (window.location.hash !== `#${section}`) {
-                window.history.replaceState(null, "", `#${section}`);
+            const sectionId = entry.target.id;
+
+            // Update visibility map
+            if (entry.isIntersecting) {
+              visibleSections.current.set(sectionId, entry.intersectionRatio);
+            } else {
+              visibleSections.current.delete(sectionId);
+            }
+
+            // Find the most visible section
+            let mostVisible = { section: "", ratio: 0 };
+            visibleSections.current.forEach((ratio, id) => {
+              if (ratio > mostVisible.ratio) {
+                mostVisible = { section: id, ratio };
+              }
+            });
+
+            // Update active section if we have a clearly visible section
+            if (mostVisible.section && !window.observersDisabled) {
+              onSectionChange(mostVisible.section);
+              if (window.location.hash !== `#${mostVisible.section}`) {
+                window.history.replaceState(
+                  null,
+                  "",
+                  `#${mostVisible.section}`
+                );
               }
             }
           });
         },
-        { threshold: OBSERVER_THRESHOLD }
+        {
+          threshold: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1],
+          rootMargin: "0px 0px -50% 0px", // Only consider top half of viewport
+        }
       );
 
       observer.observe(element);
