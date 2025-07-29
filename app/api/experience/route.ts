@@ -7,6 +7,12 @@ export async function GET() {
   try {
     const response = await notion.databases.query({
       database_id: DATABASES.EXPERIENCE,
+      sorts: [
+        {
+          property: "ID",
+          direction: "descending",
+        },
+      ],
     });
 
     const experience = response.results.map((page: any) => {
