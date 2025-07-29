@@ -22,64 +22,18 @@ import { skillsFrameVines } from "@/data/vine-configs";
 // Utils
 import { cn } from "@/lib/utils";
 
-// Constants
-const RESPONSIVE_CONFIG = {
-  mobile: { breakpoint: 640, itemsPerRow: 4, iconSize: 60 },
-  tablet: { breakpoint: 1024, itemsPerRow: 5, iconSize: 72 },
-  desktop: { itemsPerRow: 7, iconSize: 96 },
-} as const;
-
-// Helper functions
-function getResponsiveValues(width: number) {
-  if (width < RESPONSIVE_CONFIG.mobile.breakpoint) {
-    return {
-      itemsPerRow: RESPONSIVE_CONFIG.mobile.itemsPerRow,
-      iconSize: RESPONSIVE_CONFIG.mobile.iconSize,
-    };
-  }
-  if (width < RESPONSIVE_CONFIG.tablet.breakpoint) {
-    return {
-      itemsPerRow: RESPONSIVE_CONFIG.tablet.itemsPerRow,
-      iconSize: RESPONSIVE_CONFIG.tablet.iconSize,
-    };
-  }
-  return {
-    itemsPerRow: RESPONSIVE_CONFIG.desktop.itemsPerRow,
-    iconSize: RESPONSIVE_CONFIG.desktop.iconSize,
-  };
-}
-
-function groupSkillsIntoRows<T>(items: T[], itemsPerRow: number): T[][] {
-  const rows: T[][] = [];
-  for (let i = 0; i < items.length; i += itemsPerRow) {
-    rows.push(items.slice(i, i + itemsPerRow));
-  }
-  return rows;
-}
-
-// Custom hook
-function useScreenWidth() {
-  const [screenWidth, setScreenWidth] = useState(
-    typeof window !== "undefined" ? window.innerWidth : 1024
-  );
-
-  useEffect(() => {
-    const handleResize = () => setScreenWidth(window.innerWidth);
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  return screenWidth;
-}
-
 export default function SkillsGrid() {
   const { skills, loading, error } = useSkills();
   const { hoveredSkill, handleSkillHover, handleRowHover, isRowHovered } =
     useSkillsHover();
-  const screenWidth = useScreenWidth();
+  const [mounted, setMounted] = useState(false);
 
-  // Loading state
-  if (loading) {
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Loading state - show skeleton until mounted to prevent hydration issues
+  if (loading || !mounted) {
     return <SkillsGridSkeleton />;
   }
 
@@ -94,13 +48,9 @@ export default function SkillsGrid() {
   }
 
   // Success state
-  const { itemsPerRow, iconSize } = getResponsiveValues(screenWidth);
-  const skillRows = groupSkillsIntoRows(skills, itemsPerRow);
-
   return (
     <SkillsGridContent
-      skillRows={skillRows}
-      iconSize={iconSize}
+      skills={skills}
       hoveredSkill={hoveredSkill}
       handleSkillHover={handleSkillHover}
       handleRowHover={handleRowHover}
@@ -112,12 +62,8 @@ export default function SkillsGrid() {
 // ===== State Components =====
 
 function SkillsGridSkeleton() {
-  const screenWidth = useScreenWidth();
-  const { itemsPerRow, iconSize } = getResponsiveValues(screenWidth);
-
   // Create 9 placeholder items
   const placeholderItems = Array.from({ length: 9 }, (_, i) => i);
-  const placeholderRows = groupSkillsIntoRows(placeholderItems, itemsPerRow);
 
   return (
     <div className="w-full relative">
@@ -146,13 +92,7 @@ function SkillsGridSkeleton() {
 
         {/* Placeholder Grid with Shelves */}
         <div className="relative z-10">
-          {placeholderRows.map((row, rowIndex) => (
-            <PlaceholderRow
-              key={rowIndex}
-              placeholders={row}
-              iconSize={iconSize}
-            />
-          ))}
+          <PlaceholderRows placeholders={placeholderItems} />
         </div>
       </div>
     </div>
@@ -184,15 +124,13 @@ function SkillsGridEmpty() {
 // ===== Main Content Component =====
 
 function SkillsGridContent({
-  skillRows,
-  iconSize,
+  skills,
   hoveredSkill,
   handleSkillHover,
   handleRowHover,
   isRowHovered,
 }: {
-  skillRows: SkillItem[][];
-  iconSize: number;
+  skills: SkillItem[];
   hoveredSkill: string | null;
   handleSkillHover: (skillId: string | null) => void;
   handleRowHover: (rowIndex: number | null) => void;
@@ -223,23 +161,85 @@ function SkillsGridContent({
       >
         <div className="texture-overlay" />
 
-        {/* Skills Grid with Shelves */}
+        {/* Skills Grid with Responsive Layout */}
         <div className="relative z-10">
-          {skillRows.map((row, rowIndex) => (
-            <SkillsRow
-              key={rowIndex}
-              skills={row}
-              rowIndex={rowIndex}
-              isRowHovered={isRowHovered(rowIndex)}
+          {/* Mobile Layout (4 per row) */}
+          <div className="block sm:hidden">
+            <SkillRowsLayout
+              skills={skills}
+              itemsPerRow={4}
               hoveredSkill={hoveredSkill}
-              onRowHover={handleRowHover}
-              onSkillHover={handleSkillHover}
-              iconSize={iconSize}
+              handleSkillHover={handleSkillHover}
+              handleRowHover={handleRowHover}
+              isRowHovered={isRowHovered}
             />
-          ))}
+          </div>
+
+          {/* Tablet Layout (5 per row) */}
+          <div className="hidden sm:block lg:hidden">
+            <SkillRowsLayout
+              skills={skills}
+              itemsPerRow={5}
+              hoveredSkill={hoveredSkill}
+              handleSkillHover={handleSkillHover}
+              handleRowHover={handleRowHover}
+              isRowHovered={isRowHovered}
+            />
+          </div>
+
+          {/* Desktop Layout (7 per row) */}
+          <div className="hidden lg:block">
+            <SkillRowsLayout
+              skills={skills}
+              itemsPerRow={7}
+              hoveredSkill={hoveredSkill}
+              handleSkillHover={handleSkillHover}
+              handleRowHover={handleRowHover}
+              isRowHovered={isRowHovered}
+            />
+          </div>
         </div>
       </div>
     </div>
+  );
+}
+
+// ===== Layout Components =====
+
+function SkillRowsLayout({
+  skills,
+  itemsPerRow,
+  hoveredSkill,
+  handleSkillHover,
+  handleRowHover,
+  isRowHovered,
+}: {
+  skills: SkillItem[];
+  itemsPerRow: number;
+  hoveredSkill: string | null;
+  handleSkillHover: (skillId: string | null) => void;
+  handleRowHover: (rowIndex: number | null) => void;
+  isRowHovered: (rowIndex: number) => boolean;
+}) {
+  const rows: SkillItem[][] = [];
+  for (let i = 0; i < skills.length; i += itemsPerRow) {
+    rows.push(skills.slice(i, i + itemsPerRow));
+  }
+
+  return (
+    <>
+      {rows.map((row, rowIndex) => (
+        <SkillsRow
+          key={rowIndex}
+          skills={row}
+          rowIndex={rowIndex}
+          isRowHovered={isRowHovered(rowIndex)}
+          hoveredSkill={hoveredSkill}
+          onRowHover={handleRowHover}
+          onSkillHover={handleSkillHover}
+        />
+      ))}
+    </>
   );
 }
 
@@ -252,7 +252,6 @@ type SkillsRowProps = {
   hoveredSkill: string | null;
   onRowHover: (rowIndex: number | null) => void;
   onSkillHover: (skillId: string | null) => void;
-  iconSize: number;
 };
 
 function SkillsRow({
@@ -262,7 +261,6 @@ function SkillsRow({
   hoveredSkill,
   onRowHover,
   onSkillHover,
-  iconSize,
 }: SkillsRowProps) {
   // Row highlight styles
   const rowHighlightStyles = {
@@ -340,12 +338,17 @@ function SkillsRow({
                     : isRowHovered
                     ? "var(--text-secondary)"
                     : "var(--text-primary)",
+                  transform: isSkillHovered
+                    ? "scale(1.1)"
+                    : isRowHovered
+                    ? "scale(1.05)"
+                    : "scale(1)",
                 }}
               >
                 {skill.name}
               </p>
 
-              {/* Skill Icon */}
+              {/* Skill Icon with responsive sizing */}
               <div
                 className="transition-all duration-300"
                 style={{ transform: skillTransform, filter: skillFilter }}
@@ -354,9 +357,10 @@ function SkillsRow({
                   name={skill.name}
                   iconPath={skill.iconPath}
                   color={skill.color}
-                  size={iconSize}
+                  size={60} // Default size, will be overridden by responsive classes
                   isHovered={isSkillHovered}
                   isRowHovered={isRowHovered}
+                  className="w-[60px] h-[60px] sm:w-[72px] sm:h-[72px] lg:w-[96px] lg:h-[96px]"
                 />
               </div>
             </div>
@@ -373,29 +377,64 @@ function SkillsRow({
   );
 }
 
-function PlaceholderRow({
+function PlaceholderRows({ placeholders }: { placeholders: number[] }) {
+  return (
+    <>
+      {/* Mobile Layout */}
+      <div className="block sm:hidden">
+        <PlaceholderRowsWithItemsPerRow
+          placeholders={placeholders}
+          itemsPerRow={4}
+        />
+      </div>
+
+      {/* Tablet Layout */}
+      <div className="hidden sm:block lg:hidden">
+        <PlaceholderRowsWithItemsPerRow
+          placeholders={placeholders}
+          itemsPerRow={5}
+        />
+      </div>
+
+      {/* Desktop Layout */}
+      <div className="hidden lg:block">
+        <PlaceholderRowsWithItemsPerRow
+          placeholders={placeholders}
+          itemsPerRow={7}
+        />
+      </div>
+    </>
+  );
+}
+
+function PlaceholderRowsWithItemsPerRow({
   placeholders,
-  iconSize,
+  itemsPerRow,
 }: {
   placeholders: number[];
-  iconSize: number;
+  itemsPerRow: number;
 }) {
+  const rows: number[][] = [];
+  for (let i = 0; i < placeholders.length; i += itemsPerRow) {
+    rows.push(placeholders.slice(i, i + itemsPerRow));
+  }
+
+  return (
+    <>
+      {rows.map((row, rowIndex) => (
+        <PlaceholderRow key={rowIndex} placeholders={row} />
+      ))}
+    </>
+  );
+}
+
+function PlaceholderRow({ placeholders }: { placeholders: number[] }) {
   // Shelf styles
   const shelfStyles = {
     background:
       "linear-gradient(to bottom, #8B4513 0%, #654321 60%, #2F1B0C 100%)",
     boxShadow:
       "0 2px 4px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(139, 69, 19, 0.8)",
-  };
-
-  // Container styles matching SkillIcon
-  const containerStyles = {
-    width: iconSize,
-    height: iconSize,
-    backgroundColor: "var(--surface-primary)",
-    padding: "var(--spacing-compact)",
-    boxShadow: "var(--shadow-inset-subtle-sm)",
-    transition: "var(--transition-default)",
   };
 
   return (
@@ -407,23 +446,25 @@ function PlaceholderRow({
             {/* Placeholder for skill name - just empty space */}
             <div className="h-4 sm:h-5 mb-1 sm:mb-2 md:mb-4" />
 
-            {/* Placeholder Icon with wooden box styling */}
+            {/* Placeholder Icon with responsive classes instead of dynamic sizing */}
             <div
-              className="relative flex items-center justify-center rounded-xl overflow-hidden"
-              style={containerStyles}
+              className={cn(
+                "relative flex items-center justify-center rounded-xl overflow-hidden",
+                "w-[60px] h-[60px] sm:w-[72px] sm:h-[72px] lg:w-[96px] lg:h-[96px]",
+                "p-2"
+              )}
+              style={{
+                backgroundColor: "var(--surface-primary)",
+                boxShadow: "var(--shadow-inset-subtle-sm)",
+                transition: "var(--transition-default)",
+              }}
             >
               {/* Texture pattern overlay */}
               <div className="texture-overlay-sm" />
 
               {/* Pulsing placeholder content */}
               <div className="relative z-10 flex items-center justify-center rounded-lg overflow-hidden animate-pulse">
-                <div
-                  className="w-full h-full bg-gray-500/50"
-                  style={{
-                    width: `${iconSize * 0.75}px`,
-                    height: `${iconSize * 0.75}px`,
-                  }}
-                />
+                <div className="w-[45px] h-[45px] sm:w-[54px] sm:h-[54px] lg:w-[72px] lg:h-[72px] bg-gray-500/50" />
               </div>
             </div>
           </div>

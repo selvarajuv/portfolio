@@ -5,15 +5,15 @@
 import React, { useState } from "react";
 import SvgIcon from "@/components/sections/skill/svg-icon";
 import { SkillIconProps } from "@/types/skill";
+import { cn } from "@/lib/utils";
 
 export default function SkillIcon({
   name,
   iconPath,
   color,
-  size = 96,
   isHovered = false,
-  isRowHovered = false,
-}: SkillIconProps) {
+  className,
+}: SkillIconProps & { className?: string }) {
   const [imageError, setImageError] = useState(false);
 
   const handleImageError = () => setImageError(true);
@@ -21,8 +21,6 @@ export default function SkillIcon({
 
   // Icon container styles
   const containerStyles = {
-    width: size,
-    height: size,
     backgroundColor: isHovered
       ? "var(--surface-primary-hover)"
       : "var(--surface-primary)",
@@ -42,32 +40,35 @@ export default function SkillIcon({
   // Fallback text styles
   const fallbackStyles = {
     color: color,
-    fontSize: `${Math.max(12, size / 8)}px`,
     width: "100%",
     height: "100%",
   };
 
   return (
     <div
-      className="relative flex items-center justify-center rounded-xl overflow-hidden"
+      className={cn(
+        "relative flex items-center justify-center rounded-lg overflow-hidden",
+        className
+      )}
       style={containerStyles}
     >
       {/* Texture pattern overlay */}
       <div className="texture-overlay-sm" />
 
       {/* Icon container */}
-      <div className="relative z-10 flex items-center justify-center rounded-lg overflow-hidden">
+      <div className="relative z-10 flex items-center justify-center rounded-lg overflow-hidden w-full h-full">
         {hasValidIcon ? (
           <SvgIcon
             src={iconPath}
             alt={`${name} icon`}
             style={iconStyles}
             onError={handleImageError}
+            className="w-full h-full rounded-lg"
           />
         ) : (
           // Fallback text display
           <div
-            className="flex items-center justify-center text-center font-bold"
+            className="flex items-center justify-center text-center font-bold text-base sm:text-lg lg:text-xl"
             style={fallbackStyles}
           >
             {name.slice(0, 2).toUpperCase()}

@@ -9,12 +9,6 @@ import { useExperienceExpansion } from "@/hooks/experience/use-experience-expans
 import { cn } from "@/lib/utils";
 import { ExperienceItem } from "@/types/experience";
 
-// Constants
-const SECTION_WIDTH = "md:w-[70vw]"; // Consistent with other sections
-const HEADING_STYLES = {
-  fontSize: "clamp(2.5rem, 7vw, 5rem)",
-};
-
 export default function ExperienceSection() {
   const { experience, loading, error } = useExperience();
   const { handleCardToggle, isCardExpanded } = useExperienceExpansion();
@@ -43,12 +37,12 @@ export default function ExperienceSection() {
 function ExperienceSectionWrapper({ children }: { children: React.ReactNode }) {
   return (
     <section id="experience" className={cn("section-spacing px-4 md:px-8")}>
-      <div className={cn("mx-auto w-full", SECTION_WIDTH)}>
+      <div className={cn("mx-auto w-full p-4 md:px-[20vw]")}>
         <h1
           className={cn(
             "font-bold mb-16 tracking-tight leading-none text-center"
           )}
-          style={HEADING_STYLES}
+          style={{ fontSize: "clamp(2.5rem, 7vw, 5rem)" }}
         >
           Experience
         </h1>
