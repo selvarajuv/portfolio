@@ -8,7 +8,6 @@ type ProjectDetailsState = {
   project: ProjectItem | null;
   loading: boolean;
   error: string | null;
-  notFound: boolean;
 };
 
 export function useProjectDetails(slug: string): ProjectDetailsState {
@@ -27,14 +26,9 @@ export function useProjectDetails(slug: string): ProjectDetailsState {
     }
   }, [projects, slug]);
 
-  // Determine if project is not found (only when not loading and no error)
-  const notFound =
-    !projectsLoading && !projectsError && projects.length > 0 && !project;
-
   return {
     project,
     loading: projectsLoading,
     error: projectsError,
-    notFound,
   };
 }

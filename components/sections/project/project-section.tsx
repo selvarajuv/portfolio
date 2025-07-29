@@ -2,102 +2,152 @@
 
 "use client";
 
+// Components
 import WorkDescription from "@/components/sections/project/project-description";
 import FeaturedProject from "@/components/sections/project/featured-project";
 import ProjectGrid from "@/components/sections/project/project-grid";
+import ProjectBox from "@/components/sections/project/project-box";
+
+// Hooks
 import { useProjectSections } from "@/hooks/project/use-project-sections";
 
 export default function ProjectSection() {
   const { featuredProject, regularProjects, loading, error } =
     useProjectSections();
 
+  // Loading state
+  if (loading) {
+    return <ProjectSectionSkeleton />;
+  }
+
+  // Error state
+  if (error) {
+    return <ProjectSectionError error={error} />;
+  }
+
+  // Empty state
+  if (!regularProjects || regularProjects.length === 0) {
+    return <ProjectSectionEmpty />;
+  }
+
+  // Success state
+  return (
+    <ProjectSectionContent
+      featuredProject={featuredProject}
+      regularProjects={regularProjects}
+    />
+  );
+}
+
+// ===== State Components =====
+
+function ProjectSectionSkeleton() {
   return (
     <section id="work">
       <div className="mx-auto w-full p-4 md:px-[15vw]">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
+          {/* WorkDescription handles its own loading state */}
           <WorkDescription />
-          <FeaturedProjectSection
-            project={featuredProject}
-            loading={loading}
-            error={error}
-          />
+
+          {/* Featured project skeleton placeholder */}
+          <div />
         </div>
-        <ProjectGridSection
-          projects={regularProjects}
-          loading={loading}
-          error={error}
-        />
+
+        {/* Project grid skeleton */}
+        <div className="w-full flex flex-wrap justify-center gap-12 md:gap-20">
+          {[1, 2, 3].map((index) => (
+            <ProjectBoxSkeleton key={index} />
+          ))}
+        </div>
       </div>
     </section>
   );
 }
 
-function FeaturedProjectSection({
-  project,
-  loading,
-  error,
-}: {
-  project: ReturnType<typeof useProjectSections>["featuredProject"];
-  loading: boolean;
-  error: string | null;
-}) {
-  if (loading) {
-    return (
-      <div className="flex flex-col">
-        <p className="text-gray-400 mb-4">Featured Project</p>
-        <div className="text-center py-12">
-          <div className="text-gray-400 text-lg">
-            Loading featured project...
-          </div>
+function ProjectSectionError({ error }: { error: string }) {
+  return (
+    <section id="work">
+      <div className="mx-auto w-full p-4 md:px-[15vw]">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
+          {/* WorkDescription still shows */}
+          <WorkDescription />
         </div>
-      </div>
-    );
-  }
 
-  if (error) {
-    return (
-      <div className="flex flex-col">
-        <p className="text-gray-400 mb-4">Featured Project</p>
+        {/* Error message */}
         <div className="text-center py-12">
           <div className="text-red-400 bg-red-900/20 p-4 rounded-lg">
             {error}
           </div>
         </div>
       </div>
-    );
-  }
-
-  if (!project) {
-    return <div></div>;
-  }
-
-  return <FeaturedProject project={project} />;
+    </section>
+  );
 }
 
-function ProjectGridSection({
-  projects,
-  loading,
-  error,
+function ProjectSectionEmpty() {
+  return (
+    <section id="work">
+      <div className="mx-auto w-full p-4 md:px-[15vw]">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
+          {/* WorkDescription still shows */}
+          <WorkDescription />
+        </div>
+
+        {/* Empty message */}
+        <div className="text-center py-12">
+          <p className="text-gray-400 text-lg">
+            No projects available at the moment. Check back soon!
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ===== Main Content Component =====
+
+function ProjectSectionContent({
+  featuredProject,
+  regularProjects,
 }: {
-  projects: ReturnType<typeof useProjectSections>["regularProjects"];
-  loading: boolean;
-  error: string | null;
+  featuredProject: ReturnType<typeof useProjectSections>["featuredProject"];
+  regularProjects: ReturnType<typeof useProjectSections>["regularProjects"];
 }) {
-  if (loading) {
-    return (
-      <div className="text-center py-12">
-        <div className="text-gray-400 text-lg">Loading projects...</div>
-      </div>
-    );
-  }
+  return (
+    <section id="work">
+      <div className="mx-auto w-full p-4 md:px-[15vw]">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
+          <WorkDescription />
+          {/* Featured project only shows if available */}
+          {featuredProject && <FeaturedProject project={featuredProject} />}
+        </div>
 
-  if (error) {
-    return (
-      <div className="text-center py-12">
-        <div className="text-red-400 bg-red-900/20 p-4 rounded-lg">{error}</div>
+        <ProjectGrid projects={regularProjects} />
       </div>
-    );
-  }
+    </section>
+  );
+}
 
-  return <ProjectGrid projects={projects} />;
+// ===== Helper Components =====
+
+function ProjectBoxSkeleton() {
+  return (
+    <ProjectBox
+      size="default"
+      topContent={
+        <div className="w-full animate-pulse">
+          <div className="h-5 bg-gray-500/20 rounded w-4/5" />
+        </div>
+      }
+      bottomContent={
+        <div className="w-full animate-pulse">
+          <div className="h-5 bg-gray-500/20 rounded w-2/5" />
+        </div>
+      }
+      hoverContent=""
+      imageUrl=""
+      slug=""
+      clickable={false}
+    />
+  );
 }

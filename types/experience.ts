@@ -1,8 +1,10 @@
 // types/experience.ts
 
+import { ReactNode } from "react";
+
 export type ExperienceItem = {
   id: string;
-  title: string;
+  title: ReactNode;
   company: string;
   period: string;
   location?: string;

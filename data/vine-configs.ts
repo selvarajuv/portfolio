@@ -1,7 +1,7 @@
 import { VineConfig } from "@/types/decorative";
 
 // Profile picture frame vines
-export const profileFrameVines: VineConfig[] = [
+export const vineFrame: VineConfig[] = [
   // Top vines
   {
     top: "-20px",

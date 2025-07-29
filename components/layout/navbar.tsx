@@ -1,4 +1,5 @@
 // components/layout/navbar.tsx
+
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
@@ -25,6 +26,23 @@ const SCROLL_THRESHOLD = 100;
 const OBSERVER_THRESHOLD = 0.2;
 const OBSERVER_DISABLE_DURATION = 1500;
 
+// Container styles as constant
+const CONTAINER_STYLES = {
+  gap: "clamp(0.5rem, 1vw, 1rem)",
+  paddingTop: "clamp(7px, 0.4vw, 14px)",
+  paddingBottom: "clamp(7px, 0.4vw, 14px)",
+  paddingLeft: "clamp(18px, 0.9vw, 36px)",
+  paddingRight: "clamp(18px, 0.9vw, 36px)",
+};
+
+// Nav item styles as constant
+const NAV_ITEM_STYLES = {
+  height: "clamp(40px, 1.6vw, 80px)",
+  paddingLeft: "clamp(12px, 0.7vw, 100px)",
+  paddingRight: "clamp(12px, 0.7vw, 100px)",
+  fontSize: "clamp(1.1rem, 0.65vw, 2rem)",
+};
+
 // Extend window type for our custom properties
 declare global {
   interface Window {
@@ -32,7 +50,7 @@ declare global {
   }
 }
 
-// Custom hook for scroll detection
+// Custom Hooks
 function useScrolled(threshold: number = SCROLL_THRESHOLD) {
   const [scrolled, setScrolled] = useState(false);
 
@@ -46,7 +64,6 @@ function useScrolled(threshold: number = SCROLL_THRESHOLD) {
   return scrolled;
 }
 
-// Custom hook for section observers
 function useSectionObserver(
   sections: string[],
   pathname: string,
@@ -94,116 +111,7 @@ function useSectionObserver(
   }, [sections, pathname, onSectionChange]);
 }
 
-// NavItem Component
-function NavItem({ href, children, isActive, onClick }: NavItemProps) {
-  const itemStyles = {
-    height: "clamp(40px, 1.6vw, 80px)",
-    paddingLeft: "clamp(12px, 0.7vw, 100px)",
-    paddingRight: "clamp(12px, 0.7vw, 100px)",
-    fontSize: "clamp(1.1rem, 0.65vw, 2rem)",
-  };
-
-  return (
-    <Link
-      href={href}
-      onClick={(e) => onClick(e, href)}
-      className={cn(
-        "relative font-medium group text-white transition-colors duration-200",
-        "flex items-center justify-center",
-        !isActive && "hover:text-[var(--accent-primary)]"
-      )}
-      style={itemStyles}
-    >
-      {isActive && (
-        <span
-          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 
-                     w-[calc(100%+16px)] h-full backdrop-blur-md rounded-full 
-                     z-10 shadow-sm"
-          style={{ backgroundColor: "var(--overlay-active)" }}
-        />
-      )}
-      <span className="relative z-20 flex items-center justify-center w-full h-full">
-        {children}
-      </span>
-    </Link>
-  );
-}
-
-// Mobile Menu Component
-function MobileMenu({
-  isOpen,
-  activeSection,
-  onClose,
-  onNavigate,
-}: {
-  isOpen: boolean;
-  activeSection: string;
-  onClose: () => void;
-  onNavigate: (section: string) => void;
-}) {
-  // Handle escape key
-  useEffect(() => {
-    if (!isOpen) return;
-
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-    };
-
-    document.addEventListener("keydown", handleEscape);
-    return () => document.removeEventListener("keydown", handleEscape);
-  }, [isOpen, onClose]);
-
-  // Handle body scroll lock
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
-    }
-
-    return () => {
-      document.body.style.overflow = "unset";
-    };
-  }, [isOpen]);
-
-  if (!isOpen) return null;
-
-  return (
-    <div className="fixed inset-0 z-40 md:hidden">
-      <div
-        className="fixed top-0 left-0 h-full w-60"
-        style={{
-          backgroundColor: "var(--overlay-subtle)",
-          backdropFilter: "blur(16px)",
-        }}
-      >
-        <nav className="px-6 py-16">
-          {NAV_SECTIONS.map((section) => (
-            <div
-              key={section}
-              onClick={() => {
-                onNavigate(section);
-                onClose();
-              }}
-              className={cn(
-                "flex items-center py-4 cursor-pointer",
-                "transition-colors duration-200",
-                activeSection === section
-                  ? "text-[var(--accent-primary)]"
-                  : "text-white hover:text-[var(--accent-primary)]"
-              )}
-            >
-              {section.charAt(0).toUpperCase() + section.slice(1)}
-              {activeSection === section && <Leaf className="ml-auto" />}
-            </div>
-          ))}
-        </nav>
-      </div>
-    </div>
-  );
-}
-
-// Main Navbar Component
+// Main Component
 export default function Navbar({
   activeSection: initialActiveSection = "home",
 }: NavbarProps) {
@@ -277,64 +185,54 @@ export default function Navbar({
   // Don't render on project pages
   if (pathname !== "/") return null;
 
-  // Consistent container styles
-  const containerStyles = {
-    gap: "clamp(0.5rem, 1vw, 1rem)",
-    paddingTop: "clamp(7px, 0.4vw, 14px)",
-    paddingBottom: "clamp(7px, 0.4vw, 14px)",
-    paddingLeft: "clamp(18px, 0.9vw, 36px)",
-    paddingRight: "clamp(18px, 0.9vw, 36px)",
-  };
+  return (
+    <NavbarContent
+      activeSection={activeSection}
+      scrolled={scrolled}
+      mobileMenuOpen={mobileMenuOpen}
+      onMobileMenuToggle={() => setMobileMenuOpen(!mobileMenuOpen)}
+      onMobileMenuClose={() => setMobileMenuOpen(false)}
+      onDesktopNavClick={handleDesktopNavClick}
+      onNavigate={handleNavigation}
+    />
+  );
+}
 
+// ===== Main Content Component =====
+
+function NavbarContent({
+  activeSection,
+  scrolled,
+  mobileMenuOpen,
+  onMobileMenuToggle,
+  onMobileMenuClose,
+  onDesktopNavClick,
+  onNavigate,
+}: {
+  activeSection: string;
+  scrolled: boolean;
+  mobileMenuOpen: boolean;
+  onMobileMenuToggle: () => void;
+  onMobileMenuClose: () => void;
+  onDesktopNavClick: (e: React.MouseEvent, href: string) => void;
+  onNavigate: (section: string) => void;
+}) {
   return (
     <>
       <header className="sticky top-0 left-0 right-0 z-50">
         <div className="w-full p-4">
           {/* Desktop Navigation */}
-          <div className="hidden md:flex justify-center">
-            <div className="w-fit mx-auto relative">
-              {scrolled && (
-                <div
-                  className="absolute inset-0 backdrop-blur-md shadow-md rounded-full z-0"
-                  style={{ backgroundColor: "var(--overlay-subtle)" }}
-                />
-              )}
-              <nav
-                className="flex items-center justify-center relative rounded-full"
-                style={containerStyles}
-              >
-                {NAV_SECTIONS.map((section) => (
-                  <NavItem
-                    key={section}
-                    href={`/#${section}`}
-                    isActive={activeSection === section}
-                    onClick={handleDesktopNavClick}
-                  >
-                    {section.charAt(0).toUpperCase() + section.slice(1)}
-                  </NavItem>
-                ))}
-              </nav>
-            </div>
-          </div>
+          <DesktopNavigation
+            activeSection={activeSection}
+            scrolled={scrolled}
+            onNavClick={onDesktopNavClick}
+          />
 
           {/* Mobile Navigation Header */}
-          <div className="md:hidden w-full">
-            <div className="flex justify-between items-center">
-              <button
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="p-2 rounded-full transition-all duration-300"
-                aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
-                aria-expanded={mobileMenuOpen}
-              >
-                {mobileMenuOpen ? (
-                  <X className="w-6 h-6 text-white" />
-                ) : (
-                  <Leaf className="w-6 h-6 text-white" />
-                )}
-              </button>
-              <div className="text-white font-medium text-lg">vichu.dev</div>
-            </div>
-          </div>
+          <MobileHeader
+            mobileMenuOpen={mobileMenuOpen}
+            onToggle={onMobileMenuToggle}
+          />
         </div>
       </header>
 
@@ -342,9 +240,195 @@ export default function Navbar({
       <MobileMenu
         isOpen={mobileMenuOpen}
         activeSection={activeSection}
-        onClose={() => setMobileMenuOpen(false)}
-        onNavigate={handleNavigation}
+        onClose={onMobileMenuClose}
+        onNavigate={onNavigate}
       />
     </>
+  );
+}
+
+// ===== Sub Components =====
+
+function DesktopNavigation({
+  activeSection,
+  scrolled,
+  onNavClick,
+}: {
+  activeSection: string;
+  scrolled: boolean;
+  onNavClick: (e: React.MouseEvent, href: string) => void;
+}) {
+  return (
+    <div className="hidden md:flex justify-center">
+      <div className="w-fit mx-auto relative">
+        {scrolled && (
+          <div
+            className="absolute inset-0 backdrop-blur-md shadow-md rounded-full z-0"
+            style={{ backgroundColor: "var(--overlay-subtle)" }}
+            aria-hidden="true"
+          />
+        )}
+        <nav
+          className="flex items-center justify-center relative rounded-full"
+          style={CONTAINER_STYLES}
+          role="navigation"
+          aria-label="Main navigation"
+        >
+          {NAV_SECTIONS.map((section) => (
+            <NavItem
+              key={section}
+              href={`/#${section}`}
+              isActive={activeSection === section}
+              onClick={onNavClick}
+            >
+              {section.charAt(0).toUpperCase() + section.slice(1)}
+            </NavItem>
+          ))}
+        </nav>
+      </div>
+    </div>
+  );
+}
+
+function MobileHeader({
+  mobileMenuOpen,
+  onToggle,
+}: {
+  mobileMenuOpen: boolean;
+  onToggle: () => void;
+}) {
+  return (
+    <div className="md:hidden w-full">
+      <div className="flex justify-between items-center">
+        <button
+          onClick={onToggle}
+          className="p-2 rounded-full transition-all duration-300"
+          aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+          aria-expanded={mobileMenuOpen}
+        >
+          {mobileMenuOpen ? (
+            <X className="w-6 h-6 text-white" />
+          ) : (
+            <Leaf className="w-6 h-6 text-white" />
+          )}
+        </button>
+        <div className="text-white font-medium text-lg">vichu.dev</div>
+      </div>
+    </div>
+  );
+}
+
+function NavItem({ href, children, isActive, onClick }: NavItemProps) {
+  return (
+    <Link
+      href={href}
+      onClick={(e) => onClick(e, href)}
+      className={cn(
+        "relative font-medium group text-white transition-colors duration-200",
+        "flex items-center justify-center",
+        !isActive && "hover:text-[var(--accent-primary)]"
+      )}
+      style={NAV_ITEM_STYLES}
+      aria-current={isActive ? "page" : undefined}
+    >
+      {isActive && (
+        <span
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 
+                     w-[calc(100%+16px)] h-full backdrop-blur-md rounded-full 
+                     z-10 shadow-sm"
+          style={{ backgroundColor: "var(--overlay-active)" }}
+          aria-hidden="true"
+        />
+      )}
+      <span className="relative z-20 flex items-center justify-center w-full h-full">
+        {children}
+      </span>
+    </Link>
+  );
+}
+
+function MobileMenu({
+  isOpen,
+  activeSection,
+  onClose,
+  onNavigate,
+}: {
+  isOpen: boolean;
+  activeSection: string;
+  onClose: () => void;
+  onNavigate: (section: string) => void;
+}) {
+  // Handle escape key
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+
+    document.addEventListener("keydown", handleEscape);
+    return () => document.removeEventListener("keydown", handleEscape);
+  }, [isOpen, onClose]);
+
+  // Handle body scroll lock
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [isOpen]);
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 z-40 md:hidden">
+      {/* Backdrop */}
+      <div
+        className="absolute inset-0 bg-black/50"
+        onClick={onClose}
+        aria-hidden="true"
+      />
+
+      {/* Menu panel */}
+      <div
+        className="fixed top-0 left-0 h-full w-60"
+        style={{
+          backgroundColor: "var(--overlay-subtle)",
+          backdropFilter: "blur(16px)",
+        }}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Mobile navigation menu"
+      >
+        <nav className="px-6 py-16">
+          {NAV_SECTIONS.map((section) => (
+            <button
+              key={section}
+              onClick={() => {
+                onNavigate(section);
+                onClose();
+              }}
+              className={cn(
+                "flex items-center py-4 cursor-pointer w-full",
+                "transition-colors duration-200",
+                activeSection === section
+                  ? "text-[var(--accent-primary)]"
+                  : "text-white hover:text-[var(--accent-primary)]"
+              )}
+            >
+              {section.charAt(0).toUpperCase() + section.slice(1)}
+              {activeSection === section && (
+                <Leaf className="ml-auto" aria-hidden="true" />
+              )}
+            </button>
+          ))}
+        </nav>
+      </div>
+    </div>
   );
 }

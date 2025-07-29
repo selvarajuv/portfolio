@@ -2,7 +2,6 @@
 
 import type React from "react";
 import type { Metadata } from "next";
-
 import { Instrument_Sans } from "next/font/google";
 import "./globals.css";
 import ClientLayout from "@/components/layout/client-layout";

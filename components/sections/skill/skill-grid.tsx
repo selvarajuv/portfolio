@@ -2,13 +2,24 @@
 
 "use client";
 
+// External imports
 import React, { useState, useEffect } from "react";
-import { SkillItem } from "@/types/skill";
+
+// Components
 import SkillIcon from "./skill-icon";
+import { VineGenerator } from "@/components/forest-theme/vines";
+
+// Hooks
 import { useSkills } from "@/hooks/skill/use-skill";
 import { useSkillsHover } from "@/hooks/skill/use-skill-hover";
-import { VineGenerator } from "@/components/forest-theme/vines";
+
+// Types
+import { SkillItem } from "@/types/skill";
+
+// Data
 import { skillsFrameVines } from "@/data/vine-configs";
+
+// Utils
 import { cn } from "@/lib/utils";
 
 // Constants
@@ -18,7 +29,7 @@ const RESPONSIVE_CONFIG = {
   desktop: { itemsPerRow: 7, iconSize: 96 },
 } as const;
 
-// Helper function to determine responsive values
+// Helper functions
 function getResponsiveValues(width: number) {
   if (width < RESPONSIVE_CONFIG.mobile.breakpoint) {
     return {
@@ -38,7 +49,6 @@ function getResponsiveValues(width: number) {
   };
 }
 
-// Helper function to group skills into rows
 function groupSkillsIntoRows<T>(items: T[], itemsPerRow: number): T[][] {
   const rows: T[][] = [];
   for (let i = 0; i < items.length; i += itemsPerRow) {
@@ -47,7 +57,7 @@ function groupSkillsIntoRows<T>(items: T[], itemsPerRow: number): T[][] {
   return rows;
 }
 
-// Custom hook for screen width
+// Custom hook
 function useScreenWidth() {
   const [screenWidth, setScreenWidth] = useState(
     typeof window !== "undefined" ? window.innerWidth : 1024
@@ -61,6 +71,179 @@ function useScreenWidth() {
 
   return screenWidth;
 }
+
+export default function SkillsGrid() {
+  const { skills, loading, error } = useSkills();
+  const { hoveredSkill, handleSkillHover, handleRowHover, isRowHovered } =
+    useSkillsHover();
+  const screenWidth = useScreenWidth();
+
+  // Loading state
+  if (loading) {
+    return <SkillsGridSkeleton />;
+  }
+
+  // Error state
+  if (error) {
+    return <SkillsGridError error={error} />;
+  }
+
+  // Empty state
+  if (!skills || skills.length === 0) {
+    return <SkillsGridEmpty />;
+  }
+
+  // Success state
+  const { itemsPerRow, iconSize } = getResponsiveValues(screenWidth);
+  const skillRows = groupSkillsIntoRows(skills, itemsPerRow);
+
+  return (
+    <SkillsGridContent
+      skillRows={skillRows}
+      iconSize={iconSize}
+      hoveredSkill={hoveredSkill}
+      handleSkillHover={handleSkillHover}
+      handleRowHover={handleRowHover}
+      isRowHovered={isRowHovered}
+    />
+  );
+}
+
+// ===== State Components =====
+
+function SkillsGridSkeleton() {
+  const screenWidth = useScreenWidth();
+  const { itemsPerRow, iconSize } = getResponsiveValues(screenWidth);
+
+  // Create 9 placeholder items
+  const placeholderItems = Array.from({ length: 9 }, (_, i) => i);
+  const placeholderRows = groupSkillsIntoRows(placeholderItems, itemsPerRow);
+
+  return (
+    <div className="w-full relative">
+      {/* Vine decorations - hidden on mobile */}
+      <div
+        className="absolute inset-0 pointer-events-none hidden md:block"
+        style={{
+          left: "-30px",
+          top: "-30px",
+          right: "-30px",
+          bottom: "-30px",
+        }}
+      >
+        <VineGenerator vines={skillsFrameVines} />
+      </div>
+
+      {/* Skills Grid Container */}
+      <div
+        className="rounded-xl p-4 md:p-8 relative z-10"
+        style={{
+          backgroundColor: "var(--surface-primary)",
+          boxShadow: "var(--shadow-inset-strong)",
+        }}
+      >
+        <div className="texture-overlay" />
+
+        {/* Placeholder Grid with Shelves */}
+        <div className="relative z-10">
+          {placeholderRows.map((row, rowIndex) => (
+            <PlaceholderRow
+              key={rowIndex}
+              placeholders={row}
+              iconSize={iconSize}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function SkillsGridError({ error }: { error: string }) {
+  return (
+    <div className="surface-box w-full rounded-xl p-4 md:p-8">
+      <div className="text-center py-12">
+        <div className="text-red-400 bg-red-900/20 p-4 rounded-lg">{error}</div>
+      </div>
+    </div>
+  );
+}
+
+function SkillsGridEmpty() {
+  return (
+    <div className="surface-box w-full rounded-xl p-4 md:p-8">
+      <div className="text-center py-12">
+        <p className="text-gray-400 text-lg">
+          No skills available at the moment.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+// ===== Main Content Component =====
+
+function SkillsGridContent({
+  skillRows,
+  iconSize,
+  hoveredSkill,
+  handleSkillHover,
+  handleRowHover,
+  isRowHovered,
+}: {
+  skillRows: SkillItem[][];
+  iconSize: number;
+  hoveredSkill: string | null;
+  handleSkillHover: (skillId: string | null) => void;
+  handleRowHover: (rowIndex: number | null) => void;
+  isRowHovered: (rowIndex: number) => boolean;
+}) {
+  return (
+    <div className="w-full relative">
+      {/* Vine decorations - hidden on mobile */}
+      <div
+        className="absolute inset-0 pointer-events-none hidden md:block"
+        style={{
+          left: "-30px",
+          top: "-30px",
+          right: "-30px",
+          bottom: "-30px",
+        }}
+      >
+        <VineGenerator vines={skillsFrameVines} />
+      </div>
+
+      {/* Skills Grid Container */}
+      <div
+        className="rounded-xl p-4 md:p-8 relative z-10"
+        style={{
+          backgroundColor: "var(--surface-primary)",
+          boxShadow: "var(--shadow-inset-strong)",
+        }}
+      >
+        <div className="texture-overlay" />
+
+        {/* Skills Grid with Shelves */}
+        <div className="relative z-10">
+          {skillRows.map((row, rowIndex) => (
+            <SkillsRow
+              key={rowIndex}
+              skills={row}
+              rowIndex={rowIndex}
+              isRowHovered={isRowHovered(rowIndex)}
+              hoveredSkill={hoveredSkill}
+              onRowHover={handleRowHover}
+              onSkillHover={handleSkillHover}
+              iconSize={iconSize}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ===== Sub Components =====
 
 type SkillsRowProps = {
   skills: SkillItem[];
@@ -190,85 +373,68 @@ function SkillsRow({
   );
 }
 
-// Loading component
-function SkillsLoading() {
+function PlaceholderRow({
+  placeholders,
+  iconSize,
+}: {
+  placeholders: number[];
+  iconSize: number;
+}) {
+  // Shelf styles
+  const shelfStyles = {
+    background:
+      "linear-gradient(to bottom, #8B4513 0%, #654321 60%, #2F1B0C 100%)",
+    boxShadow:
+      "0 2px 4px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(139, 69, 19, 0.8)",
+  };
+
+  // Container styles matching SkillIcon
+  const containerStyles = {
+    width: iconSize,
+    height: iconSize,
+    backgroundColor: "var(--surface-primary)",
+    padding: "var(--spacing-compact)",
+    boxShadow: "var(--shadow-inset-subtle-sm)",
+    transition: "var(--transition-default)",
+  };
+
   return (
-    <div className="surface-box w-full rounded-xl p-4 md:p-8">
-      <div className="text-center py-12 text-gray-400 text-lg">
-        Loading skills...
+    <div className="relative mb-4 md:mb-8 last:mb-0">
+      {/* Row of Placeholder Skills */}
+      <div className="flex flex-wrap justify-center gap-2 sm:gap-4 md:gap-6 lg:gap-8 relative z-10 pb-2">
+        {placeholders.map((_, index) => (
+          <div key={index} className="flex flex-col items-center">
+            {/* Placeholder for skill name - just empty space */}
+            <div className="h-4 sm:h-5 mb-1 sm:mb-2 md:mb-4" />
+
+            {/* Placeholder Icon with wooden box styling */}
+            <div
+              className="relative flex items-center justify-center rounded-xl overflow-hidden"
+              style={containerStyles}
+            >
+              {/* Texture pattern overlay */}
+              <div className="texture-overlay-sm" />
+
+              {/* Pulsing placeholder content */}
+              <div className="relative z-10 flex items-center justify-center rounded-lg overflow-hidden animate-pulse">
+                <div
+                  className="w-full h-full bg-gray-500/50"
+                  style={{
+                    width: `${iconSize * 0.75}px`,
+                    height: `${iconSize * 0.75}px`,
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
-    </div>
-  );
-}
 
-// Error component
-function SkillsError({ error }: { error: string }) {
-  return (
-    <div className="surface-box w-full rounded-xl p-4 md:p-8">
-      <div className="text-center py-12">
-        <div className="text-red-400 bg-red-900/20 p-4 rounded-lg">{error}</div>
-      </div>
-    </div>
-  );
-}
-
-export default function SkillsGrid() {
-  const { skills, loading, error } = useSkills();
-  const { hoveredSkill, handleSkillHover, handleRowHover, isRowHovered } =
-    useSkillsHover();
-  const screenWidth = useScreenWidth();
-
-  // Show loading state
-  if (loading) return <SkillsLoading />;
-
-  // Show error state
-  if (error) return <SkillsError error={error} />;
-
-  // Get responsive values and group skills
-  const { itemsPerRow, iconSize } = getResponsiveValues(screenWidth);
-  const skillRows = groupSkillsIntoRows(skills, itemsPerRow);
-
-  return (
-    <div className="w-full relative">
-      {/* Vine decorations - hidden on mobile */}
+      {/* Shelf Line */}
       <div
-        className="absolute inset-0 pointer-events-none hidden md:block"
-        style={{
-          left: "-30px",
-          top: "-30px",
-          right: "-30px",
-          bottom: "-30px",
-        }}
-      >
-        <VineGenerator vines={skillsFrameVines} />
-      </div>
-
-      {/* Skills Grid Container */}
-      <div
-        className="rounded-xl p-4 md:p-8 relative z-10"
-        style={{
-          backgroundColor: "var(--surface-primary)",
-          boxShadow: "var(--shadow-inset-strong)",
-        }}
-      >
-        <div className="texture-overlay" />
-
-        {/* Skills Grid with Shelves */}
-        <div className="relative z-10">
-          {skillRows.map((row, rowIndex) => (
-            <SkillsRow
-              key={rowIndex}
-              skills={row}
-              rowIndex={rowIndex}
-              isRowHovered={isRowHovered(rowIndex)}
-              hoveredSkill={hoveredSkill}
-              onRowHover={handleRowHover}
-              onSkillHover={handleSkillHover}
-              iconSize={iconSize}
-            />
-          ))}
-        </div>
-      </div>
+        className="w-full h-1.5 md:h-2 rounded-sm relative z-10"
+        style={shelfStyles}
+      />
     </div>
   );
 }

@@ -2,28 +2,22 @@
 
 "use client";
 
+// External imports
+import React, { ReactNode, useState } from "react";
 import Image from "next/image";
-import { useState } from "react";
 import Link from "next/link";
-import WoodenBox from "../../forest-theme/wood-box";
+
+// Components
+import WoodenBox from "@/components/forest-theme/wood-box";
+
+// Types
 import { ProjectBoxSize, ProjectBoxDimensions } from "@/types/project";
 
-type ProjectBoxProps = {
-  className?: string;
-  imageUrl?: string;
-  imageAlt?: string;
-  topContent?: string;
-  bottomContent?: string;
-  hoverContent?: string;
-  slug?: string;
-  size?: ProjectBoxSize;
-  clickable?: boolean;
-};
-
-const sizeVariants: Record<ProjectBoxSize, ProjectBoxDimensions> = {
+// Constants
+export const sizeVariants: Record<ProjectBoxSize, ProjectBoxDimensions> = {
   default: {
     container: {
-      width: "min(380px, 80vw)",
+      width: "min(360px, 80vw)",
       height: "auto",
       aspectRatio: ".9",
     },
@@ -63,6 +57,19 @@ const sizeVariants: Record<ProjectBoxSize, ProjectBoxDimensions> = {
   },
 };
 
+// Types
+type ProjectBoxProps = {
+  className?: string;
+  imageUrl?: string;
+  imageAlt?: string;
+  topContent?: ReactNode;
+  bottomContent?: ReactNode;
+  hoverContent?: string;
+  slug?: string;
+  size?: ProjectBoxSize;
+  clickable?: boolean;
+};
+
 export default function ProjectBox({
   className = "",
   imageUrl,
@@ -77,7 +84,61 @@ export default function ProjectBox({
   const [isHovered, setIsHovered] = useState(false);
   const dimensions = sizeVariants[size];
 
+  // Note: This is a presentation component that receives all data as props
+  // No loading/error states needed - parent handles data fetching
+
   const content = (
+    <ProjectBoxContent
+      className={className}
+      imageUrl={imageUrl}
+      imageAlt={imageAlt}
+      topContent={topContent}
+      bottomContent={bottomContent}
+      hoverContent={hoverContent}
+      size={size}
+      dimensions={dimensions}
+      isHovered={isHovered}
+      onHoverStart={() => setIsHovered(true)}
+      onHoverEnd={() => setIsHovered(false)}
+    />
+  );
+
+  // Wrap with Link if clickable and slug is provided
+  if (clickable && slug) {
+    return <Link href={`/projects/${slug}`}>{content}</Link>;
+  }
+
+  return content;
+}
+
+// ===== Main Components =====
+
+function ProjectBoxContent({
+  className,
+  imageUrl,
+  imageAlt,
+  topContent,
+  bottomContent,
+  hoverContent,
+  size,
+  dimensions,
+  isHovered,
+  onHoverStart,
+  onHoverEnd,
+}: {
+  className: string;
+  imageUrl?: string;
+  imageAlt: string;
+  topContent: ReactNode;
+  bottomContent: ReactNode;
+  hoverContent: string;
+  size: ProjectBoxSize;
+  dimensions: ProjectBoxDimensions;
+  isHovered: boolean;
+  onHoverStart: () => void;
+  onHoverEnd: () => void;
+}) {
+  return (
     <div
       className="project-box-wrapper"
       style={{
@@ -90,8 +151,8 @@ export default function ProjectBox({
         width="100%"
         height="100%"
         isHovered={isHovered}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
+        onMouseEnter={onHoverStart}
+        onMouseLeave={onHoverEnd}
       >
         {/* Inner container */}
         <div
@@ -106,136 +167,279 @@ export default function ProjectBox({
                 : "0 4px 8px rgba(0, 0, 0, 0.3)",
           }}
         >
-          {/* Image container */}
-          <div
-            className="relative w-full overflow-hidden shrink-0"
-            style={{ aspectRatio: dimensions.image.aspectRatio }}
-          >
-            {imageUrl ? (
-              <Image
-                src={imageUrl || "/placeholder.svg"}
-                alt={imageAlt}
-                fill
-                className={`object-cover transition-transform duration-700 ease-in-out ${
-                  isHovered ? "scale-110" : "scale-100"
-                }`}
-              />
-            ) : (
-              <div className="w-full h-full bg-gray-800 flex items-center justify-center text-gray-500">
-                <span
-                  className={`transition-transform duration-700 ease-in-out ${
-                    isHovered ? "scale-110" : "scale-100"
-                  }`}
-                >
-                  Image Area
-                </span>
-              </div>
-            )}
-          </div>
+          <ProjectBoxImage
+            imageUrl={imageUrl}
+            imageAlt={imageAlt}
+            aspectRatio={dimensions.image.aspectRatio}
+            isHovered={isHovered}
+          />
 
-          {/* Bottom section - takes remaining space */}
-          <div
-            className={`w-full flex ${
-              size === "default"
-                ? "justify-center items-center bg-[#014421]"
-                : "items-center bg-transparent"
-            }`}
-            style={{
-              flex: dimensions.bottom.flex,
-              backdropFilter: size === "default" ? "blur(4px)" : "none",
-            }}
-          >
-            {size === "default" ? (
-              // Default size layout
-              <div className="w-[85%] h-[70%] flex flex-col">
-                {/* Title */}
-                <div className="flex-1 flex items-center">
-                  <p
-                    className="text-white font-medium truncate w-full"
-                    style={{ fontSize: dimensions.text.title }}
-                  >
-                    {topContent || "Project Title"}
-                  </p>
-                </div>
-
-                {/* Description with hover effect */}
-                <div className="flex-1 relative overflow-hidden">
-                  <div
-                    className={`absolute inset-0 flex items-center transition-transform duration-300 ${
-                      isHovered ? "-translate-y-full" : "translate-y-0"
-                    }`}
-                  >
-                    <p
-                      className="text-white truncate w-full"
-                      style={{ fontSize: dimensions.text.description }}
-                    >
-                      {bottomContent || "View Project"}
-                    </p>
-                  </div>
-
-                  <div
-                    className={`absolute inset-0 flex items-center transition-transform duration-300 ${
-                      isHovered ? "translate-y-0" : "translate-y-full"
-                    }`}
-                  >
-                    <p
-                      className="text-white truncate w-full"
-                      style={{ fontSize: dimensions.text.description }}
-                    >
-                      {hoverContent}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              // Large size layout
-              <div className="w-full px-8">
-                <h3
-                  className="text-white font-medium truncate mb-2"
-                  style={{ fontSize: dimensions.text.title }}
-                >
-                  {topContent || "Project Title"}
-                </h3>
-
-                <div className="relative h-[30px] overflow-hidden">
-                  <div
-                    className={`absolute inset-0 flex items-center transition-transform duration-300 ${
-                      isHovered ? "-translate-y-full" : "translate-y-0"
-                    }`}
-                  >
-                    <p
-                      className="text-white truncate"
-                      style={{ fontSize: dimensions.text.description }}
-                    >
-                      {bottomContent || "View Project"}
-                    </p>
-                  </div>
-
-                  <div
-                    className={`absolute inset-0 flex items-center transition-transform duration-300 ${
-                      isHovered ? "translate-y-0" : "translate-y-full"
-                    }`}
-                  >
-                    <p
-                      className="text-white truncate"
-                      style={{ fontSize: dimensions.text.description }}
-                    >
-                      {hoverContent}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
+          <ProjectBoxBottom
+            topContent={topContent}
+            bottomContent={bottomContent}
+            hoverContent={hoverContent}
+            size={size}
+            dimensions={dimensions}
+            isHovered={isHovered}
+          />
         </div>
       </WoodenBox>
     </div>
   );
+}
 
-  // Wrap with Link if clickable and slug is provided
-  if (clickable && slug) {
-    return <Link href={`/projects/${slug}`}>{content}</Link>;
-  }
+// ===== Sub Components =====
 
-  return content;
+function ProjectBoxImage({
+  imageUrl,
+  imageAlt,
+  aspectRatio,
+  isHovered,
+}: {
+  imageUrl?: string;
+  imageAlt: string;
+  aspectRatio: string;
+  isHovered: boolean;
+}) {
+  return (
+    <div
+      className="relative w-full overflow-hidden shrink-0"
+      style={{ aspectRatio }}
+    >
+      {imageUrl ? (
+        <Image
+          src={imageUrl}
+          alt={imageAlt}
+          fill
+          className={`object-cover transition-transform duration-700 ease-in-out ${
+            isHovered ? "scale-110" : "scale-100"
+          }`}
+        />
+      ) : (
+        <ProjectBoxImagePlaceholder isHovered={isHovered} />
+      )}
+    </div>
+  );
+}
+
+function ProjectBoxImagePlaceholder({ isHovered }: { isHovered: boolean }) {
+  return (
+    <div className="w-full h-full bg-gray-800 flex items-center justify-center text-gray-500 animate-pulse">
+      <span
+        className={`transition-transform duration-700 ease-in-out ${
+          isHovered ? "scale-110" : "scale-100"
+        }`}
+      >
+        {/* Empty span for scaling effect */}
+      </span>
+    </div>
+  );
+}
+
+function ProjectBoxBottom({
+  topContent,
+  bottomContent,
+  hoverContent,
+  size,
+  dimensions,
+  isHovered,
+}: {
+  topContent: ReactNode;
+  bottomContent: ReactNode;
+  hoverContent: string;
+  size: ProjectBoxSize;
+  dimensions: ProjectBoxDimensions;
+  isHovered: boolean;
+}) {
+  return (
+    <div
+      className={`w-full flex ${
+        size === "default"
+          ? "justify-center items-center bg-[#014421]"
+          : "items-center bg-transparent"
+      }`}
+      style={{
+        flex: dimensions.bottom.flex,
+        backdropFilter: size === "default" ? "blur(4px)" : "none",
+      }}
+    >
+      {size === "default" ? (
+        <ProjectBoxDefaultLayout
+          topContent={topContent}
+          bottomContent={bottomContent}
+          hoverContent={hoverContent}
+          dimensions={dimensions}
+          isHovered={isHovered}
+        />
+      ) : (
+        <ProjectBoxLargeLayout
+          topContent={topContent}
+          bottomContent={bottomContent}
+          hoverContent={hoverContent}
+          dimensions={dimensions}
+          isHovered={isHovered}
+        />
+      )}
+    </div>
+  );
+}
+
+function ProjectBoxDefaultLayout({
+  topContent,
+  bottomContent,
+  hoverContent,
+  dimensions,
+  isHovered,
+}: {
+  topContent: ReactNode;
+  bottomContent: ReactNode;
+  hoverContent: string;
+  dimensions: ProjectBoxDimensions;
+  isHovered: boolean;
+}) {
+  return (
+    <div className="w-[85%] h-[70%] flex flex-col">
+      {/* Title */}
+      <div className="flex-1 flex items-center">
+        {typeof topContent === "string" || typeof topContent === "number" ? (
+          <p
+            className="text-white font-medium truncate w-full"
+            style={{ fontSize: dimensions.text.title }}
+          >
+            {topContent || "Project Title"}
+          </p>
+        ) : (
+          topContent
+        )}
+      </div>
+
+      {/* Description with hover effect */}
+      <ProjectBoxHoverContent
+        content={bottomContent}
+        hoverContent={hoverContent}
+        fontSize={dimensions.text.description}
+        isHovered={isHovered}
+      />
+    </div>
+  );
+}
+
+function ProjectBoxLargeLayout({
+  topContent,
+  bottomContent,
+  hoverContent,
+  dimensions,
+  isHovered,
+}: {
+  topContent: ReactNode;
+  bottomContent: ReactNode;
+  hoverContent: string;
+  dimensions: ProjectBoxDimensions;
+  isHovered: boolean;
+}) {
+  return (
+    <div className="w-full px-8">
+      <h3
+        className="text-white font-medium truncate mb-2"
+        style={{ fontSize: dimensions.text.title }}
+      >
+        {topContent || "Project Title"}
+      </h3>
+
+      <div className="relative h-[30px] overflow-hidden">
+        <ProjectBoxHoverTransition
+          content={bottomContent || "View Project"}
+          hoverContent={hoverContent}
+          fontSize={dimensions.text.description}
+          isHovered={isHovered}
+        />
+      </div>
+    </div>
+  );
+}
+
+function ProjectBoxHoverContent({
+  content,
+  hoverContent,
+  fontSize,
+  isHovered,
+}: {
+  content: ReactNode;
+  hoverContent: string;
+  fontSize: string;
+  isHovered: boolean;
+}) {
+  return (
+    <div className="flex-1 relative overflow-hidden">
+      <div
+        className={`absolute inset-0 flex items-center transition-transform duration-300 ${
+          isHovered ? "-translate-y-full" : "translate-y-0"
+        }`}
+      >
+        {typeof content === "string" || typeof content === "number" ? (
+          <p
+            className="text-white font-medium truncate w-full"
+            style={{ fontSize }}
+          >
+            {content || "Project Title"}
+          </p>
+        ) : (
+          content || (
+            <p
+              className="text-white font-medium truncate w-full"
+              style={{ fontSize }}
+            >
+              Project Title
+            </p>
+          )
+        )}
+      </div>
+
+      <div
+        className={`absolute inset-0 flex items-center transition-transform duration-300 ${
+          isHovered ? "translate-y-0" : "translate-y-full"
+        }`}
+      >
+        <p className="text-white truncate w-full" style={{ fontSize }}>
+          {hoverContent}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function ProjectBoxHoverTransition({
+  content,
+  hoverContent,
+  fontSize,
+  isHovered,
+}: {
+  content: ReactNode;
+  hoverContent: string;
+  fontSize: string;
+  isHovered: boolean;
+}) {
+  return (
+    <>
+      <div
+        className={`absolute inset-0 flex items-center transition-transform duration-300 ${
+          isHovered ? "-translate-y-full" : "translate-y-0"
+        }`}
+      >
+        <p className="text-white truncate" style={{ fontSize }}>
+          {content}
+        </p>
+      </div>
+
+      <div
+        className={`absolute inset-0 flex items-center transition-transform duration-300 ${
+          isHovered ? "translate-y-0" : "translate-y-full"
+        }`}
+      >
+        <p className="text-white truncate" style={{ fontSize }}>
+          {hoverContent}
+        </p>
+      </div>
+    </>
+  );
 }

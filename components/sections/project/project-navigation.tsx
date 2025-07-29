@@ -2,111 +2,183 @@
 
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import WoodenBox from "@/components/forest-theme/wood-box";
+import { vineFrame } from "@/data/vine-configs";
+import { cn } from "@/lib/utils";
 import projects from "@/data/projects";
-import { useWoodGrain } from "@/hooks/use-wood-grain";
 
+// Types
 type ProjectNavigationProps = {
   currentProjectId: string;
 };
 
+type NavigationData = {
+  prevProjectId: string;
+  nextProjectId: string;
+  nextProject: (typeof projects)[keyof typeof projects];
+};
+
+// Custom hook for project navigation logic
+function useProjectNavigation(currentProjectId: string): NavigationData | null {
+  const projectIds = Object.keys(projects);
+  const currentIndex = projectIds.indexOf(currentProjectId);
+
+  if (currentIndex === -1) return null;
+
+  const nextIndex = (currentIndex + 1) % projectIds.length;
+  const prevIndex =
+    currentIndex === 0 ? projectIds.length - 1 : currentIndex - 1;
+
+  return {
+    nextProjectId: projectIds[nextIndex],
+    prevProjectId: projectIds[prevIndex],
+    nextProject: projects[projectIds[nextIndex]],
+  };
+}
+
+// Main Component
 export default function ProjectNavigation({
   currentProjectId,
 }: ProjectNavigationProps) {
   const [isHovered, setIsHovered] = useState(false);
-  const { overlayProps } = useWoodGrain();
+  const navigationData = useProjectNavigation(currentProjectId);
 
-  // Get all project IDs
-  const projectIds = Object.keys(projects);
-  const currentIndex = projectIds.indexOf(currentProjectId);
+  if (!navigationData) return null;
 
-  // Get next project (loop back to first if at end)
-  const nextIndex = (currentIndex + 1) % projectIds.length;
-  const nextProjectId = projectIds[nextIndex];
-  const nextProject = projects[nextProjectId];
-
-  // Get previous project (loop to last if at beginning)
-  const prevIndex =
-    currentIndex === 0 ? projectIds.length - 1 : currentIndex - 1;
-  const prevProjectId = projectIds[prevIndex];
-  const prevProject = projects[prevProjectId];
+  const { nextProject, nextProjectId, prevProjectId } = navigationData;
 
   return (
     <div className="fixed bottom-8 right-8 z-20">
       {/* Hover image preview */}
       {isHovered && nextProject.imageUrl && (
-        <div
-          className="absolute bottom-full right-0 mb-4 transition-all duration-300 ease-out"
-          style={{
-            transform: isHovered
-              ? "translateY(0) scale(1)"
-              : "translateY(10px) scale(0.95)",
-            opacity: isHovered ? 1 : 0,
-            width: "280px",
-          }}
-        >
-          <div className="relative w-full h-40 rounded-lg overflow-hidden shadow-2xl">
-            <Image
-              src={nextProject.imageUrl || "/placeholder.svg"}
-              alt={`${nextProject.title} preview`}
-              fill
-              className="object-cover"
-            />
-          </div>
-        </div>
+        <ProjectPreview
+          imageUrl={nextProject.imageUrl}
+          title={nextProject.title}
+          isHovered={isHovered}
+        />
       )}
 
-      {/* Navigation component */}
-      <div
-        className="rounded-xl p-6 cursor-pointer transition-all duration-300 min-w-[280px]"
-        style={{
-          backgroundColor: isHovered ? "#5e301a" : "#3d1f0f",
-          boxShadow: isHovered
-            ? `
-              inset 0 0 40px rgba(0, 0, 0, 0.9),
-              inset 0 0 80px rgba(0, 0, 0, 0.7),
-              inset 0 0 120px rgba(0, 0, 0, 0.4),
-              0 8px 32px rgba(0, 0, 0, 0.5)
-            `
-            : `
-              inset 0 0 30px rgba(0, 0, 0, 0.8),
-              inset 0 0 60px rgba(0, 0, 0, 0.6),
-              inset 0 0 100px rgba(0, 0, 0, 0.3),
-              0 4px 16px rgba(0, 0, 0, 0.3)
-            `,
-        }}
+      {/* Navigation box */}
+      <WoodenBox
+        className="min-w-[280px] cursor-pointer"
+        isHovered={isHovered}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
+        vineConfig={vineFrame}
+        showVines={true}
       >
-        {/* Wood grain pattern overlay */}
-        <div {...overlayProps} />
-
-        {/* Content */}
-        <div className="relative z-10">
-          {/* Header with navigation arrows */}
-          <div className="flex items-center justify-between mb-4">
-            <span className="text-white font-medium">Next Project</span>
-            <div className="flex items-center gap-2">
-              <Link href={`/projects/${prevProjectId}`}>
-                <ChevronLeft className="w-5 h-5 text-gray-400 hover:text-[#016428] transition-colors cursor-pointer" />
-              </Link>
-              <Link href={`/projects/${nextProjectId}`}>
-                <ChevronRight className="w-5 h-5 text-gray-400 hover:text-[#016428] transition-colors cursor-pointer" />
-              </Link>
-            </div>
-          </div>
-
-          {/* Project title */}
-          <Link href={`/projects/${nextProjectId}`}>
-            <h3 className="text-white text-lg font-semibold leading-tight hover:text-[#016428] transition-colors">
-              {nextProject.title}
-            </h3>
-          </Link>
+        <div className="p-6">
+          <NavigationHeader
+            prevProjectId={prevProjectId}
+            nextProjectId={nextProjectId}
+          />
+          <NavigationTitle
+            nextProjectId={nextProjectId}
+            title={nextProject.title}
+          />
         </div>
+      </WoodenBox>
+    </div>
+  );
+}
+
+// Sub Components
+function ProjectPreview({
+  imageUrl,
+  title,
+  isHovered,
+}: {
+  imageUrl: string;
+  title: string;
+  isHovered: boolean;
+}) {
+  const previewStyles = {
+    transform: isHovered
+      ? "translateY(0) scale(1)"
+      : "translateY(10px) scale(0.95)",
+    opacity: isHovered ? 1 : 0,
+    width: "clamp(240px, 20vw, 320px)",
+  };
+
+  return (
+    <div
+      className="absolute bottom-full right-0 mb-4 transition-all duration-300 ease-out"
+      style={previewStyles}
+    >
+      <div className="relative w-full h-40 rounded-lg overflow-hidden shadow-2xl">
+        <Image
+          src={imageUrl}
+          alt={`${title} preview`}
+          fill
+          className="object-cover"
+          sizes="(max-width: 768px) 240px, 320px"
+          priority={false}
+        />
       </div>
     </div>
+  );
+}
+
+function NavigationHeader({
+  prevProjectId,
+  nextProjectId,
+}: {
+  prevProjectId: string;
+  nextProjectId: string;
+}) {
+  return (
+    <div className="flex items-center justify-between mb-4">
+      <span className="text-white font-medium">Next Project</span>
+      <div className="flex items-center gap-2">
+        <Link
+          href={`/projects/${prevProjectId}`}
+          aria-label="Previous project"
+          className="group"
+        >
+          <ChevronLeft
+            className={cn(
+              "w-5 h-5 text-gray-400",
+              "hover:text-[var(--accent-primary)] transition-colors"
+            )}
+          />
+        </Link>
+        <Link
+          href={`/projects/${nextProjectId}`}
+          aria-label="Next project"
+          className="group"
+        >
+          <ChevronRight
+            className={cn(
+              "w-5 h-5 text-gray-400",
+              "hover:text-[var(--accent-primary)] transition-colors"
+            )}
+          />
+        </Link>
+      </div>
+    </div>
+  );
+}
+
+function NavigationTitle({
+  nextProjectId,
+  title,
+}: {
+  nextProjectId: string;
+  title: string;
+}) {
+  return (
+    <Link
+      href={`/projects/${nextProjectId}`}
+      className={cn(
+        "block text-white text-lg font-semibold leading-tight",
+        "hover:text-[var(--accent-primary)] transition-colors"
+      )}
+    >
+      {title}
+    </Link>
   );
 }
