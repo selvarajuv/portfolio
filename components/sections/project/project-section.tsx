@@ -43,7 +43,7 @@ export default function ProjectSection() {
 
 function ProjectSectionSkeleton() {
   return (
-    <section id="work">
+    <section id="work" className="section-spacing">
       <div className="mx-auto w-full p-4 md:px-[15vw]">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
           {/* WorkDescription handles its own loading state */}
@@ -114,7 +114,7 @@ function ProjectSectionContent({
   regularProjects: ReturnType<typeof useProjectSections>["regularProjects"];
 }) {
   return (
-    <section id="work">
+    <section id="work" className="section-spacing">
       <div className="mx-auto w-full p-4 md:px-[15vw]">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
           <WorkDescription />

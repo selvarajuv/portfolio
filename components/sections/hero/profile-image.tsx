@@ -2,8 +2,11 @@
 
 "use client";
 
-import React, { useState } from "react";
+// External imports
+import React, { useState, useEffect } from "react";
 import { User } from "lucide-react";
+
+// Utils
 import { cn } from "@/lib/utils";
 
 // Constants
@@ -13,42 +16,100 @@ const FALLBACK_SIZE = {
   icon: "w-10 h-10",
 };
 
-export default function ProfileImage() {
+type ProfileImageProps = {
+  image?: string;
+  isLoading?: boolean;
+};
+
+export default function ProfileImage({
+  image = "",
+  isLoading = false,
+}: ProfileImageProps) {
   const [hasError, setHasError] = useState(false);
+  const [isImageLoading, setIsImageLoading] = useState(false);
+
+  // Reset image loading state when image prop changes
+  useEffect(() => {
+    if (image) {
+      setIsImageLoading(true);
+      setHasError(false);
+    }
+  }, [image]);
 
   const handleImageError = () => {
     setHasError(true);
+    setIsImageLoading(false);
   };
 
+  const handleImageLoad = () => {
+    setIsImageLoading(false);
+  };
+
+  // Show skeleton only if data is loading
+  if (isLoading) {
+    return <ProfileImageSkeleton />;
+  }
+
+  // If no image provided or error, show fallback
+  if (!image || hasError) {
+    return <ProfileImageFallback />;
+  }
+
+  // Show image (with loading state while it loads)
   return (
-    <ProfileImageContent hasError={hasError} onImageError={handleImageError} />
+    <ProfileImageContent
+      image={image}
+      isImageLoading={isImageLoading}
+      onImageError={handleImageError}
+      onImageLoad={handleImageLoad}
+    />
+  );
+}
+
+// ===== State Components =====
+
+function ProfileImageSkeleton() {
+  return (
+    <div className="w-full h-full bg-gray-800 animate-pulse rounded-lg flex items-center justify-center">
+      <div className="bg-gray-700 rounded-full w-24 h-24 animate-pulse" />
+    </div>
   );
 }
 
 // ===== Main Content Component =====
 
 function ProfileImageContent({
-  hasError,
+  image,
+  isImageLoading,
   onImageError,
+  onImageLoad,
 }: {
-  hasError: boolean;
+  image: string;
+  isImageLoading: boolean;
   onImageError: () => void;
+  onImageLoad: () => void;
 }) {
   return (
-    <div className="w-full h-full overflow-hidden rounded-lg">
-      {/* Main Image */}
-      {!hasError && (
-        <img
-          src={PROFILE_IMAGE_PATH}
-          alt="Vichu - Software Engineer"
-          className="w-full h-full object-cover object-center"
-          onError={onImageError}
-          loading="eager"
-        />
+    <div className="w-full h-full overflow-hidden rounded-lg relative bg-gray-800">
+      {/* Show skeleton while image is loading */}
+      {isImageLoading && (
+        <div className="absolute inset-0 bg-gray-800 animate-pulse rounded-lg flex items-center justify-center z-10">
+          <div className="bg-gray-700 rounded-full w-24 h-24 animate-pulse" />
+        </div>
       )}
 
-      {/* Fallback placeholder */}
-      {hasError && <ProfileImageFallback />}
+      {/* Image */}
+      <img
+        src={image}
+        alt=""
+        className={cn(
+          "w-full h-full object-cover object-center transition-opacity duration-300",
+          isImageLoading ? "opacity-0" : "opacity-100"
+        )}
+        onError={onImageError}
+        onLoad={onImageLoad}
+        loading="eager"
+      />
     </div>
   );
 }

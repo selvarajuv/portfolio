@@ -36,7 +36,13 @@ export default function HeroSection() {
 
   // Success state
   const heroDescription = miscs[0].heroDescription || "";
-  return <HeroSectionContent heroDescription={heroDescription} />;
+  const heroImage = miscs[0].heroImage || "";
+  return (
+    <HeroSectionContent
+      heroDescription={heroDescription}
+      heroImage={heroImage}
+    />
+  );
 }
 
 // ===== State Components =====
@@ -62,7 +68,7 @@ function HeroSectionSkeleton() {
   };
 
   return (
-    <section id="home" className="flex" style={sectionStyles}>
+    <section id="home" className="flex section-spacing" style={sectionStyles}>
       <div
         className={cn(
           "mx-auto w-full p-4 md:px-[15vw]",
@@ -84,7 +90,7 @@ function HeroSectionSkeleton() {
           </div>
         </div>
 
-        {/* Profile Image */}
+        {/* Profile Image Skeleton */}
         <div className="relative flex justify-center lg:justify-end">
           <WoodenBox
             width={profileBoxSizing.desktop.width}
@@ -96,7 +102,7 @@ function HeroSectionSkeleton() {
               "lg:!h-[clamp(320px,45vw,630px)]"
             )}
           >
-            <ProfileImage />
+            <ProfileImage isLoading={true} />
           </WoodenBox>
         </div>
       </div>
@@ -140,7 +146,7 @@ function HeroSectionError({ error }: { error: string }) {
           </p>
         </div>
 
-        {/* Profile Image still shows */}
+        {/* Profile Image without URL */}
         <div className="relative flex justify-center lg:justify-end">
           <WoodenBox
             width={profileBoxSizing.desktop.width}
@@ -200,7 +206,7 @@ function HeroSectionEmpty() {
           </p>
         </div>
 
-        {/* Profile Image still shows */}
+        {/* Profile Image without URL */}
         <div className="relative flex justify-center lg:justify-end">
           <WoodenBox
             width={profileBoxSizing.desktop.width}
@@ -222,7 +228,13 @@ function HeroSectionEmpty() {
 
 // ===== Main Content Component =====
 
-function HeroSectionContent({ heroDescription }: { heroDescription: string }) {
+function HeroSectionContent({
+  heroDescription,
+  heroImage,
+}: {
+  heroDescription: string;
+  heroImage: string;
+}) {
   const sectionStyles = {
     paddingTop: "clamp(32px, 6vw, 96px)",
   };
@@ -248,7 +260,7 @@ function HeroSectionContent({ heroDescription }: { heroDescription: string }) {
   };
 
   return (
-    <section id="home" className="flex" style={sectionStyles}>
+    <section id="home" className="flex section-spacing" style={sectionStyles}>
       <div
         className={cn(
           "mx-auto w-full p-4 md:px-[15vw]",
@@ -274,11 +286,18 @@ function HeroSectionContent({ heroDescription }: { heroDescription: string }) {
 
         {/* Profile Image */}
         <div className="relative flex justify-center lg:justify-end">
-          <div className="w-full p-4 max-w-[540px] lg:p-0 lg:w-[35vw] lg:max-w-[540px]">
-            <WoodenBox className="w-full aspect-[6/7]">
-              <ProfileImage />
-            </WoodenBox>
-          </div>
+          <WoodenBox
+            width={profileBoxSizing.desktop.width}
+            height={profileBoxSizing.desktop.height}
+            className={cn(
+              "max-sm:!w-[clamp(200px,80vw,400px)]",
+              "max-sm:!h-[clamp(240px,90vw,450px)]",
+              "lg:!w-[clamp(280px,40vw,540px)]",
+              "lg:!h-[clamp(320px,45vw,630px)]"
+            )}
+          >
+            <ProfileImage image={heroImage} />
+          </WoodenBox>
         </div>
       </div>
     </section>
