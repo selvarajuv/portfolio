@@ -357,7 +357,7 @@ function SkillsRow({
                   name={skill.name}
                   iconPath={skill.iconPath}
                   color={skill.color}
-                  size={60} // Default size, will be overridden by responsive classes
+                  size={60}
                   isHovered={isSkillHovered}
                   isRowHovered={isRowHovered}
                   className="w-[60px] h-[60px] sm:w-[72px] sm:h-[72px] lg:w-[96px] lg:h-[96px]"
