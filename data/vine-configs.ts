@@ -438,41 +438,70 @@ export const generateSideVines = (
 
   const densityConfigs = {
     mobile: {
-      topVines: [...vineLocations(-20, 100, 3), ...vineLocations(-20, 100, 16)],
-      layer1: [...vineLocations(-7, 100, 4), ...vineLocations(-20, 100, 14)],
-      layer2: [...vineLocations(-20, 100, 5), ...vineLocations(-7, 100, 13)],
-      layer3: [...vineLocations(-7, 100, 2), ...vineLocations(-20, 100, 11)],
+      topVines: [
+        ...vineLocations(-20, 100, 2),
+        ...vineLocations(-20, 100, 16),
+        ...vineLocations(-20, 100, 8),
+      ],
+      layer1: [
+        ...vineLocations(-7, 100, 4),
+        ...vineLocations(-20, 100, 9),
+        ...vineLocations(-20, 100, 7),
+      ],
+      layer2: [
+        ...vineLocations(-20, 100, 5),
+        ...vineLocations(-7, 100, 13),
+        ...vineLocations(-20, 100, 8),
+      ],
+      layer3: [
+        ...vineLocations(-7, 100, 2),
+        ...vineLocations(-20, 100, 11),
+        ...vineLocations(-7, 100, 7),
+      ],
     },
     tablet: {
       topVines: [
         ...vineLocations(-20, 100, 7),
-        ...vineLocations(-20, 100, 20),
-        ...vineLocations(-20, 100, 25),
+        ...vineLocations(-20, 100, 9),
+        ...vineLocations(-20, 100, 27),
+        ...vineLocations(-20, 100, 33),
       ],
       layer1: [
         ...vineLocations(-20, 100, 3),
-        ...vineLocations(-20, 100, 23),
-        ...vineLocations(-20, 100, 27),
+        ...vineLocations(-20, 100, 8),
+        ...vineLocations(-20, 100, 16),
+        ...vineLocations(-20, 100, 7),
       ],
       layer2: [
         ...vineLocations(-20, 100, 9),
+        ...vineLocations(-20, 100, 11),
         ...vineLocations(-20, 100, 26),
-        ...vineLocations(-20, 100, 33),
+        ...vineLocations(-20, 100, 17),
       ],
       layer3: [
         ...vineLocations(-20, 100, 6),
-        ...vineLocations(-20, 100, 24),
-        ...vineLocations(-20, 100, 30),
+        ...vineLocations(-20, 100, 25),
+        ...vineLocations(-20, 100, 18),
+        ...vineLocations(-20, 100, 17),
       ],
     },
     desktop: {
       topVines: [
-        ...vineLocations(-20, 100, 15),
-        ...vineLocations(-20, 100, 29),
+        ...vineLocations(-20, 100, 13),
+        ...vineLocations(-20, 100, 27),
+        ...vineLocations(-20, 100, 35),
       ],
-      layer1: [...vineLocations(-50, 100, 12), ...vineLocations(-20, 100, 26)],
-      layer2: [...vineLocations(-20, 100, 18), ...vineLocations(-20, 100, 10)],
-      layer3: [...vineLocations(-20, 100, 18)],
+      layer1: [
+        ...vineLocations(-50, 100, 12),
+        ...vineLocations(-20, 100, 26),
+        ...vineLocations(-20, 100, 33),
+      ],
+      layer2: [
+        ...vineLocations(-20, 100, 18),
+        ...vineLocations(-20, 100, 10),
+        ...vineLocations(-20, 100, 7),
+      ],
+      layer3: [...vineLocations(-20, 100, 18), ...vineLocations(-20, 100, 23)],
     },
   };
 
