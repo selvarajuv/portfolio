@@ -70,8 +70,8 @@ function ProjectDetailsListItem({
       <Badge
         variant={type === "challenge" ? "destructive" : "default"}
         className={cn(
-          "mt-1 w-2 h-2 p-0 rounded-full",
-          "bg-[var(--navbar-hover-color)]"
+          "mt-2 w-1 h-1 p-0 rounded-full",
+          "bg-[var(--accent-primary)]"
         )}
       >
         <span className="sr-only">

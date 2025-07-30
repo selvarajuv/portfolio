@@ -9,7 +9,9 @@ export type ProjectItem = {
   client: string;
   year: string;
   technologies?: string[];
+  technologyNames?: string[];
   images: string[];
+  projectLink?: string;
   challenges: string[];
   outcomes: string[];
   topContent?: string;

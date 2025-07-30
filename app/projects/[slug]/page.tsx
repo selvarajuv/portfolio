@@ -198,10 +198,10 @@ function ProjectBackButton({ onClick }: { onClick: () => void }) {
         size="icon"
         className={cn(
           "w-12 h-12 rounded-full text-gray-300 transition-all duration-200",
-          "hover:text-[var(--navbar-hover-color)] hover:bg-transparent"
+          "hover:text-[var(--accent-primary)] hover:bg-transparent"
         )}
         style={{
-          backgroundColor: "var(--forest-dark)",
+          backgroundColor: "var(--overlay-dark)",
           boxShadow: "var(--wood-box-shadow-default)",
         }}
         onClick={onClick}
@@ -283,12 +283,15 @@ function ProjectDetails({ project }: { project: ProjectItem }) {
       </div>
 
       {/* Technologies */}
-      {project.technologies && project.technologies.length > 0 && (
+      {project.technologies && project.technologyNames && (
         <div className="mb-8">
           <h3 className="text-lg font-semibold text-white mb-4">
             Technologies
           </h3>
-          <TechnologyList technologies={project.technologies} />
+          <TechnologyList
+            technologies={project.technologies}
+            techNames={project.technologyNames}
+          />
         </div>
       )}
 
@@ -303,7 +306,7 @@ function ProjectDetails({ project }: { project: ProjectItem }) {
 
         {/* Open Project Link */}
         <a
-          href="#"
+          href={project.projectLink}
           target="_blank"
           rel="noopener noreferrer"
           className={cn(

@@ -28,10 +28,15 @@ export async function GET() {
           props.Technologies?.files?.map(
             (file: any) => file.file?.url || file.external?.url || ""
           ) || [],
+        technologyNames:
+          props["Technology Names"]?.rich_text?.[0]?.plain_text
+            ?.split("\n")
+            .filter((item: string) => item.trim()) || [],
         images:
           props.Images?.files?.map(
             (file: any) => file.file?.url || file.external?.url || ""
           ) || [],
+        projectLink: props["Project Link"].url || "",
         challenges:
           props.Challenges?.rich_text?.[0]?.plain_text
             ?.split("\n")
