@@ -11,6 +11,12 @@ export async function GET() {
   try {
     const response = await notion.databases.query({
       database_id: process.env.NOTION_PROJECT_DATABASE_ID!,
+      sorts: [
+        {
+          property: "ID",
+          direction: "descending",
+        },
+      ],
     });
 
     const projects = response.results.map((page: any) => {
