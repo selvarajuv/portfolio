@@ -330,7 +330,7 @@ function SkillsRow({
               <p
                 className={cn(
                   "text-xs sm:text-sm font-medium transition-colors duration-300",
-                  "mb-1 sm:mb-2 md:mb-4 text-center"
+                  "mb-3 sm:mb-2 md:mb-4 text-center"
                 )}
                 style={{
                   color: isSkillHovered

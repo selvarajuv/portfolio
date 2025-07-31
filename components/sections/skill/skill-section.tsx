@@ -12,8 +12,8 @@ export default function SkillsSection() {
   };
 
   return (
-    <section id="skills" className={cn("section-spacing px-4 md:px-8 pb-32")}>
-      <div className="mx-auto w-full md:px-[15vw]">
+    <section id="skills" className={"section-spacing"}>
+      <div className="mx-auto w-full md:px-[25vw]">
         <h1
           className={cn(
             "font-bold mb-16 tracking-tight leading-none text-center"
