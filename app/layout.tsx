@@ -3,6 +3,7 @@
 import type React from "react";
 import type { Metadata } from "next";
 import { Instrument_Sans } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import ClientLayout from "@/components/layout/client-layout";
 
@@ -21,7 +22,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${font.className}`}>
-        <ClientLayout>{children}</ClientLayout>
+        <ClientLayout>
+          {children}
+          <Analytics />
+        </ClientLayout>
       </body>
     </html>
   );
