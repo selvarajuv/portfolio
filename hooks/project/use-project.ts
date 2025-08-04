@@ -1,8 +1,8 @@
-// hooks/use-project.ts
+// hooks/use-projects.ts
 
 import { useState, useEffect } from "react";
 import { ProjectItem } from "@/types/project";
-import { getProjectFromNotion } from "@/lib/project";
+import { getProjectsFromNotion } from "@/lib/project";
 
 export function useProject() {
   const [projects, setProjects] = useState<ProjectItem[]>([]);
@@ -10,21 +10,19 @@ export function useProject() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const loadSkills = async () => {
+    const loadProjects = async () => {
       try {
-        setLoading(true);
-        setError(null);
-        const data = await getProjectFromNotion();
+        const data = await getProjectsFromNotion();
         setProjects(data);
       } catch (err) {
         console.error("Failed to load projects:", err);
-        setError("Failed to load project data");
+        setError("Failed to load projects data");
       } finally {
         setLoading(false);
       }
     };
 
-    loadSkills();
+    loadProjects();
   }, []);
 
   return { projects, loading, error };

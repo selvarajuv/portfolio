@@ -10,21 +10,19 @@ export function useMisc() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const loadSkills = async () => {
+    const loadMisc = async () => {
       try {
-        setLoading(true);
-        setError(null);
         const data = await getMiscFromNotion();
         setMiscs(data);
       } catch (err) {
-        console.error("Failed to load misc:", err);
+        console.error("Failed to load misc data:", err);
         setError("Failed to load misc data");
       } finally {
         setLoading(false);
       }
     };
 
-    loadSkills();
+    loadMisc();
   }, []);
 
   return { miscs, loading, error };

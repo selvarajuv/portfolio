@@ -37,7 +37,7 @@ export default function ExperienceSection() {
 function ExperienceSectionWrapper({ children }: { children: React.ReactNode }) {
   return (
     <section id="experience" className={cn("section-spacing px-4 md:px-8")}>
-      <div className={cn("mx-auto w-full p-4 md:px-[20vw]")}>
+      <div className={cn("mx-auto w-full p-4 md:px-[22vw]")}>
         <h1
           className={cn(
             "font-bold mb-16 tracking-tight leading-none text-center"

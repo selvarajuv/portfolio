@@ -1,13 +1,15 @@
-//lib/project.ts
+// lib/project.ts
 
 import { ProjectItem } from "@/types/project";
 
-export async function getProjectFromNotion(): Promise<ProjectItem[]> {
-  const response = await fetch("/api/project");
+let projectsData: ProjectItem[] = [];
 
-  if (!response.ok) {
-    throw new Error("Failed to fetch project data");
-  }
+try {
+  projectsData = require("@/data/projects.json");
+} catch (error) {
+  console.warn("Projects data not found. Run npm run download-images first.");
+}
 
-  return response.json();
+export async function getProjectsFromNotion(): Promise<ProjectItem[]> {
+  return projectsData;
 }

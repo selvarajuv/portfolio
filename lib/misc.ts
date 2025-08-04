@@ -1,13 +1,15 @@
-//lib/misc.ts
+// lib/misc.ts
 
 import { MiscItem } from "@/types/misc";
 
+let miscData: MiscItem[] = [];
+
+try {
+  miscData = require("@/data/misc.json");
+} catch (error) {
+  console.warn("Misc data not found. Run npm run download-images first.");
+}
+
 export async function getMiscFromNotion(): Promise<MiscItem[]> {
-  const response = await fetch("/api/misc");
-
-  if (!response.ok) {
-    throw new Error("Failed to fetch misc data");
-  }
-
-  return response.json();
+  return miscData;
 }
